@@ -199,6 +199,7 @@ describe('useSlashCommandProcessor', () => {
           setIsProcessing,
           {
             openAuthDialog: mockOpenAuthDialog,
+            openProviderDialog: vi.fn(),
             openThemeDialog: mockOpenThemeDialog,
             openEditorDialog: vi.fn(),
             openPrivacyNotice: vi.fn(),

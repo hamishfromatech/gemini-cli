@@ -19,6 +19,9 @@ vi.mock('@the-a-tech-corporation/core', async () => {
   };
 });
 
+const DEPRECATION_MESSAGE =
+  'The /auth command is deprecated. Use /provider to configure your model provider.';
+
 describe('authCommand', () => {
   let mockContext: CommandContext;
 
@@ -46,7 +49,7 @@ describe('authCommand', () => {
     expect(authCommand.subCommands?.[1]?.altNames).toContain('logout');
   });
 
-  it('should return a dialog action to open the auth dialog when called with no args', () => {
+  it('should return a deprecation message when called with no args', () => {
     if (!authCommand.action) {
       throw new Error('The auth command must have an action.');
     }
@@ -54,22 +57,29 @@ describe('authCommand', () => {
     const result = authCommand.action(mockContext, '');
 
     expect(result).toEqual({
-      type: 'dialog',
-      dialog: 'auth',
+      type: 'message',
+      messageType: 'info',
+      content: DEPRECATION_MESSAGE,
     });
   });
 
   it('should have the correct name and description', () => {
     expect(authCommand.name).toBe('auth');
-    expect(authCommand.description).toBe('Manage authentication');
+    expect(authCommand.description).toBe(
+      'Deprecated: use /provider to configure your model provider',
+    );
   });
 
   describe('auth signin subcommand', () => {
-    it('should return auth dialog action', () => {
+    it('should return a deprecation message', () => {
       const loginCommand = authCommand.subCommands?.[0];
       expect(loginCommand?.name).toBe('signin');
       const result = loginCommand!.action!(mockContext, '');
-      expect(result).toEqual({ type: 'dialog', dialog: 'auth' });
+      expect(result).toEqual({
+        type: 'message',
+        messageType: 'info',
+        content: DEPRECATION_MESSAGE,
+      });
     });
   });
 

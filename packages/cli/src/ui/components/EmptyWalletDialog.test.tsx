@@ -124,7 +124,7 @@ describe('EmptyWalletDialog', () => {
       const output = lastFrame() ?? '';
       expect(output).toContain('/stats');
       expect(output).toContain('/model');
-      expect(output).toContain('/auth');
+      expect(output).toContain('/provider');
       unmount();
     });
   });

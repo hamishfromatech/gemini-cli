@@ -52,7 +52,7 @@ export const INFORMATIVE_TIPS = [
   'Enable folder trust to enhance security (/settings)…',
   'Disable YOLO mode to enforce confirmations (settings.json)…',
   'Block Git extensions for enhanced security (settings.json)…',
-  'Change your authentication method (/settings)…',
+  'Configure your model provider (/settings)…',
   'Enforce auth type for enterprise use (settings.json)…',
   'Let Node.js auto-configure memory (settings.json)…',
   'Retry on fetch failed errors automatically (settings.json)…',
@@ -120,7 +120,7 @@ export const INFORMATIVE_TIPS = [
   // Keyboard shortcut tips end here
   // Command tips start here
   'Show version info with /about',
-  'Change your authentication method with /auth',
+  'Configure your model provider with /provider',
   'File a bug report directly with /bug',
   'List your saved chat checkpoints with /resume list',
   'Save your current conversation with /resume save <tag>',

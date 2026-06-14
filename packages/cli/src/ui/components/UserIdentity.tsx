@@ -45,7 +45,7 @@ export const UserIdentity: React.FC<UserIdentityProps> = ({ config }) => {
 
   return (
     <Box flexDirection="column">
-      {/* User Email /auth */}
+      {/* User Email /provider */}
       <Box>
         <Text color={theme.text.primary} wrap="truncate-end">
           {authType === AuthType.LOGIN_WITH_GOOGLE ? (
@@ -57,7 +57,7 @@ export const UserIdentity: React.FC<UserIdentityProps> = ({ config }) => {
             `Authenticated with ${authType}`
           )}
         </Text>
-        <Text color={theme.text.secondary}> /auth</Text>
+        <Text color={theme.text.secondary}> /provider</Text>
       </Box>
 
       {/* Tier Name /upgrade */}

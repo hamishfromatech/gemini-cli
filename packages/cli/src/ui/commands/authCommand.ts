@@ -4,25 +4,28 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import type {
-  OpenDialogActionReturn,
-  SlashCommand,
-  LogoutActionReturn,
-} from './types.js';
+import type { MessageActionReturn } from '@the-a-tech-corporation/core';
+import type { SlashCommand, LogoutActionReturn } from './types.js';
 import { CommandKind } from './types.js';
 import { clearCachedCredentialFile } from '@the-a-tech-corporation/core';
 import { SettingScope } from '../../config/settings.js';
 
+const AUTH_DEPRECATED_MESSAGE =
+  'The /auth command is deprecated. Use /provider to configure your model provider.';
+
+const deprecationMessage = (): MessageActionReturn => ({
+  type: 'message',
+  messageType: 'info',
+  content: AUTH_DEPRECATED_MESSAGE,
+});
+
 const authLoginCommand: SlashCommand = {
   name: 'signin',
   altNames: ['login'],
-  description: 'Sign in or change the authentication method',
+  description: 'Deprecated: use /provider instead',
   kind: CommandKind.BUILT_IN,
   autoExecute: true,
-  action: (_context, _args): OpenDialogActionReturn => ({
-    type: 'dialog',
-    dialog: 'auth',
-  }),
+  action: () => deprecationMessage(),
 };
 
 const authLogoutCommand: SlashCommand = {
@@ -32,7 +35,7 @@ const authLogoutCommand: SlashCommand = {
   kind: CommandKind.BUILT_IN,
   action: async (context, _args): Promise<LogoutActionReturn> => {
     await clearCachedCredentialFile();
-    // Clear the selected auth type so user sees the auth selection menu
+    // Clear the selected auth type so user sees the provider selection menu
     context.services.settings.setValue(
       SettingScope.User,
       'security.auth.selectedType',
@@ -49,10 +52,8 @@ const authLogoutCommand: SlashCommand = {
 
 export const authCommand: SlashCommand = {
   name: 'auth',
-  description: 'Manage authentication',
+  description: 'Deprecated: use /provider to configure your model provider',
   kind: CommandKind.BUILT_IN,
   subCommands: [authLoginCommand, authLogoutCommand],
-  action: (context, args) =>
-    // Default to login if no subcommand is provided
-    authLoginCommand.action!(context, args),
+  action: () => deprecationMessage(),
 };

@@ -39,7 +39,7 @@ export const LogoutConfirmationDialog: React.FC<
 
   const options: Array<RadioSelectItem<LogoutChoice>> = [
     {
-      label: 'Sign in',
+      label: 'Configure Provider',
       value: LogoutChoice.LOGIN,
       key: 'login',
     },
@@ -66,7 +66,7 @@ export const LogoutConfirmationDialog: React.FC<
             You are now signed out
           </Text>
           <Text color={theme.text.secondary}>
-            Sign in again to continue using A-Coder CLI, or exit the application.
+            Configure a provider to continue using A-Coder CLI, or exit the application.
           </Text>
         </Box>
 

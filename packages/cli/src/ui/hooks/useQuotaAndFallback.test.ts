@@ -157,7 +157,7 @@ describe('useQuotaAndFallback', () => {
 
       expect(result.current.proQuotaRequest).not.toBeNull();
       expect(result.current.proQuotaRequest?.message).not.toContain(
-        '/auth to switch to API key.',
+        '/provider to switch provider.',
       );
     });
 
@@ -260,7 +260,7 @@ describe('useQuotaAndFallback', () => {
         expect(message).toContain('Access resets at'); // From getResetTimeMessage
         expect(message).toContain('/stats model for usage details');
         expect(message).toContain('/model to switch models.');
-        expect(message).toContain('/auth to switch to API key.');
+        expect(message).toContain('/provider to switch provider.');
 
         expect(mockHistoryManager.addItem).not.toHaveBeenCalled();
 

@@ -7,7 +7,7 @@ exports[`EmptyWalletDialog > rendering > should match snapshot with fallback ava
 │ Access resets at 2:00 PM.                                                                        │
 │ /stats model for usage details                                                                   │
 │ /model to switch models.                                                                         │
-│ /auth to switch to API key.                                                                      │
+│ /provider to switch provider.                                                                    │
 │                                                                                                  │
 │ To continue using this model now, purchase more AI Credits.                                      │
 │                                                                                                  │
@@ -31,7 +31,7 @@ exports[`EmptyWalletDialog > rendering > should match snapshot without fallback 
 │ Usage limit reached for gemini-2.5-pro.                                                          │
 │ /stats model for usage details                                                                   │
 │ /model to switch models.                                                                         │
-│ /auth to switch to API key.                                                                      │
+│ /provider to switch provider.                                                                    │
 │                                                                                                  │
 │ To continue using this model now, purchase more AI Credits.                                      │
 │                                                                                                  │

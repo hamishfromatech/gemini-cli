@@ -129,7 +129,7 @@ export function useQuotaAndFallback({
           `/stats model for usage details`,
           `/model to switch models.`,
           contentGeneratorConfig?.authType === AuthType.LOGIN_WITH_GOOGLE
-            ? `/auth to switch to API key.`
+            ? `/provider to switch provider.`
             : null,
         ].filter(Boolean);
         message = messageLines.join('\n');

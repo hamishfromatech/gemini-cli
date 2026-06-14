@@ -66,6 +66,7 @@ import { runExitCleanup } from '../../utils/cleanup.js';
 
 interface SlashCommandProcessorActions {
   openAuthDialog: () => void;
+  openProviderDialog: () => void;
   openThemeDialog: () => void;
   openEditorDialog: () => void;
   openPrivacyNotice: () => void;
@@ -468,13 +469,13 @@ export const useSlashCommandProcessor = (
                   );
                   return { type: 'handled' };
                 case 'logout':
-                  // Show logout confirmation dialog with Login/Exit options
+                  // Show logout confirmation dialog with Configure Provider/Exit options
                   setCustomDialog(
                     createElement(LogoutConfirmationDialog, {
                       onSelect: async (choice: LogoutChoice) => {
                         setCustomDialog(null);
                         if (choice === LogoutChoice.LOGIN) {
-                          actions.openAuthDialog();
+                          actions.openProviderDialog();
                         } else {
                           await runExitCleanup();
                           process.exit(0);

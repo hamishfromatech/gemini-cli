@@ -62,7 +62,7 @@ export const QuotaStatsInfo: React.FC<QuotaStatsInfoProps> = ({
           </Text>
           {remaining === 0 && (
             <Text color={theme.text.primary}>
-              Please /auth to upgrade or switch to an API key to continue.
+              Please /provider to upgrade or switch provider to continue.
             </Text>
           )}
         </>

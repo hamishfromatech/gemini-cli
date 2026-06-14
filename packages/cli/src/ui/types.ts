@@ -44,6 +44,8 @@ export enum AuthState {
   Authenticated = 'authenticated',
   // Waiting for the user to restart after a login
   AwaitingLoginRestart = 'awaiting_login_restart',
+  // Provider dialog is open for first-time configuration
+  AwaitingProviderConfiguration = 'awaiting_provider_configuration',
 }
 
 // Only defining the state enum needed by the UI

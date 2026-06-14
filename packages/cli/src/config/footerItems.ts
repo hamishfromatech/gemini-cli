@@ -54,8 +54,8 @@ export const ALL_ITEMS = [
   },
   {
     id: 'auth',
-    header: '/auth',
-    description: 'Current authentication info',
+    header: '/provider',
+    description: 'Current provider info',
   },
   {
     id: 'code-changes',

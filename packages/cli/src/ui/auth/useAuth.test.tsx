@@ -6,6 +6,7 @@
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { act } from 'react';
+import type React from 'react';
 import { renderHook } from '../../test-utils/render.js';
 import { useAuthCommand, validateAuthMethodWithSettings } from './useAuth.js';
 import {
@@ -162,16 +163,24 @@ describe('useAuth', () => {
       expect(result.current.authState).toBe(AuthState.Authenticated);
     });
 
-    it('should set error if no auth type is selected and no env key', async () => {
+    it('should open provider dialog if no auth type is selected and no env key', async () => {
+      const openProviderDialog = vi.fn();
+      const openProviderDialogRef = { current: openProviderDialog } as React.MutableRefObject<() => void>;
+
       const { result } = await renderHook(() =>
-        useAuthCommand(createSettings(undefined), mockConfig),
+        useAuthCommand(
+          createSettings(undefined),
+          mockConfig,
+          null,
+          null,
+          openProviderDialogRef,
+        ),
       );
 
-      // This happens synchronously, no deferred promise
-      expect(result.current.authError).toBe(
-        'No authentication method selected.',
+      expect(openProviderDialog).toHaveBeenCalled();
+      expect(result.current.authState).toBe(
+        AuthState.AwaitingProviderConfiguration,
       );
-      expect(result.current.authState).toBe(AuthState.Updating);
     });
 
     it('should set error if no auth type is selected but env key exists', async () => {
@@ -326,7 +335,7 @@ describe('useAuth', () => {
       });
 
       expect(result.current.authError).toBe(
-        'This account requires setting the GOOGLE_CLOUD_PROJECT or GOOGLE_CLOUD_PROJECT_ID env var. See https://goo.gle/gemini-cli-auth-docs#workspace-gca',
+        'This account requires setting the GOOGLE_CLOUD_PROJECT or GOOGLE_CLOUD_PROJECT_ID env var.',
       );
       expect(result.current.authError).not.toContain('Failed to login');
       expect(result.current.authState).toBe(AuthState.Updating);

@@ -86,9 +86,9 @@ export function EmptyWalletDialog({
         </Text>
         <Text>
           <Text bold color={theme.text.accent}>
-            /auth
+            /provider
           </Text>{' '}
-          to switch to API key.
+          to switch provider.
         </Text>
       </Box>
       <Box marginBottom={1}>

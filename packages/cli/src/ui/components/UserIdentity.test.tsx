@@ -45,7 +45,7 @@ describe('<UserIdentity />', () => {
 
     const output = lastFrame();
     expect(output).toContain('Signed in with Google: test@example.com');
-    expect(output).toContain('/auth');
+    expect(output).toContain('/provider');
     expect(output).not.toContain('/upgrade');
     unmount();
   });
@@ -91,7 +91,7 @@ describe('<UserIdentity />', () => {
     const output = lastFrame();
     expect(output).toContain('Signed in with Google');
     expect(output).not.toContain('Signed in with Google:');
-    expect(output).toContain('/auth');
+    expect(output).toContain('/provider');
     expect(output).not.toContain('/upgrade');
     unmount();
   });
@@ -110,7 +110,7 @@ describe('<UserIdentity />', () => {
 
     const output = lastFrame();
     expect(output).toContain('Signed in with Google: test@example.com');
-    expect(output).toContain('/auth');
+    expect(output).toContain('/provider');
     expect(output).toContain('Plan: Premium Plan');
     expect(output).toContain('/upgrade');
 
@@ -154,7 +154,7 @@ describe('<UserIdentity />', () => {
 
     const output = lastFrame();
     expect(output).toContain(`Authenticated with ${AuthType.USE_GEMINI}`);
-    expect(output).toContain('/auth');
+    expect(output).toContain('/provider');
     expect(output).not.toContain('/upgrade');
     unmount();
   });

@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, type MutableRefObject } from 'react';
 import type { LoadedSettings } from '../../config/settings.js';
 import {
   AuthType,
@@ -43,6 +43,7 @@ export const useAuthCommand = (
   config: Config,
   initialAuthError: string | null = null,
   initialAccountSuspensionInfo: AccountSuspensionInfo | null = null,
+  openProviderDialogRef?: MutableRefObject<() => void>,
 ) => {
   const [authState, setAuthState] = useState<AuthState>(
     initialAuthError ? AuthState.Updating : AuthState.Unauthenticated,
@@ -95,10 +96,15 @@ export const useAuthCommand = (
       if (!authType) {
         if (process.env['OPENAI_API_KEY']) {
           onAuthError(
-            'Existing API key detected (OPENAI_API_KEY). Select "Gemini API Key" option to use it.',
+            'Existing API key detected (OPENAI_API_KEY). Run /provider to configure your provider.',
           );
+        } else if (openProviderDialogRef?.current) {
+          openProviderDialogRef.current();
+          setAuthState(AuthState.AwaitingProviderConfiguration);
         } else {
-          onAuthError('No authentication method selected.');
+          onAuthError(
+            'No authentication method selected. Run /provider to configure your provider.',
+          );
         }
         return;
       }
@@ -165,6 +171,7 @@ export const useAuthCommand = (
     setAuthError,
     onAuthError,
     reloadApiKey,
+    openProviderDialogRef,
   ]);
 
   return {

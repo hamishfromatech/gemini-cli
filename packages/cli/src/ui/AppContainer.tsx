@@ -173,6 +173,7 @@ import {
   EXPAND_HINT_DURATION_MS,
 } from './constants.js';
 import { NewAgentsChoice } from './components/NewAgentsNotification.js';
+import { ProviderDialog } from './components/ProviderDialog.js';
 import { isSlashCommand } from './utils/commandUtils.js';
 import { parseSlashCommand } from '../utils/commands.js';
 import { useTerminalTheme } from './hooks/useTerminalTheme.js';
@@ -715,6 +716,11 @@ export const AppContainer = (props: AppContainerProps) => {
   );
   // Poll for terminal background color changes to auto-switch theme
   useTerminalTheme(handleThemeSelect, config, refreshStatic);
+  const [authContext, setAuthContext] = useState<{ requiresRestart?: boolean }>(
+    {},
+  );
+  const openProviderDialogRef = useRef<() => void>(() => {});
+
   const {
     authState,
     setAuthState,
@@ -729,10 +735,22 @@ export const AppContainer = (props: AppContainerProps) => {
     config,
     initializationResult.authError,
     initializationResult.accountSuspensionInfo,
+    openProviderDialogRef,
   );
-  const [authContext, setAuthContext] = useState<{ requiresRestart?: boolean }>(
-    {},
-  );
+
+  const openProviderDialog = useCallback(() => {
+    setCustomDialog(
+      <ProviderDialog
+        mode="provider"
+        onClose={() => setCustomDialog(null)}
+        onConfigured={() => {
+          setCustomDialog(null);
+          setAuthState(AuthState.Authenticated);
+        }}
+      />,
+    );
+  }, [setCustomDialog, setAuthState]);
+  openProviderDialogRef.current = openProviderDialog;
 
   useEffect(() => {
     if (authState === AuthState.Authenticated && authContext.requiresRestart) {
@@ -959,6 +977,7 @@ Logging in with Google... Restarting A-Coder CLI to continue.
   const slashCommandActions = useMemo(
     () => ({
       openAuthDialog: () => setAuthState(AuthState.Updating),
+      openProviderDialog: () => openProviderDialogRef.current(),
       openThemeDialog,
       openEditorDialog,
       openPrivacyNotice: () => setShowPrivacyNotice(true),
@@ -998,6 +1017,7 @@ Logging in with Google... Restarting A-Coder CLI to continue.
     }),
     [
       setAuthState,
+      openProviderDialogRef,
       openThemeDialog,
       closeThemeDialog,
       openEditorDialog,
@@ -2203,6 +2223,7 @@ Logging in with Google... Restarting A-Coder CLI to continue.
     !!emptyWalletRequest ||
     isSessionBrowserOpen ||
     authState === AuthState.AwaitingApiKeyInput ||
+    authState === AuthState.AwaitingProviderConfiguration ||
     isAwaitingLoginRestart ||
     !!newAgents;
 
