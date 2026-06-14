@@ -229,6 +229,46 @@ describe('createContentGeneratorConfig', () => {
     expect(config.apiKey).toBe('explicit-key');
   });
 
+  it('should default to ollama placeholder for default Ollama base URL without API key', async () => {
+    const config = await createContentGeneratorConfig(
+      undefined,
+      AuthType.USE_OPENAI_COMPATIBLE,
+      undefined,
+      'http://localhost:11434/v1',
+    );
+    expect(config.apiKey).toBe('ollama');
+  });
+
+  it('should default to ollama placeholder for 127.0.0.1:11434 without API key', async () => {
+    const config = await createContentGeneratorConfig(
+      undefined,
+      AuthType.USE_OPENAI_COMPATIBLE,
+      undefined,
+      'http://127.0.0.1:11434',
+    );
+    expect(config.apiKey).toBe('ollama');
+  });
+
+  it('should not default to ollama placeholder for custom base URL without API key', async () => {
+    const config = await createContentGeneratorConfig(
+      undefined,
+      AuthType.USE_OPENAI_COMPATIBLE,
+      undefined,
+      'https://api.example.com/v1',
+    );
+    expect(config.apiKey).toBe('');
+  });
+
+  it('should preserve explicitly empty apiKey for custom base URL', async () => {
+    const config = await createContentGeneratorConfig(
+      undefined,
+      AuthType.USE_OPENAI_COMPATIBLE,
+      '',
+      'https://api.example.com/v1',
+    );
+    expect(config.apiKey).toBe('');
+  });
+
   it('should use explicit model over environment variables', async () => {
     vi.stubEnv('A_CODER_MODEL', 'env-model');
     const config = await createContentGeneratorConfig(
@@ -274,12 +314,16 @@ describe('createContentGenerator', () => {
       mockGenerator as never,
     );
     const fakeResponsesFile = 'fake/responses.yaml';
-    const mockConfigWithFake = createMockConfig({ fakeResponses: fakeResponsesFile });
+    const mockConfigWithFake = createMockConfig({
+      fakeResponses: fakeResponsesFile,
+    });
     const generator = await createContentGenerator(
       { authType: AuthType.USE_OPENAI },
       mockConfigWithFake,
     );
-    expect(FakeContentGenerator.fromFile).toHaveBeenCalledWith(fakeResponsesFile);
+    expect(FakeContentGenerator.fromFile).toHaveBeenCalledWith(
+      fakeResponsesFile,
+    );
     expect(generator).toEqual(
       new LoggingContentGenerator(mockGenerator, mockConfigWithFake),
     );
@@ -322,7 +366,11 @@ describe('createContentGenerator', () => {
   it('should create an OpenAIContentGenerator-based chain by default', async () => {
     const config = createMockConfig();
     const generator = await createContentGenerator(
-      { authType: AuthType.USE_OPENAI, apiKey: 'test-key', model: 'test-model' },
+      {
+        authType: AuthType.USE_OPENAI,
+        apiKey: 'test-key',
+        model: 'test-model',
+      },
       config,
     );
 
@@ -330,7 +378,9 @@ describe('createContentGenerator', () => {
     expect((generator as LoggingContentGenerator).getWrapped()).toBeInstanceOf(
       ModelMappingContentGenerator,
     );
-    const modelMapping = (generator as LoggingContentGenerator).getWrapped() as ModelMappingContentGenerator;
+    const modelMapping = (
+      generator as LoggingContentGenerator
+    ).getWrapped() as ModelMappingContentGenerator;
     expect(modelMapping.getWrapped()).toBeInstanceOf(OpenAIContentGenerator);
 
     expect(mockOpenAI.constructorCalls).toHaveLength(1);
@@ -409,7 +459,9 @@ describe('createContentGenerator', () => {
         createMockConfig(),
       );
       expect(generator).toBeInstanceOf(LoggingContentGenerator);
-      const modelMapping = (generator as LoggingContentGenerator).getWrapped() as ModelMappingContentGenerator;
+      const modelMapping = (
+        generator as LoggingContentGenerator
+      ).getWrapped() as ModelMappingContentGenerator;
       expect(modelMapping.getWrapped()).toBeInstanceOf(OpenAIContentGenerator);
     }
   });

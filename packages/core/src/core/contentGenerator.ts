@@ -75,11 +75,39 @@ export type ContentGeneratorConfig = {
   vertexAiRouting?: VertexAiRoutingConfig;
 };
 
-export function getAuthTypeFromEnv(): AuthType | undefined {
-  if (
+function isDefaultOllamaBaseUrl(baseUrl: string | undefined): boolean {
+  if (!baseUrl) {
+    return true;
+  }
+  try {
+    const url = new URL(baseUrl.trim());
+    return (
+      (url.hostname === 'localhost' || url.hostname === '127.0.0.1') &&
+      url.port === '11434'
+    );
+  } catch {
+    return false;
+  }
+}
+
+function resolveOpenAIApiKey(
+  apiKey: string | undefined,
+  baseUrl: string | undefined,
+): string {
+  // Honor an explicitly empty string as "no key required" so providers that
+  // don't need authentication don't receive a bogus placeholder token.
+  if (apiKey !== undefined) {
+    return apiKey;
+  }
+  return (
     process.env['A_CODER_API_KEY'] ||
-    process.env['OPENAI_API_KEY']
-  ) {
+    process.env['OPENAI_API_KEY'] ||
+    (isDefaultOllamaBaseUrl(baseUrl) ? 'ollama' : '')
+  );
+}
+
+export function getAuthTypeFromEnv(): AuthType | undefined {
+  if (process.env['A_CODER_API_KEY'] || process.env['OPENAI_API_KEY']) {
     return AuthType.USE_OPENAI;
   }
   if (process.env['A_CODER_BASE_URL'] || process.env['OPENAI_BASE_URL']) {
@@ -94,11 +122,11 @@ export async function createContentGeneratorConfig(
   apiKey?: string,
   baseUrl?: string,
 ): Promise<ContentGeneratorConfig> {
-  const effectiveApiKey =
-    apiKey ||
-    process.env['A_CODER_API_KEY'] ||
-    process.env['OPENAI_API_KEY'] ||
-    'ollama';
+  const effectiveBaseUrl =
+    baseUrl ||
+    process.env['A_CODER_BASE_URL'] ||
+    process.env['OPENAI_BASE_URL'];
+  const effectiveApiKey = resolveOpenAIApiKey(apiKey, effectiveBaseUrl);
   const effectiveModel =
     model ||
     process.env['A_CODER_MODEL'] ||
@@ -109,7 +137,7 @@ export async function createContentGeneratorConfig(
     model: effectiveModel,
     apiKey: effectiveApiKey,
     authType,
-    baseUrl: baseUrl || process.env['A_CODER_BASE_URL'] || process.env['OPENAI_BASE_URL'],
+    baseUrl: effectiveBaseUrl,
   };
 }
 
@@ -132,13 +160,19 @@ export async function createContentGenerator(
     return new LoggingContentGenerator(fakeGenerator, gcConfig);
   }
 
+  const effectiveBaseUrl =
+    config.baseUrl ||
+    process.env['A_CODER_BASE_URL'] ||
+    process.env['OPENAI_BASE_URL'];
+  const effectiveApiKey = resolveOpenAIApiKey(config.apiKey, effectiveBaseUrl);
+
   const generator = new OpenAIContentGenerator(
-    config.apiKey || 'ollama',
+    effectiveApiKey,
     config.model ||
       process.env['A_CODER_MODEL'] ||
       process.env['OPENAI_MODEL'] ||
       'qwen3:14b',
-    config.baseUrl,
+    effectiveBaseUrl,
   );
 
   let wrapped: ContentGenerator = new ModelMappingContentGenerator(
