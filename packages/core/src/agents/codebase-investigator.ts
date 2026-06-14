@@ -13,8 +13,8 @@ import {
 } from '../tools/tool-names.js';
 import {
   DEFAULT_THINKING_MODE,
-  DEFAULT_GEMINI_MODEL,
-  PREVIEW_GEMINI_FLASH_MODEL,
+  DEFAULT_A_CODER_MODEL,
+  PREVIEW_A_CODER_FLASH_MODEL,
   supportsModernFeatures,
 } from '../config/models.js';
 import { z } from 'zod';
@@ -54,8 +54,8 @@ export const CodebaseInvestigatorAgent = (
   // Use Preview Flash model if the main model supports modern features.
   // If the main model is not a modern model, use the default pro model.
   const model = supportsModernFeatures(config.getModel())
-    ? PREVIEW_GEMINI_FLASH_MODEL
-    : DEFAULT_GEMINI_MODEL;
+    ? PREVIEW_A_CODER_FLASH_MODEL
+    : DEFAULT_A_CODER_MODEL;
 
   const listCommand =
     process.platform === 'win32'

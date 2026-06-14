@@ -42,7 +42,7 @@ export const compressCommand: SlashCommand = {
       try {
         const promptId = `compress-${Date.now()}`;
         const compressed =
-          await context.services.agentContext?.geminiClient?.tryCompressChat(
+          await context.services.agentContext?.aCoderClient?.tryCompressChat(
             promptId,
             true,
           );

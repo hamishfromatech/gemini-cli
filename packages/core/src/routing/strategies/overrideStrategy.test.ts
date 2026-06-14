@@ -9,7 +9,7 @@ import { OverrideStrategy } from './overrideStrategy.js';
 import type { RoutingContext } from '../routingStrategy.js';
 import type { BaseLlmClient } from '../../core/baseLlmClient.js';
 import type { Config } from '../../config/config.js';
-import { DEFAULT_GEMINI_MODEL_AUTO } from '../../config/models.js';
+import { DEFAULT_A_CODER_MODEL_AUTO } from '../../config/models.js';
 import type { LocalLiteRtLmClient } from '../../core/localLiteRtLmClient.js';
 
 describe('OverrideStrategy', () => {
@@ -20,7 +20,7 @@ describe('OverrideStrategy', () => {
 
   it('should return null when the override model is auto', async () => {
     const mockConfig = {
-      getModel: () => DEFAULT_GEMINI_MODEL_AUTO,
+      getModel: () => DEFAULT_A_CODER_MODEL_AUTO,
     } as Config;
 
     const decision = await strategy.route(

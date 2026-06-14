@@ -7,7 +7,7 @@
 import { writeFileSync, mkdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
-import { GEMINI_DIR, TestRig, checkModelOutputContent } from './test-helper.js';
+import { A_CODER_DIR, TestRig, checkModelOutputContent } from './test-helper.js';
 
 describe('Plan Mode', () => {
   let rig: TestRig;
@@ -63,7 +63,7 @@ describe('Plan Mode', () => {
   });
 
   it('should allow write_file to the plans directory in plan mode', async () => {
-    const plansDir = '.gemini/tmp/foo/123/plans';
+    const plansDir = '.a-coder/tmp/foo/123/plans';
     const testName =
       'should allow write_file to the plans directory in plan mode';
 
@@ -116,7 +116,7 @@ describe('Plan Mode', () => {
   });
 
   it('should deny write_file to non-plans directory in plan mode', async () => {
-    const plansDir = '.gemini/tmp/foo/123/plans';
+    const plansDir = '.a-coder/tmp/foo/123/plans';
     const testName =
       'should deny write_file to non-plans directory in plan mode';
 
@@ -179,7 +179,7 @@ describe('Plan Mode', () => {
   });
 
   it('should allow write_file to the plans directory in plan mode even without a session ID', async () => {
-    const plansDir = '.gemini/tmp/foo/plans';
+    const plansDir = '.a-coder/tmp/foo/plans';
     const testName =
       'should allow write_file to the plans directory in plan mode even without a session ID';
 
@@ -256,7 +256,7 @@ describe('Plan Mode', () => {
     });
 
     writeFileSync(
-      join(rig.homeDir!, GEMINI_DIR, 'state.json'),
+      join(rig.homeDir!, A_CODER_DIR, 'state.json'),
       JSON.stringify({ terminalSetupPromptShown: true }, null, 2),
     );
 

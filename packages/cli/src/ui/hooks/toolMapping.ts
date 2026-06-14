@@ -11,7 +11,7 @@ import {
   debugLogger,
   CoreToolCallStatus,
   type SubagentActivityItem,
-} from '@google/gemini-cli-core';
+} from '@the-a-tech-corporation/core';
 import {
   type HistoryItemToolGroup,
   type IndividualToolCallDisplay,

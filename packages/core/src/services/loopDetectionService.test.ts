@@ -7,13 +7,13 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { Content } from '@google/genai';
 import type { Config } from '../config/config.js';
-import type { GeminiClient } from '../core/client.js';
+import type { ACoderClient } from '../core/a-coder-client.js';
 import type { BaseLlmClient } from '../core/baseLlmClient.js';
 import {
-  GeminiEventType,
-  type ServerGeminiContentEvent,
-  type ServerGeminiStreamEvent,
-  type ServerGeminiToolCallRequestEvent,
+  ACoderEventType,
+  type ServerACoderContentEvent,
+  type ServerACoderStreamEvent,
+  type ServerACoderToolCallRequestEvent,
 } from '../core/turn.js';
 import * as loggers from '../telemetry/loggers.js';
 import { LoopType } from '../telemetry/types.js';
@@ -53,8 +53,8 @@ describe('LoopDetectionService', () => {
   const createToolCallRequestEvent = (
     name: string,
     args: Record<string, unknown>,
-  ): ServerGeminiToolCallRequestEvent => ({
-    type: GeminiEventType.ToolCallRequest,
+  ): ServerACoderToolCallRequestEvent => ({
+    type: ACoderEventType.ToolCallRequest,
     value: {
       name,
       args,
@@ -64,8 +64,8 @@ describe('LoopDetectionService', () => {
     },
   });
 
-  const createContentEvent = (content: string): ServerGeminiContentEvent => ({
-    type: GeminiEventType.Content,
+  const createContentEvent = (content: string): ServerACoderContentEvent => ({
+    type: ACoderEventType.Content,
     value: content,
   });
 
@@ -129,7 +129,7 @@ describe('LoopDetectionService', () => {
       });
       const otherEvent = {
         type: 'thought',
-      } as unknown as ServerGeminiStreamEvent;
+      } as unknown as ServerACoderStreamEvent;
 
       // Send events just below the threshold
       for (let i = 0; i < TOOL_CALL_LOOP_THRESHOLD - 1; i++) {
@@ -782,7 +782,7 @@ describe('LoopDetectionService', () => {
     it('should return 0 count for unhandled event types', () => {
       const otherEvent = {
         type: 'unhandled_event',
-      } as unknown as ServerGeminiStreamEvent;
+      } as unknown as ServerACoderStreamEvent;
       expect(service.addAndCheck(otherEvent).count).toBe(0);
       expect(service.addAndCheck(otherEvent).count).toBe(0);
     });
@@ -792,14 +792,14 @@ describe('LoopDetectionService', () => {
 describe('LoopDetectionService LLM Checks', () => {
   let service: LoopDetectionService;
   let mockConfig: Config;
-  let mockGeminiClient: GeminiClient;
+  let mockACoderClient: ACoderClient;
   let mockBaseLlmClient: BaseLlmClient;
   let abortController: AbortController;
 
   beforeEach(() => {
-    mockGeminiClient = {
+    mockACoderClient = {
       getHistory: vi.fn().mockReturnValue([]),
-    } as unknown as GeminiClient;
+    } as unknown as ACoderClient;
 
     mockBaseLlmClient = {
       generateJson: vi.fn(),
@@ -812,9 +812,9 @@ describe('LoopDetectionService LLM Checks', () => {
       get config() {
         return this;
       },
-      getGeminiClient: () => mockGeminiClient,
-      get geminiClient() {
-        return mockGeminiClient;
+      getACoderClient: () => mockACoderClient,
+      get aCoderClient() {
+        return mockACoderClient;
       },
       getBaseLlmClient: () => mockBaseLlmClient,
       getDisableLoopDetection: () => false,
@@ -965,7 +965,7 @@ describe('LoopDetectionService LLM Checks', () => {
         parts: [{ text: 'Some follow up text' }],
       },
     ];
-    vi.mocked(mockGeminiClient.getHistory).mockReturnValue(functionCallHistory);
+    vi.mocked(mockACoderClient.getHistory).mockReturnValue(functionCallHistory);
 
     mockBaseLlmClient.generateJson = vi
       .fn()
@@ -1124,7 +1124,7 @@ describe('LoopDetectionService LLM Checks', () => {
   it('should not include user prompt in contents when not provided', async () => {
     service.reset('test-prompt-id');
 
-    vi.mocked(mockGeminiClient.getHistory).mockReturnValue([
+    vi.mocked(mockACoderClient.getHistory).mockReturnValue([
       {
         role: 'model',
         parts: [{ text: 'Some response' }],

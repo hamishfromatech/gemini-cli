@@ -5,6 +5,7 @@
  */
 
 import { StreamingState } from '../ui/types.js';
+import { ACODER_STATUS_ICON } from '../ui/constants.js';
 
 export interface TerminalTitleOptions {
   streamingState: StreamingState;
@@ -44,7 +45,7 @@ export function computeTerminalTitle({
   let displayContext = process.env['CLI_TITLE'] || folderName;
 
   if (!useDynamicTitle) {
-    const base = 'Gemini CLI ';
+    const base = 'A-Coder CLI ';
     // Max context length is 80 - base.length - 2 (for brackets)
     const maxContextLen = MAX_LEN - base.length - 2;
     displayContext = truncate(displayContext, maxContextLen);
@@ -90,8 +91,9 @@ export function computeTerminalTitle({
       ? cleanSubject.length + suffixLen + 3 <= MAX_LEN
       : true;
 
+    const iconPrefix = `${ACODER_STATUS_ICON} `;
     let activeSuffix = '';
-    let maxStatusLen = MAX_LEN - 3; // Subtract icon prefix "✦  " (3 chars)
+    let maxStatusLen = MAX_LEN - iconPrefix.length; // Subtract icon prefix width
 
     if (!cleanSubject || canFitThoughtWithSuffix) {
       activeSuffix = suffix;
@@ -102,7 +104,7 @@ export function computeTerminalTitle({
       ? truncate(cleanSubject, maxStatusLen)
       : 'Working…';
 
-    title = `✦  ${displayStatus}${activeSuffix}`;
+    title = `${iconPrefix}${displayStatus}${activeSuffix}`;
   }
 
   // Remove control characters that could cause issues in terminal titles

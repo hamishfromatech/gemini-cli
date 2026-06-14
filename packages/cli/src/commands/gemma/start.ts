@@ -9,7 +9,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { spawn } from 'node:child_process';
 import chalk from 'chalk';
-import { debugLogger } from '@google/gemini-cli-core';
+import { debugLogger } from '@the-a-tech-corporation/core';
 import { exitCli } from '../utils.js';
 import {
   DEFAULT_PORT,
@@ -89,7 +89,7 @@ export const startCommand: CommandModule = {
     if (!binaryPath || !isBinaryInstalled(binaryPath)) {
       debugLogger.error(
         chalk.red(
-          'LiteRT-LM binary not found. Run "gemini gemma setup" first.',
+          'LiteRT-LM binary not found. Run "a-coder-cli gemma setup" first.',
         ),
       );
       await exitCli(1);

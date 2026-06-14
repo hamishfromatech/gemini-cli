@@ -2,7 +2,7 @@
 
 /**
  * @license
- * Copyright 2025 Google LLC
+ * Copyright 2026 The A-Tech Corporation
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -70,7 +70,7 @@ service:
 
 async function main() {
   // 1. Ensure binaries are available, downloading if necessary.
-  // Binaries are stored in the project's .gemini/otel/bin directory
+  // Binaries are stored in the project's .a-coder/otel/bin directory
   // to avoid modifying the user's system.
   if (!fileExists(BIN_DIR)) fs.mkdirSync(BIN_DIR, { recursive: true });
 

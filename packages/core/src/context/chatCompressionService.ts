@@ -6,7 +6,7 @@
 
 import type { Content } from '@google/genai';
 import type { Config } from '../config/config.js';
-import type { GeminiChat } from '../core/geminiChat.js';
+import type { ACoderChat } from '../core/geminiChat.js';
 import { type ChatCompressionInfo, CompressionStatus } from '../core/turn.js';
 import { tokenLimit } from '../core/tokenLimits.js';
 import { getCompressionPrompt } from '../core/prompts.js';
@@ -24,13 +24,13 @@ import {
   estimateTokenCountSync,
 } from '../utils/tokenCalculation.js';
 import {
-  DEFAULT_GEMINI_FLASH_LITE_MODEL,
-  DEFAULT_GEMINI_FLASH_MODEL,
-  DEFAULT_GEMINI_MODEL,
-  PREVIEW_GEMINI_MODEL,
-  PREVIEW_GEMINI_FLASH_MODEL,
-  PREVIEW_GEMINI_3_1_MODEL,
-  PREVIEW_GEMINI_FLASH_LITE_MODEL,
+  DEFAULT_A_CODER_FLASH_LITE_MODEL,
+  DEFAULT_A_CODER_FLASH_MODEL,
+  DEFAULT_A_CODER_MODEL,
+  PREVIEW_A_CODER_MODEL,
+  PREVIEW_A_CODER_FLASH_MODEL,
+  PREVIEW_A_CODER_3_1_MODEL,
+  PREVIEW_A_CODER_FLASH_LITE_MODEL,
 } from '../config/models.js';
 import { PreCompressTrigger } from '../hooks/types.js';
 
@@ -101,20 +101,20 @@ export function findCompressSplitPoint(
 
 export function modelStringToModelConfigAlias(model: string): string {
   switch (model) {
-    case PREVIEW_GEMINI_MODEL:
-    case PREVIEW_GEMINI_3_1_MODEL:
+    case PREVIEW_A_CODER_MODEL:
+    case PREVIEW_A_CODER_3_1_MODEL:
       return 'chat-compression-3-pro';
-    case PREVIEW_GEMINI_FLASH_MODEL:
+    case PREVIEW_A_CODER_FLASH_MODEL:
       return 'chat-compression-3-flash';
-    case PREVIEW_GEMINI_FLASH_LITE_MODEL:
+    case PREVIEW_A_CODER_FLASH_LITE_MODEL:
     // fallthrough
-    case DEFAULT_GEMINI_FLASH_LITE_MODEL:
+    case DEFAULT_A_CODER_FLASH_LITE_MODEL:
       return 'chat-compression-3.1-flash-lite';
     case 'gemini-2.5-flash-lite':
       return 'chat-compression-2.5-flash-lite';
-    case DEFAULT_GEMINI_MODEL:
+    case DEFAULT_A_CODER_MODEL:
       return 'chat-compression-2.5-pro';
-    case DEFAULT_GEMINI_FLASH_MODEL:
+    case DEFAULT_A_CODER_FLASH_MODEL:
       return 'chat-compression-2.5-flash';
     default:
       return 'chat-compression-default';
@@ -238,7 +238,7 @@ async function truncateHistoryToBudget(
 
 export class ChatCompressionService {
   async compress(
-    chat: GeminiChat,
+    chat: ACoderChat,
     promptId: string,
     force: boolean,
     model: string,

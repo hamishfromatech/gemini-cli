@@ -1,6 +1,6 @@
-# Gemini CLI configuration
+# A-Coder CLI configuration
 
-Gemini CLI offers several ways to configure its behavior, including environment
+A-Coder CLI offers several ways to configure its behavior, including environment
 variables, command-line arguments, and settings files. This document outlines
 the different configuration methods and available settings.
 
@@ -22,46 +22,48 @@ overridden by higher numbers):
 
 ## Settings files
 
-Gemini CLI uses JSON settings files for persistent configuration. There are four
-locations for these files:
+A-Coder CLI uses JSON settings files for persistent configuration. There are
+four locations for these files:
 
 <!-- prettier-ignore -->
 > [!TIP]
 > JSON-aware editors can use autocomplete and validation by pointing to
 > the generated schema at `schemas/settings.schema.json` in this repository.
 > When working outside the repo, reference the hosted schema at
-> `https://raw.githubusercontent.com/google-gemini/gemini-cli/main/schemas/settings.schema.json`.
+> `https://raw.githubusercontent.com/google-a-coder-cli/a-coder-cli-cli/main/schemas/settings.schema.json`.
 
 - **System defaults file:**
-  - **Location:** `/etc/gemini-cli/system-defaults.json` (Linux),
-    `C:\ProgramData\gemini-cli\system-defaults.json` (Windows) or
-    `/Library/Application Support/GeminiCli/system-defaults.json` (macOS). The
-    path can be overridden using the `GEMINI_CLI_SYSTEM_DEFAULTS_PATH`
+  - **Location:** `/etc/a-coder-cli-cli/system-defaults.json` (Linux),
+    `C:\ProgramData\a-coder-cli-cli\system-defaults.json` (Windows) or
+    `/Library/Application Support/A-CoderCli/system-defaults.json` (macOS). The
+    path can be overridden using the `A_CODER_CLI_SYSTEM_DEFAULTS_PATH`
     environment variable.
   - **Scope:** Provides a base layer of system-wide default settings. These
     settings have the lowest precedence and are intended to be overridden by
     user, project, or system override settings.
 - **User settings file:**
-  - **Location:** `~/.gemini/settings.json` (where `~` is your home directory).
-  - **Scope:** Applies to all Gemini CLI sessions for the current user. User
+  - **Location:** `~/.a-coder-cli/settings.json` (where `~` is your home
+    directory).
+  - **Scope:** Applies to all A-Coder CLI sessions for the current user. User
     settings override system defaults.
 - **Project settings file:**
-  - **Location:** `.gemini/settings.json` within your project's root directory.
-  - **Scope:** Applies only when running Gemini CLI from that specific project.
+  - **Location:** `.a-coder-cli/settings.json` within your project's root
+    directory.
+  - **Scope:** Applies only when running A-Coder CLI from that specific project.
     Project settings override user settings and system defaults.
 - **System settings file:**
-  - **Location:** `/etc/gemini-cli/settings.json` (Linux),
-    `C:\ProgramData\gemini-cli\settings.json` (Windows) or
-    `/Library/Application Support/GeminiCli/settings.json` (macOS). The path can
-    be overridden using the `GEMINI_CLI_SYSTEM_SETTINGS_PATH` environment
+  - **Location:** `/etc/a-coder-cli-cli/settings.json` (Linux),
+    `C:\ProgramData\a-coder-cli-cli\settings.json` (Windows) or
+    `/Library/Application Support/A-CoderCli/settings.json` (macOS). The path
+    can be overridden using the `A_CODER_CLI_SYSTEM_SETTINGS_PATH` environment
     variable.
-  - **Scope:** Applies to all Gemini CLI sessions on the system, for all users.
+  - **Scope:** Applies to all A-Coder CLI sessions on the system, for all users.
     System settings act as overrides, taking precedence over all other settings
     files. May be useful for system administrators at enterprises to have
-    controls over users' Gemini CLI setups.
+    controls over users' A-Coder CLI setups.
 
 **Note on environment variables in settings:** String values within your
-`settings.json` and `gemini-extension.json` files can reference environment
+`settings.json` and `a-coder-cli-extension.json` files can reference environment
 variables using `$VAR_NAME`, `${VAR_NAME}`, or `${VAR_NAME:-DEFAULT_VALUE}`
 syntax. These variables will be automatically resolved when the settings are
 loaded. For example, if you have an environment variable `MY_API_TOKEN`, you
@@ -70,17 +72,18 @@ want to provide a fallback value, use `${MY_API_TOKEN:-default-token}`.
 Additionally, each extension can have its own `.env` file in its directory,
 which will be loaded automatically.
 
-**Note for Enterprise Users:** For guidance on deploying and managing Gemini CLI
-in a corporate environment, see the
+**Note for Enterprise Users:** For guidance on deploying and managing A-Coder
+CLI in a corporate environment, see the
 [Enterprise Configuration](../cli/enterprise.md) documentation.
 
-### The `.gemini` directory in your project
+### The `.a-coder-cli` directory in your project
 
-In addition to a project settings file, a project's `.gemini` directory can
-contain other project-specific files related to Gemini CLI's operation, such as:
+In addition to a project settings file, a project's `.a-coder-cli` directory can
+contain other project-specific files related to A-Coder CLI's operation, such
+as:
 
 - [Custom sandbox profiles](#sandboxing) (for example,
-  `.gemini/sandbox-macos-custom.sb`, `.gemini/sandbox.Dockerfile`).
+  `.a-coder-cli/sandbox-macos-custom.sb`, `.a-coder-cli/sandbox.Dockerfile`).
 
 ### Available settings in `settings.json`
 
@@ -262,8 +265,8 @@ their corresponding top-level category object in your `settings.json` file.
   - **Values:** `"off"`, `"full"`
 
 - **`ui.showStatusInTitle`** (boolean):
-  - **Description:** Show Gemini CLI model thoughts in the terminal window title
-    during the working phase
+  - **Description:** Show A-Coder CLI model thoughts in the terminal window
+    title during the working phase
   - **Default:** `false`
 
 - **`ui.dynamicWindowTitle`** (boolean):
@@ -272,7 +275,7 @@ their corresponding top-level category object in your `settings.json` file.
   - **Default:** `true`
 
 - **`ui.showHomeDirectoryWarning`** (boolean):
-  - **Description:** Show a warning when running Gemini CLI in the home
+  - **Description:** Show a warning when running A-Coder CLI in the home
     directory.
   - **Default:** `true`
   - **Requires restart:** Yes
@@ -305,8 +308,8 @@ their corresponding top-level category object in your `settings.json` file.
   - **Default:** `false`
 
 - **`ui.hideContextSummary`** (boolean):
-  - **Description:** Hide the context summary (GEMINI.md, MCP servers) above the
-    input.
+  - **Description:** Hide the context summary (A_CODER.md, MCP servers) above
+    the input.
   - **Default:** `false`
 
 - **`ui.footer.items`** (array):
@@ -452,23 +455,31 @@ their corresponding top-level category object in your `settings.json` file.
   - **Values:** `"ask"`, `"always"`, `"never"`
 
 - **`billing.vertexAi.requestType`** (enum):
-  - **Description:** Sets the X-Vertex-AI-LLM-Request-Type header for Vertex AI
+  - **Description:** Sets the X-Provider-Request-Type header for custom provider
     requests.
   - **Default:** `undefined`
   - **Values:** `"dedicated"`, `"shared"`
   - **Requires restart:** Yes
 
 - **`billing.vertexAi.sharedRequestType`** (enum):
-  - **Description:** Sets the X-Vertex-AI-LLM-Shared-Request-Type header for
-    Vertex AI requests.
+  - **Description:** Sets the X-Provider-Shared-Request-Type header for custom
+    provider requests.
   - **Default:** `undefined`
   - **Values:** `"priority"`, `"flex"`
   - **Requires restart:** Yes
 
+#### `provider`
+
+- **`provider.baseUrl`** (string):
+  - **Description:** The base URL of an OpenAI-compatible API endpoint (e.g.
+    http://localhost:11434 or https://api.openai.com). The path /v1 will be
+    appended automatically.
+  - **Default:** `undefined`
+
 #### `model`
 
 - **`model.name`** (string):
-  - **Description:** The Gemini model to use for conversations.
+  - **Description:** The model to use for conversations.
   - **Default:** `undefined`
 
 - **`model.maxSessionTurns`** (number):
@@ -1043,14 +1054,14 @@ their corresponding top-level category object in your `settings.json` file.
           {
             "condition": {
               "hasAccessToPreview": false,
-              "useGemini3_5Flash": true
+              "useACoder3_5Flash": true
             },
             "target": "gemini-3.5-flash"
           },
           {
             "condition": {
               "hasAccessToPreview": false,
-              "useGemini3_5Flash": false
+              "useACoder3_5Flash": false
             },
             "target": "gemini-2.5-flash"
           }
@@ -1061,14 +1072,14 @@ their corresponding top-level category object in your `settings.json` file.
         "contexts": [
           {
             "condition": {
-              "useGemini3_5Flash": false,
+              "useACoder3_5Flash": false,
               "hasAccessToPreview": false
             },
             "target": "gemini-2.5-flash"
           },
           {
             "condition": {
-              "useGemini3_5Flash": false
+              "useACoder3_5Flash": false
             },
             "target": "gemini-3-flash-preview"
           }
@@ -1079,7 +1090,7 @@ their corresponding top-level category object in your `settings.json` file.
         "contexts": [
           {
             "condition": {
-              "useGemini3_5Flash": true
+              "useACoder3_5Flash": true
             },
             "target": "gemini-3.5-flash"
           }
@@ -1165,7 +1176,7 @@ their corresponding top-level category object in your `settings.json` file.
         "contexts": [
           {
             "condition": {
-              "useGemini3_5Flash": true
+              "useACoder3_5Flash": true
             },
             "target": "gemini-3.5-flash"
           },
@@ -1224,7 +1235,7 @@ their corresponding top-level category object in your `settings.json` file.
         "contexts": [
           {
             "condition": {
-              "useGemini3_5Flash": true
+              "useACoder3_5Flash": true
             },
             "target": "gemini-3.5-flash"
           },
@@ -1558,7 +1569,7 @@ their corresponding top-level category object in your `settings.json` file.
 
 - **`context.memoryBoundaryMarkers`** (array):
   - **Description:** File or directory names that mark the boundary for
-    GEMINI.md discovery. The upward traversal stops at the first directory
+    A_CODER.md discovery. The upward traversal stops at the first directory
     containing any of these markers. An empty array disables parent traversal.
   - **Default:**
 
@@ -1574,7 +1585,7 @@ their corresponding top-level category object in your `settings.json` file.
   - **Default:** `[]`
 
 - **`context.loadMemoryFromIncludeDirectories`** (boolean):
-  - **Description:** Controls how /memory reload loads GEMINI.md files. When
+  - **Description:** Controls how /memory reload loads A_CODER.md files. When
     true, include directories are scanned; when false, only the current
     directory is used.
   - **Default:** `false`
@@ -1584,8 +1595,8 @@ their corresponding top-level category object in your `settings.json` file.
   - **Default:** `true`
   - **Requires restart:** Yes
 
-- **`context.fileFiltering.respectGeminiIgnore`** (boolean):
-  - **Description:** Respect .geminiignore files when searching.
+- **`context.fileFiltering.respectACoderIgnore`** (boolean):
+  - **Description:** Respect .a-coder-ignore files when searching.
   - **Default:** `true`
   - **Requires restart:** Yes
 
@@ -1608,7 +1619,7 @@ their corresponding top-level category object in your `settings.json` file.
 
 - **`context.fileFiltering.customIgnoreFilePaths`** (array):
   - **Description:** Additional ignore file paths to respect. These files take
-    precedence over .geminiignore and .gitignore. Files earlier in the array
+    precedence over .a-coder-ignore and .gitignore. Files earlier in the array
     take precedence over files later in the array, e.g. the first file takes
     precedence over the second one.
   - **Default:** `[]`
@@ -1869,7 +1880,7 @@ their corresponding top-level category object in your `settings.json` file.
 #### `experimental`
 
 - **`experimental.gemma`** (boolean):
-  - **Description:** Enable access to Gemma 4 models via Gemini API.
+  - **Description:** Enable access to Gemma 4 models via the configured API.
   - **Default:** `true`
   - **Requires restart:** Yes
 
@@ -1884,11 +1895,9 @@ their corresponding top-level category object in your `settings.json` file.
   - **Values:** `"push-to-talk"`, `"toggle"`
 
 - **`experimental.voice.backend`** (enum):
-  - **Description:** The backend to use for voice transcription. Note: When
-    using the Gemini Live backend, voice recordings are sent to Google Cloud for
-    transcription.
-  - **Default:** `"gemini-live"`
-  - **Values:** `"gemini-live"`, `"whisper"`
+  - **Description:** The backend to use for voice transcription.
+  - **Default:** `"whisper"`
+  - **Values:** `"openai-whisper"`, `"whisper"`
 
 - **`experimental.voice.whisperModel`** (enum):
   - **Description:** The Whisper model to use for local transcription.
@@ -1946,7 +1955,7 @@ their corresponding top-level category object in your `settings.json` file.
 - **`experimental.extensionRegistryURI`** (string):
   - **Description:** The URI (web URL or local file path) of the extension
     registry.
-  - **Default:** `"https://geminicli.com/extensions.json"`
+  - **Default:** `"https://a-coder-cli.com/extensions.json"`
   - **Requires restart:** Yes
 
 - **`experimental.extensionReloading`** (boolean):
@@ -1989,19 +1998,19 @@ their corresponding top-level category object in your `settings.json` file.
 
 - **`experimental.gemmaModelRouter.enabled`** (boolean):
   - **Description:** Enable the Gemma Model Router (experimental). Requires a
-    local endpoint serving Gemma via the Gemini API using LiteRT-LM shim.
+    local endpoint serving Gemma via a compatible API.
   - **Default:** `false`
   - **Requires restart:** Yes
 
 - **`experimental.gemmaModelRouter.autoStartServer`** (boolean):
-  - **Description:** Automatically start the LiteRT-LM server when Gemini CLI
+  - **Description:** Automatically start the LiteRT-LM server when A-Coder CLI
     starts and the Gemma router is enabled.
   - **Default:** `false`
   - **Requires restart:** Yes
 
 - **`experimental.gemmaModelRouter.binaryPath`** (string):
   - **Description:** Custom path to the LiteRT-LM binary. Leave empty to use the
-    default location (~/.gemini/bin/litert/).
+    default location (~/.a-coder/bin/litert/).
   - **Default:** `""`
   - **Requires restart:** Yes
 
@@ -2230,7 +2239,7 @@ their corresponding top-level category object in your `settings.json` file.
 #### `mcpServers`
 
 Configures connections to one or more Model-Context Protocol (MCP) servers for
-discovering and using custom tools. Gemini CLI attempts to connect to each
+discovering and using custom tools. A-Coder CLI attempts to connect to each
 configured MCP server to discover available tools. Every discovered tool is
 prepended with the `mcp_` prefix and its server alias to form a fully qualified
 name (FQN) (for example, `mcp_serverAlias_actualToolName`) to avoid conflicts.
@@ -2281,7 +2290,7 @@ must be provided. If multiple are specified, the order of precedence is
 
 #### `telemetry`
 
-Configures logging and metrics collection for Gemini CLI. For more information,
+Configures logging and metrics collection for A-Coder CLI. For more information,
 see [Telemetry](../cli/telemetry.md).
 
 - **Properties:**
@@ -2349,7 +2358,7 @@ of v0.3.0:
     "usageStatisticsEnabled": true
   },
   "model": {
-    "name": "gemini-1.5-pro-latest",
+    "name": "a-coder-cli-1.5-pro-latest",
     "maxSessionTurns": 10,
     "summarizeToolOutput": {
       "run_shell_command": {
@@ -2358,7 +2367,7 @@ of v0.3.0:
     }
   },
   "context": {
-    "fileName": ["CONTEXT.md", "GEMINI.md"],
+    "fileName": ["CONTEXT.md", "A_CODER.md"],
     "includeDirectories": ["path/to/dir1", "~/path/to/dir2", "../path/to/dir3"],
     "loadFromIncludeDirectories": true,
     "fileFiltering": {
@@ -2377,7 +2386,7 @@ The CLI keeps a history of shell commands you run. To avoid conflicts between
 different projects, this history is stored in a project-specific directory
 within your user's home folder.
 
-- **Location:** `~/.gemini/tmp/<project_hash>/shell_history`
+- **Location:** `~/.a-coder-cli/tmp/<project_hash>/shell_history`
   - `<project_hash>` is a unique identifier generated from your project's root
     path.
   - The history is stored in a file named `shell_history`.
@@ -2401,144 +2410,98 @@ loading order is:
 
 **Environment variable exclusion:** Some environment variables (like `DEBUG` and
 `DEBUG_MODE`) are automatically excluded from being loaded from project `.env`
-files to prevent interference with gemini-cli behavior. Variables from
-`.gemini/.env` files are never excluded. You can customize this behavior using
-the `advanced.excludedEnvVars` setting in your `settings.json` file.
+files to prevent interference with a-coder-cli-cli behavior. Variables from
+`.a-coder-cli/.env` files are never excluded. You can customize this behavior
+using the `advanced.excludedEnvVars` setting in your `settings.json` file.
 
-- **`GEMINI_API_KEY`**:
-  - Your API key for the Gemini API.
+- **`A_CODER_API_KEY`**:
+  - Your API key for the A-Coder API.
   - One of several available
     [authentication methods](../get-started/authentication.mdx).
   - Set this in your shell profile (for example, `~/.bashrc`, `~/.zshrc`) or an
     `.env` file.
-- **`GEMINI_MODEL`**:
-  - Specifies the default Gemini model to use.
+- **`A_CODER_MODEL`**:
+  - Specifies the default A-Coder model to use.
   - Overrides the hardcoded default
-  - Example: `export GEMINI_MODEL="gemini-3-flash-preview"` (Windows PowerShell:
-    `$env:GEMINI_MODEL="gemini-3-flash-preview"`)
-- **`GEMINI_CLI_TRUST_WORKSPACE`**:
+  - Example: `export A_CODER_MODEL="a-coder-cli-3-flash-preview"` (Windows
+    PowerShell: `$env:A_CODER_MODEL="a-coder-cli-3-flash-preview"`)
+- **`A_CODER_CLI_TRUST_WORKSPACE`**:
   - If set to `"true"`, trusts the current workspace for the duration of the
     session, bypassing the folder trust check.
   - Useful for headless environments (for example, CI/CD pipelines).
-- **`GEMINI_CLI_TRUSTED_FOLDERS_PATH`**:
+- **`A_CODER_CLI_TRUSTED_FOLDERS_PATH`**:
   - Overrides the default location for the `trustedFolders.json` file.
   - Useful if you want to store this configuration in a custom location instead
-    of the default `~/.gemini/`.
-- **`GEMINI_CLI_IDE_PID`**:
+    of the default `~/.a-coder-cli/`.
+- **`A_CODER_CLI_IDE_PID`**:
   - Manually specifies the PID of the IDE process to use for integration. This
-    is useful when running Gemini CLI in a standalone terminal while still
+    is useful when running A-Coder CLI in a standalone terminal while still
     wanting to associate it with a specific IDE instance.
   - Overrides the automatic IDE detection logic.
-- **`GEMINI_CLI_HOME`**:
-  - Specifies the root directory for Gemini CLI's user-level configuration and
+- **`A_CODER_CLI_HOME`**:
+  - Specifies the root directory for A-Coder CLI's user-level configuration and
     storage.
   - By default, this is the user's system home directory. The CLI will create a
-    `.gemini` folder inside this directory.
+    `.a-coder-cli` folder inside this directory.
   - Useful for shared compute environments or keeping CLI state isolated.
-  - Example: `export GEMINI_CLI_HOME="/path/to/user/config"` (Windows
-    PowerShell: `$env:GEMINI_CLI_HOME="C:\path\to\user\config"`)
-- **`GEMINI_CLI_SURFACE`**:
+  - Example: `export A_CODER_CLI_HOME="/path/to/user/config"` (Windows
+    PowerShell: `$env:A_CODER_CLI_HOME="C:\path\to\user\config"`)
+- **`A_CODER_CLI_SURFACE`**:
   - Specifies a custom label to include in the `User-Agent` header for API
     traffic reporting.
   - This is useful for tracking specific internal tools or distribution
     channels.
-  - Example: `export GEMINI_CLI_SURFACE="my-custom-tool"` (Windows PowerShell:
-    `$env:GEMINI_CLI_SURFACE="my-custom-tool"`)
-- **`GOOGLE_API_KEY`**:
-  - Your Google Cloud API key.
-  - Required for using Vertex AI in express mode.
-  - Ensure you have the necessary permissions.
-  - Example: `export GOOGLE_API_KEY="YOUR_GOOGLE_API_KEY"` (Windows PowerShell:
-    `$env:GOOGLE_API_KEY="YOUR_GOOGLE_API_KEY"`).
-- **`GOOGLE_CLOUD_PROJECT`**:
-  - Your Google Cloud Project ID.
-  - Required for using Code Assist or Vertex AI.
-  - If using Vertex AI, ensure you have the necessary permissions in this
-    project.
-  - **Cloud Shell note:** When running in a Cloud Shell environment, this
-    variable defaults to a special project allocated for Cloud Shell users. If
-    you have `GOOGLE_CLOUD_PROJECT` set in your global environment in Cloud
-    Shell, it will be overridden by this default. To use a different project in
-    Cloud Shell, you must define `GOOGLE_CLOUD_PROJECT` in a `.env` file.
-  - Example: `export GOOGLE_CLOUD_PROJECT="YOUR_PROJECT_ID"` (Windows
-    PowerShell: `$env:GOOGLE_CLOUD_PROJECT="YOUR_PROJECT_ID"`).
-- **`GOOGLE_APPLICATION_CREDENTIALS`** (string):
-  - **Description:** The path to your Google Application Credentials JSON file.
-  - **Example:**
-    `export GOOGLE_APPLICATION_CREDENTIALS="/path/to/your/credentials.json"`
-    (Windows PowerShell:
-    `$env:GOOGLE_APPLICATION_CREDENTIALS="C:\path\to\your\credentials.json"`)
-- **`GOOGLE_GENAI_API_VERSION`**:
-  - Specifies the API version to use for Gemini API requests.
-  - When set, overrides the default API version used by the SDK.
-  - Example: `export GOOGLE_GENAI_API_VERSION="v1"` (Windows PowerShell:
-    `$env:GOOGLE_GENAI_API_VERSION="v1"`)
-- **`GOOGLE_GEMINI_BASE_URL`**:
-  - Overrides the default base URL for Gemini API requests (when using
-    `gemini-api-key` authentication).
+  - Example: `export A_CODER_CLI_SURFACE="my-custom-tool"` (Windows PowerShell:
+    `$env:A_CODER_CLI_SURFACE="my-custom-tool"`)
+- **`A_CODER_BASE_URL`**:
+  - Overrides the default base URL for OpenAI-compatible API requests (when
+    using `openai-api-key` authentication).
   - Must be a valid URL. For security, it must use HTTPS unless pointing to
     `localhost` (or `127.0.0.1` / `[::1]`).
-  - Example: `export GOOGLE_GEMINI_BASE_URL="https://my-proxy.com"` (Windows
-    PowerShell: `$env:GOOGLE_GEMINI_BASE_URL="https://my-proxy.com"`)
-- **`GOOGLE_VERTEX_BASE_URL`**:
-  - Overrides the default base URL for Vertex AI API requests (when using
-    `vertex-ai` authentication).
-  - Must be a valid URL. For security, it must use HTTPS unless pointing to
-    `localhost` (or `127.0.0.1` / `[::1]`).
-  - Example: `export GOOGLE_VERTEX_BASE_URL="https://my-vertex-proxy.com"`
-    (Windows PowerShell:
-    `$env:GOOGLE_VERTEX_BASE_URL="https://my-vertex-proxy.com"`)
-- **`OTLP_GOOGLE_CLOUD_PROJECT`**:
-  - Your Google Cloud Project ID for Telemetry in Google Cloud
-  - Example: `export OTLP_GOOGLE_CLOUD_PROJECT="YOUR_PROJECT_ID"` (Windows
-    PowerShell: `$env:OTLP_GOOGLE_CLOUD_PROJECT="YOUR_PROJECT_ID"`).
-- **`GEMINI_TELEMETRY_ENABLED`**:
+  - Example: `export A_CODER_BASE_URL="https://my-proxy.com"` (Windows
+    PowerShell: `$env:A_CODER_BASE_URL="https://my-proxy.com"`)
+- **`A_CODER_TELEMETRY_ENABLED`**:
   - Set to `true` or `1` to enable telemetry. Any other value is treated as
     disabling it.
   - Overrides the `telemetry.enabled` setting.
-- **`GEMINI_TELEMETRY_TRACES_ENABLED`**:
+- **`A_CODER_TELEMETRY_TRACES_ENABLED`**:
   - Set to `true` or `1` to enable detailed tracing with large attributes. Any
     other value is treated as disabling it.
   - Overrides the `telemetry.traces` setting.
-- **`GEMINI_TELEMETRY_TARGET`**:
+- **`A_CODER_TELEMETRY_TARGET`**:
   - Sets the telemetry target (`local` or `gcp`).
   - Overrides the `telemetry.target` setting.
-- **`GEMINI_TELEMETRY_OTLP_ENDPOINT`**:
+- **`A_CODER_TELEMETRY_OTLP_ENDPOINT`**:
   - Sets the OTLP endpoint for telemetry.
   - Overrides the `telemetry.otlpEndpoint` setting.
-- **`GEMINI_TELEMETRY_OTLP_PROTOCOL`**:
+- **`A_CODER_TELEMETRY_OTLP_PROTOCOL`**:
   - Sets the OTLP protocol (`grpc` or `http`).
   - Overrides the `telemetry.otlpProtocol` setting.
-- **`GEMINI_TELEMETRY_LOG_PROMPTS`**:
+- **`A_CODER_TELEMETRY_LOG_PROMPTS`**:
   - Set to `true` or `1` to enable or disable logging of user prompts. Any other
     value is treated as disabling it.
   - Overrides the `telemetry.logPrompts` setting.
-- **`GEMINI_TELEMETRY_OUTFILE`**:
+- **`A_CODER_TELEMETRY_OUTFILE`**:
   - Sets the file path to write telemetry to when the target is `local`.
   - Overrides the `telemetry.outfile` setting.
-- **`GEMINI_TELEMETRY_USE_COLLECTOR`**:
+- **`A_CODER_TELEMETRY_USE_COLLECTOR`**:
   - Set to `true` or `1` to enable or disable using an external OTLP collector.
     Any other value is treated as disabling it.
   - Overrides the `telemetry.useCollector` setting.
-- **`GOOGLE_CLOUD_LOCATION`**:
-  - Your Google Cloud Project Location (for example, us-central1).
-  - Required for using Vertex AI in non-express mode.
-  - Example: `export GOOGLE_CLOUD_LOCATION="YOUR_PROJECT_LOCATION"` (Windows
-    PowerShell: `$env:GOOGLE_CLOUD_LOCATION="YOUR_PROJECT_LOCATION"`).
-- **`GEMINI_SANDBOX`**:
+- **`A_CODER_SANDBOX`**:
   - Alternative to the `sandbox` setting in `settings.json`.
   - Accepts `true`, `false`, `docker`, `podman`, or a custom command string.
-- **`GEMINI_SYSTEM_MD`**:
+- **`A_CODER_SYSTEM_MD`**:
   - Replaces the built‑in system prompt with content from a Markdown file.
-  - `true`/`1`: Use project default path `./.gemini/system.md`.
+  - `true`/`1`: Use project default path `./.a-coder-cli/system.md`.
   - Any other string: Treat as a path (relative/absolute supported, `~`
     expands).
   - `false`/`0` or unset: Use the built‑in prompt. See
     [System Prompt Override](../cli/system-prompt.md).
-- **`GEMINI_WRITE_SYSTEM_MD`**:
+- **`A_CODER_WRITE_SYSTEM_MD`**:
   - Writes the current built‑in system prompt to a file for review.
-  - `true`/`1`: Write to `./.gemini/system.md`. Otherwise treat the value as a
-    path.
+  - `true`/`1`: Write to `./.a-coder-cli/system.md`. Otherwise treat the value
+    as a path.
   - Run the CLI once with this set to generate the file.
 - **`SEATBELT_PROFILE`** (macOS specific):
   - Switches the Seatbelt (`sandbox-exec`) profile on macOS.
@@ -2551,15 +2514,17 @@ the `advanced.excludedEnvVars` setting in your `settings.json` file.
     allows network.
   - `strict-proxied`: Same as `strict-open` but routes network through proxy.
   - `<profile_name>`: Uses a custom profile. To define a custom profile, create
-    a file named `sandbox-macos-<profile_name>.sb` in your project's `.gemini/`
-    directory (for example, `my-project/.gemini/sandbox-macos-custom.sb`).
+    a file named `sandbox-macos-<profile_name>.sb` in your project's
+    `.a-coder-cli/` directory (for example,
+    `my-project/.a-coder-cli/sandbox-macos-custom.sb`).
 - **`DEBUG` or `DEBUG_MODE`** (often used by underlying libraries or the CLI
   itself):
   - Set to `true` or `1` to enable verbose debug logging, which can be helpful
     for troubleshooting.
   - **Note:** These variables are automatically excluded from project `.env`
-    files by default to prevent interference with gemini-cli behavior. Use
-    `.gemini/.env` files if you need to set these for gemini-cli specifically.
+    files by default to prevent interference with a-coder-cli-cli behavior. Use
+    `.a-coder-cli/.env` files if you need to set these for a-coder-cli-cli
+    specifically.
 - **`NO_COLOR`**:
   - Set to any value to disable all color output in the CLI.
 - **`CLI_TITLE`**:
@@ -2570,10 +2535,10 @@ the `advanced.excludedEnvVars` setting in your `settings.json` file.
 
 ### Environment variable redaction
 
-To prevent accidental leakage of sensitive information, Gemini CLI automatically
-redacts potential secrets from environment variables when executing tools (such
-as shell commands). This "best effort" redaction applies to variables inherited
-from the system or loaded from `.env` files.
+To prevent accidental leakage of sensitive information, A-Coder CLI
+automatically redacts potential secrets from environment variables when
+executing tools (such as shell commands). This "best effort" redaction applies
+to variables inherited from the system or loaded from `.env` files.
 
 **Default Redaction Rules:**
 
@@ -2593,7 +2558,7 @@ from the system or loaded from `.env` files.
 
 - Common system variables (for example, `PATH`, `HOME`, `USER`, `SHELL`, `TERM`,
   `LANG`).
-- Variables starting with `GEMINI_CLI_`.
+- Variables starting with `A_CODER_CLI_`.
 - GitHub Action specific variables.
 
 **Configuration:**
@@ -2626,7 +2591,7 @@ for that specific session.
 - **`--allowed-tools <tool1,tool2,...>`**:
   - A comma-separated list of tool names that will bypass the confirmation
     dialog.
-  - Example: `gemini --allowed-tools "ShellTool(git status)"`
+  - Example: `a-coder-cli --allowed-tools "ShellTool(git status)"`
 - **`--approval-mode <mode>`**:
   - Sets the approval mode for tool calls. Available modes:
     - `default`: Prompt for approval on each tool call (default behavior)
@@ -2639,7 +2604,7 @@ for that specific session.
       > functional.
   - Cannot be used together with `--yolo`. Use `--approval-mode=yolo` instead of
     `--yolo` for the new unified approach.
-  - Example: `gemini --approval-mode auto_edit`
+  - Example: `a-coder-cli --approval-mode auto_edit`
 - **`--debug`** (**`-d`**):
   - Enables debug mode for this session, providing more verbose output. Open the
     debug console with F12 to see the additional logging.
@@ -2647,13 +2612,13 @@ for that specific session.
   - Delete a specific chat session by its index number or full session UUID.
   - Use `--list-sessions` first to see available sessions, their indices, and
     UUIDs.
-  - Example: `gemini --delete-session 3` or
-    `gemini --delete-session a1b2c3d4-e5f6-7890-abcd-ef1234567890`
+  - Example: `a-coder-cli --delete-session 3` or
+    `a-coder-cli --delete-session a1b2c3d4-e5f6-7890-abcd-ef1234567890`
 - **`--extensions <extension_name ...>`** (**`-e <extension_name ...>`**):
   - Specifies a list of extensions to use for the session. If not provided, all
     available extensions are used.
-  - Use the special term `gemini -e none` to disable all extensions.
-  - Example: `gemini -e my-extension -e my-other-extension`
+  - Use the special term `a-coder-cli -e none` to disable all extensions.
+  - Example: `a-coder-cli -e my-extension -e my-other-extension`
 - **`--fake-responses`**:
   - Path to a file with fake model responses for testing.
 - **`--help`** (or **`-h`**):
@@ -2671,10 +2636,10 @@ for that specific session.
   - List all available chat sessions for the current project and exit.
   - Shows session indices, dates, message counts, and preview of first user
     message.
-  - Example: `gemini --list-sessions`
+  - Example: `a-coder-cli --list-sessions`
 - **`--model <model_name>`** (**`-m <model_name>`**):
-  - Specifies the Gemini model to use for this session.
-  - Example: `npm start -- --model gemini-3-pro-preview`
+  - Specifies the A-Coder model to use for this session.
+  - Example: `npm start -- --model a-coder-cli-3-pro-preview`
 - **`--output-format <format>`**:
   - **Description:** Specifies the format of the CLI output for non-interactive
     mode.
@@ -2685,21 +2650,22 @@ for that specific session.
   - **Note:** For structured output and scripting, use the
     `--output-format json` or `--output-format stream-json` flag.
 - **`--prompt <your_prompt>`** (**`-p <your_prompt>`**):
-  - Used to pass a prompt directly to the command. This invokes Gemini CLI in a
+  - Used to pass a prompt directly to the command. This invokes A-Coder CLI in a
     non-interactive mode.
 - **`--prompt-interactive <your_prompt>`** (**`-i <your_prompt>`**):
   - Starts an interactive session with the provided prompt as the initial input.
   - The prompt is processed within the interactive session, not before it.
   - Cannot be used when piping input from stdin.
-  - Example: `gemini -i "explain this code"`
+  - Example: `a-coder-cli -i "explain this code"`
 - **`--record-responses`**:
   - Path to a file to record model responses for testing.
 - **`--resume [session_id]`** (**`-r [session_id]`**):
   - Resume a previous chat session. Use "latest" for the most recent session,
     provide a session index number, or provide a full session UUID.
   - If no session_id is provided, defaults to "latest".
-  - Example: `gemini --resume 5` or `gemini --resume latest` or
-    `gemini --resume a1b2c3d4-e5f6-7890-abcd-ef1234567890` or `gemini --resume`
+  - Example: `a-coder-cli --resume 5` or `a-coder-cli --resume latest` or
+    `a-coder-cli --resume a1b2c3d4-e5f6-7890-abcd-ef1234567890` or
+    `a-coder-cli --resume`
   - See [Session Management](../cli/session-management.md) for more details.
 - **`--sandbox`** (**`-s`**):
   - Enables sandbox mode for this session.
@@ -2714,9 +2680,9 @@ for that specific session.
 ## Context files (hierarchical instructional context)
 
 While not strictly configuration for the CLI's _behavior_, context files
-(defaulting to `GEMINI.md` but configurable via the `context.fileName` setting)
+(defaulting to `A_CODER.md` but configurable via the `context.fileName` setting)
 are crucial for configuring the _instructional context_ (also referred to as
-"memory") provided to the Gemini model. This powerful feature lets you give
+"memory") provided to the A-Coder model. This powerful feature lets you give
 project-specific instructions, coding style guides, or any relevant background
 information to the AI, making its responses more tailored and accurate to your
 needs. The CLI includes UI elements, such as an indicator in the footer showing
@@ -2724,10 +2690,10 @@ the number of loaded context files, to keep you informed about the active
 context.
 
 - **Purpose:** These Markdown files contain instructions, guidelines, or context
-  that you want the Gemini model to be aware of during your interactions. The
+  that you want the A-Coder model to be aware of during your interactions. The
   system is designed to manage this instructional context hierarchically.
 
-### Example context file content (for example, `GEMINI.md`)
+### Example context file content (for example, `A_CODER.md`)
 
 Here's a conceptual example of what a context file at the root of a TypeScript
 project might contain:
@@ -2769,14 +2735,14 @@ you. Project-specific context files are highly encouraged to establish
 conventions and context.
 
 - **Hierarchical loading and precedence:** The CLI implements a sophisticated
-  hierarchical memory system by loading context files (for example, `GEMINI.md`)
-  from several locations. Content from files lower in this list (more specific)
-  typically overrides or supplements content from files higher up (more
-  general). The exact concatenation order and final context can be inspected
-  using the `/memory show` command. The typical loading order is:
+  hierarchical memory system by loading context files (for example,
+  `A_CODER.md`) from several locations. Content from files lower in this list
+  (more specific) typically overrides or supplements content from files higher
+  up (more general). The exact concatenation order and final context can be
+  inspected using the `/memory show` command. The typical loading order is:
   1.  **Global context file:**
-      - Location: `~/.gemini/<configured-context-filename>` (for example,
-        `~/.gemini/GEMINI.md` in your user home directory).
+      - Location: `~/.a-coder-cli/<configured-context-filename>` (for example,
+        `~/.a-coder-cli/A_CODER.md` in your user home directory).
       - Scope: Provides default instructions for all your projects.
   2.  **Project root and ancestors context files:**
       - Location: The CLI searches for the configured context file in the
@@ -2795,7 +2761,7 @@ conventions and context.
         component, module, or subsection of your project.
 - **Concatenation and UI indication:** The contents of all found context files
   are concatenated (with separators indicating their origin and path) and
-  provided as part of the system prompt to the Gemini model. The CLI footer
+  provided as part of the system prompt to the A-Coder model. The CLI footer
   displays the count of loaded context files, giving you a quick visual cue
   about the active instructional context.
 - **Importing content:** You can modularize your context files by importing
@@ -2812,27 +2778,27 @@ conventions and context.
 
 By understanding and utilizing these configuration layers and the hierarchical
 nature of context files, you can effectively manage the AI's memory and tailor
-Gemini CLI's responses to your specific needs and projects.
+A-Coder CLI's responses to your specific needs and projects.
 
 ## Sandboxing
 
-Gemini CLI can execute potentially unsafe operations (like shell commands and
+A-Coder CLI can execute potentially unsafe operations (like shell commands and
 file modifications) within a sandboxed environment to protect your system.
 
 Sandboxing is disabled by default, but you can enable it in a few ways:
 
 - Using `--sandbox` or `-s` flag.
-- Setting `GEMINI_SANDBOX` environment variable.
+- Setting `A_CODER_SANDBOX` environment variable.
 - Sandbox is enabled when using `--yolo` or `--approval-mode=yolo` by default.
 
-By default, it uses a pre-built `gemini-cli-sandbox` Docker image.
+By default, it uses a pre-built `a-coder-cli-cli-sandbox` Docker image.
 
 For project-specific sandboxing needs, you can create a custom Dockerfile at
-`.gemini/sandbox.Dockerfile` in your project's root directory. This Dockerfile
-can be based on the base sandbox image:
+`.a-coder-cli/sandbox.Dockerfile` in your project's root directory. This
+Dockerfile can be based on the base sandbox image:
 
 ```dockerfile
-FROM gemini-cli-sandbox
+FROM a-coder-cli-cli-sandbox
 
 # Add your custom dependencies or configurations here.
 # Note: The base image runs as the non-root 'node' user.
@@ -2844,30 +2810,30 @@ FROM gemini-cli-sandbox
 # COPY ./my-config /app/my-config
 ```
 
-When `.gemini/sandbox.Dockerfile` exists, you can use `BUILD_SANDBOX`
-environment variable when running Gemini CLI to automatically build the custom
+When `.a-coder-cli/sandbox.Dockerfile` exists, you can use `BUILD_SANDBOX`
+environment variable when running A-Coder CLI to automatically build the custom
 sandbox image:
 
 ```bash
-BUILD_SANDBOX=1 gemini -s
+BUILD_SANDBOX=1 a-coder-cli -s
 ```
 
 Building a custom sandbox with `BUILD_SANDBOX` is only supported when running
-Gemini CLI from source. If you installed the CLI with npm, build the Docker
+A-Coder CLI from source. If you installed the CLI with npm, build the Docker
 image separately and reference that image in your sandbox configuration.
 
 ## Usage statistics
 
-To help us improve Gemini CLI, we collect anonymized usage statistics. This data
-helps us understand how the CLI is used, identify common issues, and prioritize
-new features.
+To help us improve A-Coder CLI, we collect anonymized usage statistics. This
+data helps us understand how the CLI is used, identify common issues, and
+prioritize new features.
 
 **What we collect:**
 
 - **Tool calls:** We log the names of the tools that are called, whether they
   succeed or fail, and how long they take to execute. We do not collect the
   arguments passed to the tools or any data returned by them.
-- **API requests:** We log the Gemini model used for each request, the duration
+- **API requests:** We log the A-Coder model used for each request, the duration
   of the request, and whether it was successful. We do not collect the content
   of the prompts or responses.
 - **Session information:** We collect information about the configuration of the
@@ -2878,7 +2844,7 @@ new features.
 - **Personally identifiable information (PII):** We do not collect any personal
   information, such as your name, email address, or API keys.
 - **Prompt and response content:** We do not log the content of your prompts or
-  the responses from the Gemini model.
+  the responses from the A-Coder model.
 - **File content:** We do not log the content of any files that are read or
   written by the CLI.
 

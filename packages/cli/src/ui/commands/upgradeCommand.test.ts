@@ -13,16 +13,16 @@ import {
   openBrowserSecurely,
   shouldLaunchBrowser,
   UPGRADE_URL_PAGE,
-} from '@google/gemini-cli-core';
+} from '@the-a-tech-corporation/core';
 
-vi.mock('@google/gemini-cli-core', async (importOriginal) => {
+vi.mock('@the-a-tech-corporation/core', async (importOriginal) => {
   const actual =
-    await importOriginal<typeof import('@google/gemini-cli-core')>();
+    await importOriginal<typeof import('@the-a-tech-corporation/core')>();
   return {
     ...actual,
     openBrowserSecurely: vi.fn(),
     shouldLaunchBrowser: vi.fn().mockReturnValue(true),
-    UPGRADE_URL_PAGE: 'https://goo.gle/set-up-gemini-code-assist',
+    UPGRADE_URL_PAGE: 'https://the-a-tech-corporation.com/a-coder-cli/upgrade',
   };
 });
 

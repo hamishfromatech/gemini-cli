@@ -6,7 +6,7 @@
 
 import * as path from 'node:path';
 import type { PartListUnion, PartUnion } from '@google/genai';
-import type { AnyToolInvocation, Config } from '@google/gemini-cli-core';
+import type { AnyToolInvocation, Config } from '@the-a-tech-corporation/core';
 import {
   debugLogger,
   getErrorMessage,
@@ -18,7 +18,7 @@ import {
   REFERENCE_CONTENT_END,
   CoreToolCallStatus,
   resolveAtCommandPath,
-} from '@google/gemini-cli-core';
+} from '@the-a-tech-corporation/core';
 import { Buffer } from 'node:buffer';
 import type {
   HistoryItemToolGroup,
@@ -247,13 +247,13 @@ async function resolveFilePaths(
       respectFileIgnore.respectGitIgnore &&
       fileDiscovery.shouldIgnoreFile(pathName, {
         respectGitIgnore: true,
-        respectGeminiIgnore: false,
+        respectACoderIgnore: false,
       });
     const geminiIgnored =
-      respectFileIgnore.respectGeminiIgnore &&
+      respectFileIgnore.respectACoderIgnore &&
       fileDiscovery.shouldIgnoreFile(pathName, {
         respectGitIgnore: false,
-        respectGeminiIgnore: true,
+        respectACoderIgnore: true,
       });
 
     if (gitIgnored || geminiIgnored) {
@@ -536,7 +536,7 @@ async function readLocalFiles(
     include: pathSpecsToRead,
     file_filtering_options: {
       respect_git_ignore: respectFileIgnore.respectGitIgnore,
-      respect_gemini_ignore: respectFileIgnore.respectGeminiIgnore,
+      respect_a_coder_ignore: respectFileIgnore.respectACoderIgnore,
     },
   };
 

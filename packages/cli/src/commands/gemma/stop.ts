@@ -7,7 +7,7 @@
 import type { CommandModule } from 'yargs';
 import fs from 'node:fs';
 import chalk from 'chalk';
-import { debugLogger } from '@google/gemini-cli-core';
+import { debugLogger } from '@the-a-tech-corporation/core';
 import { exitCli } from '../utils.js';
 import { DEFAULT_PORT, getPidFilePath } from './constants.js';
 import {
@@ -138,7 +138,7 @@ export const stopCommand: CommandModule = {
     if (running) {
       debugLogger.log(
         chalk.yellow(
-          `A server is responding on port ${port}, but it was not started by "gemini gemma start".`,
+          `A server is responding on port ${port}, but it was not started by "a-coder-cli gemma start".`,
         ),
       );
       debugLogger.log(

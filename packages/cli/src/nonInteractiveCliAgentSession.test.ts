@@ -7,22 +7,22 @@
 import type {
   Config,
   ToolRegistry,
-  ServerGeminiStreamEvent,
+  ServerACoderStreamEvent,
   SessionMetrics,
   AnyDeclarativeTool,
   AnyToolInvocation,
   UserFeedbackPayload,
-} from '@google/gemini-cli-core';
+} from '@the-a-tech-corporation/core';
 import {
   ToolErrorType,
-  GeminiEventType,
+  ACoderEventType,
   OutputFormat,
   uiTelemetryService,
   FatalInputError,
   CoreEvent,
   CoreToolCallStatus,
   JsonStreamEventType,
-} from '@google/gemini-cli-core';
+} from '@the-a-tech-corporation/core';
 import type { Part } from '@google/genai';
 import { runNonInteractive } from './nonInteractiveCliAgentSession.js';
 import {
@@ -56,9 +56,9 @@ const mockCoreEvents = vi.hoisted(() => ({
 
 const mockSchedulerSchedule = vi.hoisted(() => vi.fn());
 
-vi.mock('@google/gemini-cli-core', async (importOriginal) => {
+vi.mock('@the-a-tech-corporation/core', async (importOriginal) => {
   const original =
-    await importOriginal<typeof import('@google/gemini-cli-core')>();
+    await importOriginal<typeof import('@the-a-tech-corporation/core')>();
 
   class MockChatRecordingService {
     initialize = vi.fn();
@@ -108,7 +108,7 @@ describe('runNonInteractive', () => {
   let consoleErrorSpy: MockInstance;
   let processStdoutSpy: MockInstance;
   let processStderrSpy: MockInstance;
-  let mockGeminiClient: {
+  let mockACoderClient: {
     sendMessageStream: Mock;
     resumeChat: Mock;
     getChatRecordingService: Mock;
@@ -160,7 +160,7 @@ describe('runNonInteractive', () => {
       getFunctionDeclarations: vi.fn().mockReturnValue([]),
     } as unknown as ToolRegistry;
 
-    mockGeminiClient = {
+    mockACoderClient = {
       sendMessageStream: vi.fn(),
       resumeChat: vi.fn().mockResolvedValue(undefined),
       getChatRecordingService: vi.fn(() => ({
@@ -180,13 +180,13 @@ describe('runNonInteractive', () => {
         unsubscribe: vi.fn(),
         publish: vi.fn(),
       }),
-      getGeminiClient: vi.fn().mockReturnValue(mockGeminiClient),
+      getACoderClient: vi.fn().mockReturnValue(mockACoderClient),
       getToolRegistry: vi.fn().mockReturnValue(mockToolRegistry),
       getMaxSessionTurns: vi.fn().mockReturnValue(10),
       getSessionId: vi.fn().mockReturnValue('test-session-id'),
       getProjectRoot: vi.fn().mockReturnValue('/test/project'),
       storage: {
-        getProjectTempDir: vi.fn().mockReturnValue('/test/project/.gemini/tmp'),
+        getProjectTempDir: vi.fn().mockReturnValue('/test/project/.a-coder/tmp'),
       },
       getIdeMode: vi.fn().mockReturnValue(false),
 
@@ -234,8 +234,8 @@ describe('runNonInteractive', () => {
   });
 
   async function* createStreamFromEvents(
-    events: ServerGeminiStreamEvent[],
-  ): AsyncGenerator<ServerGeminiStreamEvent> {
+    events: ServerACoderStreamEvent[],
+  ): AsyncGenerator<ServerACoderStreamEvent> {
     for (const event of events) {
       yield event;
     }
@@ -245,15 +245,15 @@ describe('runNonInteractive', () => {
     processStdoutSpy.mock.calls.map((c) => c[0]).join('');
 
   it('should process input and write text output', async () => {
-    const events: ServerGeminiStreamEvent[] = [
-      { type: GeminiEventType.Content, value: 'Hello' },
-      { type: GeminiEventType.Content, value: ' World' },
+    const events: ServerACoderStreamEvent[] = [
+      { type: ACoderEventType.Content, value: 'Hello' },
+      { type: ACoderEventType.Content, value: ' World' },
       {
-        type: GeminiEventType.Finished,
+        type: ACoderEventType.Finished,
         value: { reason: undefined, usageMetadata: { totalTokenCount: 10 } },
       },
     ];
-    mockGeminiClient.sendMessageStream.mockReturnValue(
+    mockACoderClient.sendMessageStream.mockReturnValue(
       createStreamFromEvents(events),
     );
 
@@ -264,7 +264,7 @@ describe('runNonInteractive', () => {
       prompt_id: 'prompt-id-1',
     });
 
-    expect(mockGeminiClient.sendMessageStream).toHaveBeenCalledWith(
+    expect(mockACoderClient.sendMessageStream).toHaveBeenCalledWith(
       [{ text: 'Test input' }],
       expect.any(AbortSignal),
       'prompt-id-1',
@@ -277,16 +277,16 @@ describe('runNonInteractive', () => {
   });
 
   it('should stream the specific stream started by send', async () => {
-    const { LegacyAgentSession } = await import('@google/gemini-cli-core');
+    const { LegacyAgentSession } = await import('@the-a-tech-corporation/core');
     const streamSpy = vi.spyOn(LegacyAgentSession.prototype, 'stream');
-    const events: ServerGeminiStreamEvent[] = [
-      { type: GeminiEventType.Content, value: 'Hello again' },
+    const events: ServerACoderStreamEvent[] = [
+      { type: ACoderEventType.Content, value: 'Hello again' },
       {
-        type: GeminiEventType.Finished,
+        type: ACoderEventType.Finished,
         value: { reason: undefined, usageMetadata: { totalTokenCount: 10 } },
       },
     ];
-    mockGeminiClient.sendMessageStream.mockReturnValue(
+    mockACoderClient.sendMessageStream.mockReturnValue(
       createStreamFromEvents(events),
     );
 
@@ -301,7 +301,7 @@ describe('runNonInteractive', () => {
   });
 
   it('fails fast if the session acknowledges a message send without a stream', async () => {
-    const { LegacyAgentSession } = await import('@google/gemini-cli-core');
+    const { LegacyAgentSession } = await import('@the-a-tech-corporation/core');
     const sendSpy = vi
       .spyOn(LegacyAgentSession.prototype, 'send')
       .mockResolvedValue({ streamId: null });
@@ -324,15 +324,15 @@ describe('runNonInteractive', () => {
     streamSpy.mockRestore();
   });
 
-  it('should register activity logger when GEMINI_CLI_ACTIVITY_LOG_TARGET is set', async () => {
-    vi.stubEnv('GEMINI_CLI_ACTIVITY_LOG_TARGET', '/tmp/test.jsonl');
-    const events: ServerGeminiStreamEvent[] = [
+  it('should register activity logger when A_CODER_CLI_ACTIVITY_LOG_TARGET is set', async () => {
+    vi.stubEnv('A_CODER_CLI_ACTIVITY_LOG_TARGET', '/tmp/test.jsonl');
+    const events: ServerACoderStreamEvent[] = [
       {
-        type: GeminiEventType.Finished,
+        type: ACoderEventType.Finished,
         value: { reason: undefined, usageMetadata: { totalTokenCount: 0 } },
       },
     ];
-    mockGeminiClient.sendMessageStream.mockReturnValue(
+    mockACoderClient.sendMessageStream.mockReturnValue(
       createStreamFromEvents(events),
     );
 
@@ -347,15 +347,15 @@ describe('runNonInteractive', () => {
     vi.unstubAllEnvs();
   });
 
-  it('should not register activity logger when GEMINI_CLI_ACTIVITY_LOG_TARGET is not set', async () => {
-    vi.stubEnv('GEMINI_CLI_ACTIVITY_LOG_TARGET', '');
-    const events: ServerGeminiStreamEvent[] = [
+  it('should not register activity logger when A_CODER_CLI_ACTIVITY_LOG_TARGET is not set', async () => {
+    vi.stubEnv('A_CODER_CLI_ACTIVITY_LOG_TARGET', '');
+    const events: ServerACoderStreamEvent[] = [
       {
-        type: GeminiEventType.Finished,
+        type: ACoderEventType.Finished,
         value: { reason: undefined, usageMetadata: { totalTokenCount: 0 } },
       },
     ];
-    mockGeminiClient.sendMessageStream.mockReturnValue(
+    mockACoderClient.sendMessageStream.mockReturnValue(
       createStreamFromEvents(events),
     );
 
@@ -371,8 +371,8 @@ describe('runNonInteractive', () => {
   });
 
   it('should handle a single tool call and respond', async () => {
-    const toolCallEvent: ServerGeminiStreamEvent = {
-      type: GeminiEventType.ToolCallRequest,
+    const toolCallEvent: ServerACoderStreamEvent = {
+      type: ACoderEventType.ToolCallRequest,
       value: {
         callId: 'tool-1',
         name: 'testTool',
@@ -404,16 +404,16 @@ describe('runNonInteractive', () => {
       },
     ]);
 
-    const firstCallEvents: ServerGeminiStreamEvent[] = [toolCallEvent];
-    const secondCallEvents: ServerGeminiStreamEvent[] = [
-      { type: GeminiEventType.Content, value: 'Final answer' },
+    const firstCallEvents: ServerACoderStreamEvent[] = [toolCallEvent];
+    const secondCallEvents: ServerACoderStreamEvent[] = [
+      { type: ACoderEventType.Content, value: 'Final answer' },
       {
-        type: GeminiEventType.Finished,
+        type: ACoderEventType.Finished,
         value: { reason: undefined, usageMetadata: { totalTokenCount: 10 } },
       },
     ];
 
-    mockGeminiClient.sendMessageStream
+    mockACoderClient.sendMessageStream
       .mockReturnValueOnce(createStreamFromEvents(firstCallEvents))
       .mockReturnValueOnce(createStreamFromEvents(secondCallEvents));
 
@@ -424,12 +424,12 @@ describe('runNonInteractive', () => {
       prompt_id: 'prompt-id-2',
     });
 
-    expect(mockGeminiClient.sendMessageStream).toHaveBeenCalledTimes(2);
+    expect(mockACoderClient.sendMessageStream).toHaveBeenCalledTimes(2);
     expect(mockSchedulerSchedule).toHaveBeenCalledWith(
       [expect.objectContaining({ name: 'testTool' })],
       expect.any(AbortSignal),
     );
-    expect(mockGeminiClient.sendMessageStream).toHaveBeenNthCalledWith(
+    expect(mockACoderClient.sendMessageStream).toHaveBeenNthCalledWith(
       2,
       [{ text: 'Tool response' }],
       expect.any(AbortSignal),
@@ -445,8 +445,8 @@ describe('runNonInteractive', () => {
     // is printed between each block of text output from the model.
 
     // 1. Define the tool requests that the model will ask the CLI to run.
-    const toolCallEvent: ServerGeminiStreamEvent = {
-      type: GeminiEventType.ToolCallRequest,
+    const toolCallEvent: ServerACoderStreamEvent = {
+      type: ACoderEventType.ToolCallRequest,
       value: {
         callId: 'mock-tool',
         name: 'mockTool',
@@ -472,25 +472,25 @@ describe('runNonInteractive', () => {
 
     // 3. Define the sequence of events streamed from the mock model.
     // Turn 1: Model outputs text, then requests a tool call.
-    const modelTurn1: ServerGeminiStreamEvent[] = [
-      { type: GeminiEventType.Content, value: 'Use mock tool' },
+    const modelTurn1: ServerACoderStreamEvent[] = [
+      { type: ACoderEventType.Content, value: 'Use mock tool' },
       toolCallEvent,
     ];
     // Turn 2: Model outputs more text, then requests another tool call.
-    const modelTurn2: ServerGeminiStreamEvent[] = [
-      { type: GeminiEventType.Content, value: 'Use mock tool again' },
+    const modelTurn2: ServerACoderStreamEvent[] = [
+      { type: ACoderEventType.Content, value: 'Use mock tool again' },
       toolCallEvent,
     ];
     // Turn 3: Model outputs a final answer.
-    const modelTurn3: ServerGeminiStreamEvent[] = [
-      { type: GeminiEventType.Content, value: 'Finished.' },
+    const modelTurn3: ServerACoderStreamEvent[] = [
+      { type: ACoderEventType.Content, value: 'Finished.' },
       {
-        type: GeminiEventType.Finished,
+        type: ACoderEventType.Finished,
         value: { reason: undefined, usageMetadata: { totalTokenCount: 10 } },
       },
     ];
 
-    mockGeminiClient.sendMessageStream
+    mockACoderClient.sendMessageStream
       .mockReturnValueOnce(createStreamFromEvents(modelTurn1))
       .mockReturnValueOnce(createStreamFromEvents(modelTurn2))
       .mockReturnValueOnce(createStreamFromEvents(modelTurn3));
@@ -513,8 +513,8 @@ describe('runNonInteractive', () => {
   });
 
   it('should handle error during tool execution and should send error back to the model', async () => {
-    const toolCallEvent: ServerGeminiStreamEvent = {
-      type: GeminiEventType.ToolCallRequest,
+    const toolCallEvent: ServerACoderStreamEvent = {
+      type: ACoderEventType.ToolCallRequest,
       value: {
         callId: 'tool-1',
         name: 'errorTool',
@@ -553,17 +553,17 @@ describe('runNonInteractive', () => {
         },
       },
     ]);
-    const finalResponse: ServerGeminiStreamEvent[] = [
+    const finalResponse: ServerACoderStreamEvent[] = [
       {
-        type: GeminiEventType.Content,
+        type: ACoderEventType.Content,
         value: 'Sorry, let me try again.',
       },
       {
-        type: GeminiEventType.Finished,
+        type: ACoderEventType.Finished,
         value: { reason: undefined, usageMetadata: { totalTokenCount: 10 } },
       },
     ];
-    mockGeminiClient.sendMessageStream
+    mockACoderClient.sendMessageStream
       .mockReturnValueOnce(createStreamFromEvents([toolCallEvent]))
       .mockReturnValueOnce(createStreamFromEvents(finalResponse));
 
@@ -578,8 +578,8 @@ describe('runNonInteractive', () => {
     expect(consoleErrorSpy).toHaveBeenCalledWith(
       'Error executing tool errorTool: Execution failed',
     );
-    expect(mockGeminiClient.sendMessageStream).toHaveBeenCalledTimes(2);
-    expect(mockGeminiClient.sendMessageStream).toHaveBeenNthCalledWith(
+    expect(mockACoderClient.sendMessageStream).toHaveBeenCalledTimes(2);
+    expect(mockACoderClient.sendMessageStream).toHaveBeenNthCalledWith(
       2,
       [
         {
@@ -601,7 +601,7 @@ describe('runNonInteractive', () => {
 
   it('should exit with error if sendMessageStream throws initially', async () => {
     const apiError = new Error('API connection failed');
-    mockGeminiClient.sendMessageStream.mockImplementation(() => {
+    mockACoderClient.sendMessageStream.mockImplementation(() => {
       throw apiError;
     });
 
@@ -616,8 +616,8 @@ describe('runNonInteractive', () => {
   });
 
   it('should not exit if a tool is not found, and should send error back to model', async () => {
-    const toolCallEvent: ServerGeminiStreamEvent = {
-      type: GeminiEventType.ToolCallRequest,
+    const toolCallEvent: ServerACoderStreamEvent = {
+      type: ACoderEventType.ToolCallRequest,
       value: {
         callId: 'tool-1',
         name: 'nonexistentTool',
@@ -646,18 +646,18 @@ describe('runNonInteractive', () => {
         },
       },
     ]);
-    const finalResponse: ServerGeminiStreamEvent[] = [
+    const finalResponse: ServerACoderStreamEvent[] = [
       {
-        type: GeminiEventType.Content,
+        type: ACoderEventType.Content,
         value: "Sorry, I can't find that tool.",
       },
       {
-        type: GeminiEventType.Finished,
+        type: ACoderEventType.Finished,
         value: { reason: undefined, usageMetadata: { totalTokenCount: 10 } },
       },
     ];
 
-    mockGeminiClient.sendMessageStream
+    mockACoderClient.sendMessageStream
       .mockReturnValueOnce(createStreamFromEvents([toolCallEvent]))
       .mockReturnValueOnce(createStreamFromEvents(finalResponse));
 
@@ -672,7 +672,7 @@ describe('runNonInteractive', () => {
     expect(consoleErrorSpy).toHaveBeenCalledWith(
       'Error executing tool nonexistentTool: Tool "nonexistentTool" not found in registry.',
     );
-    expect(mockGeminiClient.sendMessageStream).toHaveBeenCalledTimes(2);
+    expect(mockACoderClient.sendMessageStream).toHaveBeenCalledTimes(2);
     expect(getWrittenOutput()).toBe("Sorry, I can't find that tool.\n");
   });
 
@@ -710,14 +710,14 @@ describe('runNonInteractive', () => {
     });
 
     // Mock a simple stream response from the Gemini client
-    const events: ServerGeminiStreamEvent[] = [
-      { type: GeminiEventType.Content, value: 'Summary complete.' },
+    const events: ServerACoderStreamEvent[] = [
+      { type: ACoderEventType.Content, value: 'Summary complete.' },
       {
-        type: GeminiEventType.Finished,
+        type: ACoderEventType.Finished,
         value: { reason: undefined, usageMetadata: { totalTokenCount: 10 } },
       },
     ];
-    mockGeminiClient.sendMessageStream.mockReturnValue(
+    mockACoderClient.sendMessageStream.mockReturnValue(
       createStreamFromEvents(events),
     );
 
@@ -730,7 +730,7 @@ describe('runNonInteractive', () => {
     });
 
     // 5. Assert that sendMessageStream was called with the PROCESSED parts, not the raw input
-    expect(mockGeminiClient.sendMessageStream).toHaveBeenCalledWith(
+    expect(mockACoderClient.sendMessageStream).toHaveBeenCalledWith(
       processedParts,
       expect.any(AbortSignal),
       'prompt-id-7',
@@ -743,14 +743,14 @@ describe('runNonInteractive', () => {
   });
 
   it('should process input and write JSON output with stats', async () => {
-    const events: ServerGeminiStreamEvent[] = [
-      { type: GeminiEventType.Content, value: 'Hello World' },
+    const events: ServerACoderStreamEvent[] = [
+      { type: ACoderEventType.Content, value: 'Hello World' },
       {
-        type: GeminiEventType.Finished,
+        type: ACoderEventType.Finished,
         value: { reason: undefined, usageMetadata: { totalTokenCount: 10 } },
       },
     ];
-    mockGeminiClient.sendMessageStream.mockReturnValue(
+    mockACoderClient.sendMessageStream.mockReturnValue(
       createStreamFromEvents(events),
     );
     vi.mocked(mockConfig.getOutputFormat).mockReturnValue(OutputFormat.JSON);
@@ -765,7 +765,7 @@ describe('runNonInteractive', () => {
       prompt_id: 'prompt-id-1',
     });
 
-    expect(mockGeminiClient.sendMessageStream).toHaveBeenCalledWith(
+    expect(mockACoderClient.sendMessageStream).toHaveBeenCalledWith(
       [{ text: 'Test input' }],
       expect.any(AbortSignal),
       'prompt-id-1',
@@ -788,8 +788,8 @@ describe('runNonInteractive', () => {
   it('should write JSON output with stats for tool-only commands (no text response)', async () => {
     // Test the scenario where a command completes successfully with only tool calls
     // but no text response - this would have caught the original bug
-    const toolCallEvent: ServerGeminiStreamEvent = {
-      type: GeminiEventType.ToolCallRequest,
+    const toolCallEvent: ServerACoderStreamEvent = {
+      type: ACoderEventType.ToolCallRequest,
       value: {
         callId: 'tool-1',
         name: 'testTool',
@@ -822,23 +822,23 @@ describe('runNonInteractive', () => {
     ]);
 
     // First call returns only tool call, no content
-    const firstCallEvents: ServerGeminiStreamEvent[] = [
+    const firstCallEvents: ServerACoderStreamEvent[] = [
       toolCallEvent,
       {
-        type: GeminiEventType.Finished,
+        type: ACoderEventType.Finished,
         value: { reason: undefined, usageMetadata: { totalTokenCount: 5 } },
       },
     ];
 
     // Second call returns no content (tool-only completion)
-    const secondCallEvents: ServerGeminiStreamEvent[] = [
+    const secondCallEvents: ServerACoderStreamEvent[] = [
       {
-        type: GeminiEventType.Finished,
+        type: ACoderEventType.Finished,
         value: { reason: undefined, usageMetadata: { totalTokenCount: 3 } },
       },
     ];
 
-    mockGeminiClient.sendMessageStream
+    mockACoderClient.sendMessageStream
       .mockReturnValueOnce(createStreamFromEvents(firstCallEvents))
       .mockReturnValueOnce(createStreamFromEvents(secondCallEvents));
 
@@ -854,7 +854,7 @@ describe('runNonInteractive', () => {
       prompt_id: 'prompt-id-tool-only',
     });
 
-    expect(mockGeminiClient.sendMessageStream).toHaveBeenCalledTimes(2);
+    expect(mockACoderClient.sendMessageStream).toHaveBeenCalledTimes(2);
     expect(mockSchedulerSchedule).toHaveBeenCalledWith(
       [expect.objectContaining({ name: 'testTool' })],
       expect.any(AbortSignal),
@@ -875,8 +875,8 @@ describe('runNonInteractive', () => {
   });
 
   it('should keep only the final post-tool assistant text in JSON output', async () => {
-    const toolCallEvent: ServerGeminiStreamEvent = {
-      type: GeminiEventType.ToolCallRequest,
+    const toolCallEvent: ServerACoderStreamEvent = {
+      type: ACoderEventType.ToolCallRequest,
       value: {
         callId: 'tool-1',
         name: 'testTool',
@@ -901,22 +901,22 @@ describe('runNonInteractive', () => {
       },
     ]);
 
-    mockGeminiClient.sendMessageStream
+    mockACoderClient.sendMessageStream
       .mockReturnValueOnce(
         createStreamFromEvents([
-          { type: GeminiEventType.Content, value: 'Let me check that...' },
+          { type: ACoderEventType.Content, value: 'Let me check that...' },
           toolCallEvent,
           {
-            type: GeminiEventType.Finished,
+            type: ACoderEventType.Finished,
             value: { reason: undefined, usageMetadata: { totalTokenCount: 5 } },
           },
         ]),
       )
       .mockReturnValueOnce(
         createStreamFromEvents([
-          { type: GeminiEventType.Content, value: 'Final answer' },
+          { type: ACoderEventType.Content, value: 'Final answer' },
           {
-            type: GeminiEventType.Finished,
+            type: ACoderEventType.Finished,
             value: { reason: undefined, usageMetadata: { totalTokenCount: 3 } },
           },
         ]),
@@ -949,13 +949,13 @@ describe('runNonInteractive', () => {
 
   it('should write JSON output with stats for empty response commands', async () => {
     // Test the scenario where a command completes but produces no content at all
-    const events: ServerGeminiStreamEvent[] = [
+    const events: ServerACoderStreamEvent[] = [
       {
-        type: GeminiEventType.Finished,
+        type: ACoderEventType.Finished,
         value: { reason: undefined, usageMetadata: { totalTokenCount: 1 } },
       },
     ];
-    mockGeminiClient.sendMessageStream.mockReturnValue(
+    mockACoderClient.sendMessageStream.mockReturnValue(
       createStreamFromEvents(events),
     );
     vi.mocked(mockConfig.getOutputFormat).mockReturnValue(OutputFormat.JSON);
@@ -970,7 +970,7 @@ describe('runNonInteractive', () => {
       prompt_id: 'prompt-id-empty',
     });
 
-    expect(mockGeminiClient.sendMessageStream).toHaveBeenCalledWith(
+    expect(mockACoderClient.sendMessageStream).toHaveBeenCalledWith(
       [{ text: 'Empty response test' }],
       expect.any(AbortSignal),
       'prompt-id-empty',
@@ -996,7 +996,7 @@ describe('runNonInteractive', () => {
     vi.mocked(mockConfig.getOutputFormat).mockReturnValue(OutputFormat.JSON);
     const testError = new Error('Invalid input provided');
 
-    mockGeminiClient.sendMessageStream.mockImplementation(() => {
+    mockACoderClient.sendMessageStream.mockImplementation(() => {
       throw testError;
     });
 
@@ -1038,7 +1038,7 @@ describe('runNonInteractive', () => {
     vi.mocked(mockConfig.getOutputFormat).mockReturnValue(OutputFormat.JSON);
     const fatalError = new FatalInputError('Invalid command syntax provided');
 
-    mockGeminiClient.sendMessageStream.mockImplementation(() => {
+    mockACoderClient.sendMessageStream.mockImplementation(() => {
       throw fatalError;
     });
 
@@ -1087,14 +1087,14 @@ describe('runNonInteractive', () => {
     };
     mockGetCommands.mockReturnValue([mockCommand]);
 
-    const events: ServerGeminiStreamEvent[] = [
-      { type: GeminiEventType.Content, value: 'Response from command' },
+    const events: ServerACoderStreamEvent[] = [
+      { type: ACoderEventType.Content, value: 'Response from command' },
       {
-        type: GeminiEventType.Finished,
+        type: ACoderEventType.Finished,
         value: { reason: undefined, usageMetadata: { totalTokenCount: 5 } },
       },
     ];
-    mockGeminiClient.sendMessageStream.mockReturnValue(
+    mockACoderClient.sendMessageStream.mockReturnValue(
       createStreamFromEvents(events),
     );
 
@@ -1106,7 +1106,7 @@ describe('runNonInteractive', () => {
     });
 
     // Ensure the prompt sent to the model is from the command, not the raw input
-    expect(mockGeminiClient.sendMessageStream).toHaveBeenCalledWith(
+    expect(mockACoderClient.sendMessageStream).toHaveBeenCalledWith(
       [{ text: 'Prompt from command' }],
       expect.any(AbortSignal),
       'prompt-id-slash',
@@ -1127,14 +1127,14 @@ describe('runNonInteractive', () => {
     );
     handleSlashCommandSpy.mockResolvedValue([{ text: 'Slash command output' }]);
 
-    const events: ServerGeminiStreamEvent[] = [
-      { type: GeminiEventType.Content, value: 'Response to slash command' },
+    const events: ServerACoderStreamEvent[] = [
+      { type: ACoderEventType.Content, value: 'Response to slash command' },
       {
-        type: GeminiEventType.Finished,
+        type: ACoderEventType.Finished,
         value: { reason: undefined, usageMetadata: { totalTokenCount: 10 } },
       },
     ];
-    mockGeminiClient.sendMessageStream.mockReturnValue(
+    mockACoderClient.sendMessageStream.mockReturnValue(
       createStreamFromEvents(events),
     );
 
@@ -1151,7 +1151,7 @@ describe('runNonInteractive', () => {
       mockConfig,
       mockSettings,
     );
-    expect(mockGeminiClient.sendMessageStream).toHaveBeenCalledWith(
+    expect(mockACoderClient.sendMessageStream).toHaveBeenCalledWith(
       [{ text: 'Slash command output' }],
       expect.any(AbortSignal),
       'prompt-id-slash',
@@ -1190,11 +1190,11 @@ describe('runNonInteractive', () => {
 
     // Cancellation will throw FatalCancellationError directly
 
-    const events: ServerGeminiStreamEvent[] = [
-      { type: GeminiEventType.Content, value: 'Thinking...' },
+    const events: ServerACoderStreamEvent[] = [
+      { type: ACoderEventType.Content, value: 'Thinking...' },
     ];
     // Create a stream that responds to abortion
-    mockGeminiClient.sendMessageStream.mockImplementation(
+    mockACoderClient.sendMessageStream.mockImplementation(
       (_messages, signal: AbortSignal) =>
         (async function* () {
           yield events[0];
@@ -1295,7 +1295,7 @@ describe('runNonInteractive', () => {
 
     // Cancellation will throw FatalCancellationError directly
 
-    const { LegacyAgentSession } = await import('@google/gemini-cli-core');
+    const { LegacyAgentSession } = await import('@the-a-tech-corporation/core');
     const sendSpy = vi.spyOn(LegacyAgentSession.prototype, 'send');
 
     await expect(
@@ -1351,14 +1351,14 @@ describe('runNonInteractive', () => {
     // No commands are mocked, so any slash command is "unknown"
     mockGetCommands.mockReturnValue([]);
 
-    const events: ServerGeminiStreamEvent[] = [
-      { type: GeminiEventType.Content, value: 'Response to unknown' },
+    const events: ServerACoderStreamEvent[] = [
+      { type: ACoderEventType.Content, value: 'Response to unknown' },
       {
-        type: GeminiEventType.Finished,
+        type: ACoderEventType.Finished,
         value: { reason: undefined, usageMetadata: { totalTokenCount: 5 } },
       },
     ];
-    mockGeminiClient.sendMessageStream.mockReturnValue(
+    mockACoderClient.sendMessageStream.mockReturnValue(
       createStreamFromEvents(events),
     );
 
@@ -1370,7 +1370,7 @@ describe('runNonInteractive', () => {
     });
 
     // Ensure the raw input is sent to the model
-    expect(mockGeminiClient.sendMessageStream).toHaveBeenCalledWith(
+    expect(mockACoderClient.sendMessageStream).toHaveBeenCalledWith(
       [{ text: '/unknowncommand' }],
       expect.any(AbortSignal),
       'prompt-id-unknown',
@@ -1415,14 +1415,14 @@ describe('runNonInteractive', () => {
     };
     mockGetCommands.mockReturnValue([mockCommand]);
 
-    const events: ServerGeminiStreamEvent[] = [
-      { type: GeminiEventType.Content, value: 'Acknowledged' },
+    const events: ServerACoderStreamEvent[] = [
+      { type: ACoderEventType.Content, value: 'Acknowledged' },
       {
-        type: GeminiEventType.Finished,
+        type: ACoderEventType.Finished,
         value: { reason: undefined, usageMetadata: { totalTokenCount: 1 } },
       },
     ];
-    mockGeminiClient.sendMessageStream.mockReturnValue(
+    mockACoderClient.sendMessageStream.mockReturnValue(
       createStreamFromEvents(events),
     );
 
@@ -1448,14 +1448,14 @@ describe('runNonInteractive', () => {
       './services/BuiltinCommandLoader.js'
     );
     mockGetCommands.mockReturnValue([]); // No commands found, so it will fall through
-    const events: ServerGeminiStreamEvent[] = [
-      { type: GeminiEventType.Content, value: 'Acknowledged' },
+    const events: ServerACoderStreamEvent[] = [
+      { type: ACoderEventType.Content, value: 'Acknowledged' },
       {
-        type: GeminiEventType.Finished,
+        type: ACoderEventType.Finished,
         value: { reason: undefined, usageMetadata: { totalTokenCount: 1 } },
       },
     ];
-    mockGeminiClient.sendMessageStream.mockReturnValue(
+    mockACoderClient.sendMessageStream.mockReturnValue(
       createStreamFromEvents(events),
     );
 
@@ -1496,8 +1496,8 @@ describe('runNonInteractive', () => {
       getFunctionDeclarations: vi.fn().mockReturnValue([{ name: 'ShellTool' }]),
     } as unknown as ToolRegistry);
 
-    const toolCallEvent: ServerGeminiStreamEvent = {
-      type: GeminiEventType.ToolCallRequest,
+    const toolCallEvent: ServerACoderStreamEvent = {
+      type: ACoderEventType.ToolCallRequest,
       value: {
         callId: 'tool-shell-1',
         name: 'ShellTool',
@@ -1529,16 +1529,16 @@ describe('runNonInteractive', () => {
       },
     ]);
 
-    const firstCallEvents: ServerGeminiStreamEvent[] = [toolCallEvent];
-    const secondCallEvents: ServerGeminiStreamEvent[] = [
-      { type: GeminiEventType.Content, value: 'file.txt' },
+    const firstCallEvents: ServerACoderStreamEvent[] = [toolCallEvent];
+    const secondCallEvents: ServerACoderStreamEvent[] = [
+      { type: ACoderEventType.Content, value: 'file.txt' },
       {
-        type: GeminiEventType.Finished,
+        type: ACoderEventType.Finished,
         value: { reason: undefined, usageMetadata: { totalTokenCount: 10 } },
       },
     ];
 
-    mockGeminiClient.sendMessageStream
+    mockACoderClient.sendMessageStream
       .mockReturnValueOnce(createStreamFromEvents(firstCallEvents))
       .mockReturnValueOnce(createStreamFromEvents(secondCallEvents));
 
@@ -1558,13 +1558,13 @@ describe('runNonInteractive', () => {
 
   describe('CoreEvents Integration', () => {
     it('subscribes to UserFeedback and drains backlog on start', async () => {
-      const events: ServerGeminiStreamEvent[] = [
+      const events: ServerACoderStreamEvent[] = [
         {
-          type: GeminiEventType.Finished,
+          type: ACoderEventType.Finished,
           value: { reason: undefined, usageMetadata: { totalTokenCount: 0 } },
         },
       ];
-      mockGeminiClient.sendMessageStream.mockReturnValue(
+      mockACoderClient.sendMessageStream.mockReturnValue(
         createStreamFromEvents(events),
       );
 
@@ -1583,13 +1583,13 @@ describe('runNonInteractive', () => {
     });
 
     it('unsubscribes from UserFeedback on finish', async () => {
-      const events: ServerGeminiStreamEvent[] = [
+      const events: ServerACoderStreamEvent[] = [
         {
-          type: GeminiEventType.Finished,
+          type: ACoderEventType.Finished,
           value: { reason: undefined, usageMetadata: { totalTokenCount: 0 } },
         },
       ];
-      mockGeminiClient.sendMessageStream.mockReturnValue(
+      mockACoderClient.sendMessageStream.mockReturnValue(
         createStreamFromEvents(events),
       );
 
@@ -1607,13 +1607,13 @@ describe('runNonInteractive', () => {
     });
 
     it('logs to process.stderr when UserFeedback event is received', async () => {
-      const events: ServerGeminiStreamEvent[] = [
+      const events: ServerACoderStreamEvent[] = [
         {
-          type: GeminiEventType.Finished,
+          type: ACoderEventType.Finished,
           value: { reason: undefined, usageMetadata: { totalTokenCount: 0 } },
         },
       ];
-      mockGeminiClient.sendMessageStream.mockReturnValue(
+      mockACoderClient.sendMessageStream.mockReturnValue(
         createStreamFromEvents(events),
       );
 
@@ -1644,13 +1644,13 @@ describe('runNonInteractive', () => {
 
     it('logs optional error object to process.stderr in debug mode', async () => {
       vi.mocked(mockConfig.getDebugMode).mockReturnValue(true);
-      const events: ServerGeminiStreamEvent[] = [
+      const events: ServerACoderStreamEvent[] = [
         {
-          type: GeminiEventType.Finished,
+          type: ACoderEventType.Finished,
           value: { reason: undefined, usageMetadata: { totalTokenCount: 0 } },
         },
       ];
-      mockGeminiClient.sendMessageStream.mockReturnValue(
+      mockACoderClient.sendMessageStream.mockReturnValue(
         createStreamFromEvents(events),
       );
 
@@ -1695,8 +1695,8 @@ describe('runNonInteractive', () => {
       MOCK_SESSION_METRICS,
     );
 
-    const toolCallEvent: ServerGeminiStreamEvent = {
-      type: GeminiEventType.ToolCallRequest,
+    const toolCallEvent: ServerACoderStreamEvent = {
+      type: ACoderEventType.ToolCallRequest,
       value: {
         callId: 'tool-1',
         name: 'testTool',
@@ -1723,19 +1723,19 @@ describe('runNonInteractive', () => {
       },
     ]);
 
-    const firstCallEvents: ServerGeminiStreamEvent[] = [
-      { type: GeminiEventType.Content, value: 'Thinking...' },
+    const firstCallEvents: ServerACoderStreamEvent[] = [
+      { type: ACoderEventType.Content, value: 'Thinking...' },
       toolCallEvent,
     ];
-    const secondCallEvents: ServerGeminiStreamEvent[] = [
-      { type: GeminiEventType.Content, value: 'Final answer' },
+    const secondCallEvents: ServerACoderStreamEvent[] = [
+      { type: ACoderEventType.Content, value: 'Final answer' },
       {
-        type: GeminiEventType.Finished,
+        type: ACoderEventType.Finished,
         value: { reason: undefined, usageMetadata: { totalTokenCount: 10 } },
       },
     ];
 
-    mockGeminiClient.sendMessageStream
+    mockACoderClient.sendMessageStream
       .mockReturnValueOnce(createStreamFromEvents(firstCallEvents))
       .mockReturnValueOnce(createStreamFromEvents(secondCallEvents));
 
@@ -1754,11 +1754,11 @@ describe('runNonInteractive', () => {
   });
 
   it('should handle EPIPE error gracefully', async () => {
-    const events: ServerGeminiStreamEvent[] = [
-      { type: GeminiEventType.Content, value: 'Hello' },
-      { type: GeminiEventType.Content, value: ' World' },
+    const events: ServerACoderStreamEvent[] = [
+      { type: ACoderEventType.Content, value: 'Hello' },
+      { type: ACoderEventType.Content, value: ' World' },
     ];
-    mockGeminiClient.sendMessageStream.mockReturnValue(
+    mockACoderClient.sendMessageStream.mockReturnValue(
       createStreamFromEvents(events),
     );
 
@@ -1790,14 +1790,14 @@ describe('runNonInteractive', () => {
   });
 
   it('should resume chat when resumedSessionData is provided', async () => {
-    const events: ServerGeminiStreamEvent[] = [
-      { type: GeminiEventType.Content, value: 'Resumed' },
+    const events: ServerACoderStreamEvent[] = [
+      { type: ACoderEventType.Content, value: 'Resumed' },
       {
-        type: GeminiEventType.Finished,
+        type: ACoderEventType.Finished,
         value: { reason: undefined, usageMetadata: { totalTokenCount: 5 } },
       },
     ];
-    mockGeminiClient.sendMessageStream.mockReturnValue(
+    mockACoderClient.sendMessageStream.mockReturnValue(
       createStreamFromEvents(events),
     );
 
@@ -1823,7 +1823,7 @@ describe('runNonInteractive', () => {
       resumedSessionData,
     });
 
-    expect(mockGeminiClient.resumeChat).toHaveBeenCalledWith(
+    expect(mockACoderClient.resumeChat).toHaveBeenCalledWith(
       expect.any(Array),
       resumedSessionData,
     );
@@ -1834,16 +1834,16 @@ describe('runNonInteractive', () => {
     {
       name: 'loop detected',
       events: [
-        { type: GeminiEventType.LoopDetected },
-      ] as ServerGeminiStreamEvent[],
+        { type: ACoderEventType.LoopDetected },
+      ] as ServerACoderStreamEvent[],
       input: 'Loop test',
       promptId: 'prompt-id-loop',
     },
     {
       name: 'max session turns',
       events: [
-        { type: GeminiEventType.MaxSessionTurns },
-      ] as ServerGeminiStreamEvent[],
+        { type: ACoderEventType.MaxSessionTurns },
+      ] as ServerACoderStreamEvent[],
       input: 'Max turns test',
       promptId: 'prompt-id-max-turns',
     },
@@ -1857,14 +1857,14 @@ describe('runNonInteractive', () => {
         MOCK_SESSION_METRICS,
       );
 
-      const streamEvents: ServerGeminiStreamEvent[] = [
+      const streamEvents: ServerACoderStreamEvent[] = [
         ...events,
         {
-          type: GeminiEventType.Finished,
+          type: ACoderEventType.Finished,
           value: { reason: undefined, usageMetadata: { totalTokenCount: 0 } },
         },
       ];
-      mockGeminiClient.sendMessageStream.mockReturnValue(
+      mockACoderClient.sendMessageStream.mockReturnValue(
         createStreamFromEvents(streamEvents),
       );
 
@@ -1891,8 +1891,8 @@ describe('runNonInteractive', () => {
     {
       name: 'loop detected',
       events: [
-        { type: GeminiEventType.LoopDetected },
-      ] as ServerGeminiStreamEvent[],
+        { type: ACoderEventType.LoopDetected },
+      ] as ServerACoderStreamEvent[],
       expectedWarning: 'Loop detected, stopping execution',
     },
   ])(
@@ -1903,14 +1903,14 @@ describe('runNonInteractive', () => {
         MOCK_SESSION_METRICS,
       );
 
-      const streamEvents: ServerGeminiStreamEvent[] = [
+      const streamEvents: ServerACoderStreamEvent[] = [
         ...events,
         {
-          type: GeminiEventType.Finished,
+          type: ACoderEventType.Finished,
           value: { reason: undefined, usageMetadata: { totalTokenCount: 0 } },
         },
       ];
-      mockGeminiClient.sendMessageStream.mockReturnValue(
+      mockACoderClient.sendMessageStream.mockReturnValue(
         createStreamFromEvents(streamEvents),
       );
 
@@ -1932,8 +1932,8 @@ describe('runNonInteractive', () => {
   );
 
   it('should log error when tool recording fails', async () => {
-    const toolCallEvent: ServerGeminiStreamEvent = {
-      type: GeminiEventType.ToolCallRequest,
+    const toolCallEvent: ServerACoderStreamEvent = {
+      type: ACoderEventType.ToolCallRequest,
       value: {
         callId: 'tool-1',
         name: 'testTool',
@@ -1958,21 +1958,21 @@ describe('runNonInteractive', () => {
       },
     ]);
 
-    const events: ServerGeminiStreamEvent[] = [
+    const events: ServerACoderStreamEvent[] = [
       toolCallEvent,
-      { type: GeminiEventType.Content, value: 'Done' },
+      { type: ACoderEventType.Content, value: 'Done' },
       {
-        type: GeminiEventType.Finished,
+        type: ACoderEventType.Finished,
         value: { reason: undefined, usageMetadata: { totalTokenCount: 5 } },
       },
     ];
-    mockGeminiClient.sendMessageStream
+    mockACoderClient.sendMessageStream
       .mockReturnValueOnce(createStreamFromEvents(events))
       .mockReturnValueOnce(
         createStreamFromEvents([
-          { type: GeminiEventType.Content, value: 'Done' },
+          { type: ACoderEventType.Content, value: 'Done' },
           {
-            type: GeminiEventType.Finished,
+            type: ACoderEventType.Finished,
             value: { reason: undefined, usageMetadata: { totalTokenCount: 5 } },
           },
         ]),
@@ -1984,13 +1984,13 @@ describe('runNonInteractive', () => {
         throw new Error('Recording failed');
       }),
     };
-    mockGeminiClient.getChat = vi.fn().mockReturnValue(mockChat);
-    mockGeminiClient.getCurrentSequenceModel = vi
+    mockACoderClient.getChat = vi.fn().mockReturnValue(mockChat);
+    mockACoderClient.getCurrentSequenceModel = vi
       .fn()
       .mockReturnValue('model-1');
 
     // Mock debugLogger.error
-    const { debugLogger } = await import('@google/gemini-cli-core');
+    const { debugLogger } = await import('@the-a-tech-corporation/core');
     const debugLoggerErrorSpy = vi
       .spyOn(debugLogger, 'error')
       .mockImplementation(() => {});
@@ -2011,8 +2011,8 @@ describe('runNonInteractive', () => {
   });
 
   it('should stop agent execution immediately when a tool call returns STOP_EXECUTION error', async () => {
-    const toolCallEvent: ServerGeminiStreamEvent = {
-      type: GeminiEventType.ToolCallRequest,
+    const toolCallEvent: ServerACoderStreamEvent = {
+      type: ACoderEventType.ToolCallRequest,
       value: {
         callId: 'stop-call',
         name: 'stopTool',
@@ -2039,15 +2039,15 @@ describe('runNonInteractive', () => {
       },
     ]);
 
-    const firstCallEvents: ServerGeminiStreamEvent[] = [
-      { type: GeminiEventType.Content, value: 'Executing tool...' },
+    const firstCallEvents: ServerACoderStreamEvent[] = [
+      { type: ACoderEventType.Content, value: 'Executing tool...' },
       toolCallEvent,
     ];
 
     // Setup the mock to return events for the first call.
     // We expect the loop to terminate after the tool execution.
     // If it doesn't, it might call sendMessageStream again, which we'll assert against.
-    mockGeminiClient.sendMessageStream
+    mockACoderClient.sendMessageStream
       .mockReturnValueOnce(createStreamFromEvents(firstCallEvents))
       .mockReturnValueOnce(createStreamFromEvents([]));
 
@@ -2061,7 +2061,7 @@ describe('runNonInteractive', () => {
     expect(mockSchedulerSchedule).toHaveBeenCalled();
 
     // The key assertion: sendMessageStream should have been called ONLY ONCE (initial user input).
-    expect(mockGeminiClient.sendMessageStream).toHaveBeenCalledTimes(1);
+    expect(mockACoderClient.sendMessageStream).toHaveBeenCalledTimes(1);
 
     expect(processStderrSpy).toHaveBeenCalledWith(
       'Agent execution stopped: Stop reason from hook\n',
@@ -2074,8 +2074,8 @@ describe('runNonInteractive', () => {
       MOCK_SESSION_METRICS,
     );
 
-    const toolCallEvent: ServerGeminiStreamEvent = {
-      type: GeminiEventType.ToolCallRequest,
+    const toolCallEvent: ServerACoderStreamEvent = {
+      type: ACoderEventType.ToolCallRequest,
       value: {
         callId: 'stop-call',
         name: 'stopTool',
@@ -2101,12 +2101,12 @@ describe('runNonInteractive', () => {
       },
     ]);
 
-    const firstCallEvents: ServerGeminiStreamEvent[] = [
-      { type: GeminiEventType.Content, value: 'Partial content' },
+    const firstCallEvents: ServerACoderStreamEvent[] = [
+      { type: ACoderEventType.Content, value: 'Partial content' },
       toolCallEvent,
     ];
 
-    mockGeminiClient.sendMessageStream.mockReturnValue(
+    mockACoderClient.sendMessageStream.mockReturnValue(
       createStreamFromEvents(firstCallEvents),
     );
 
@@ -2138,8 +2138,8 @@ describe('runNonInteractive', () => {
       MOCK_SESSION_METRICS,
     );
 
-    const toolCallEvent: ServerGeminiStreamEvent = {
-      type: GeminiEventType.ToolCallRequest,
+    const toolCallEvent: ServerACoderStreamEvent = {
+      type: ACoderEventType.ToolCallRequest,
       value: {
         callId: 'stop-call',
         name: 'stopTool',
@@ -2165,9 +2165,9 @@ describe('runNonInteractive', () => {
       },
     ]);
 
-    const firstCallEvents: ServerGeminiStreamEvent[] = [toolCallEvent];
+    const firstCallEvents: ServerACoderStreamEvent[] = [toolCallEvent];
 
-    mockGeminiClient.sendMessageStream.mockReturnValue(
+    mockACoderClient.sendMessageStream.mockReturnValue(
       createStreamFromEvents(firstCallEvents),
     );
 
@@ -2185,13 +2185,13 @@ describe('runNonInteractive', () => {
 
   describe('Agent Execution Events', () => {
     it('should handle AgentExecutionStopped event', async () => {
-      const events: ServerGeminiStreamEvent[] = [
+      const events: ServerACoderStreamEvent[] = [
         {
-          type: GeminiEventType.AgentExecutionStopped,
+          type: ACoderEventType.AgentExecutionStopped,
           value: { reason: 'Stopped by hook' },
         },
       ];
-      mockGeminiClient.sendMessageStream.mockReturnValue(
+      mockACoderClient.sendMessageStream.mockReturnValue(
         createStreamFromEvents(events),
       );
 
@@ -2205,7 +2205,7 @@ describe('runNonInteractive', () => {
       expect(processStderrSpy).toHaveBeenCalledWith(
         'Agent execution stopped: Stopped by hook\n',
       );
-      expect(mockGeminiClient.sendMessageStream).toHaveBeenCalledTimes(1);
+      expect(mockACoderClient.sendMessageStream).toHaveBeenCalledTimes(1);
     });
 
     it('should write JSON output when AgentExecutionStopped event occurs', async () => {
@@ -2214,15 +2214,15 @@ describe('runNonInteractive', () => {
         MOCK_SESSION_METRICS,
       );
 
-      const events: ServerGeminiStreamEvent[] = [
-        { type: GeminiEventType.Content, value: 'Partial content' },
+      const events: ServerACoderStreamEvent[] = [
+        { type: ACoderEventType.Content, value: 'Partial content' },
         {
-          type: GeminiEventType.AgentExecutionStopped,
+          type: ACoderEventType.AgentExecutionStopped,
           value: { reason: 'Stopped by hook' },
         },
       ];
 
-      mockGeminiClient.sendMessageStream.mockReturnValue(
+      mockACoderClient.sendMessageStream.mockReturnValue(
         createStreamFromEvents(events),
       );
 
@@ -2254,15 +2254,15 @@ describe('runNonInteractive', () => {
         MOCK_SESSION_METRICS,
       );
 
-      const events: ServerGeminiStreamEvent[] = [
-        { type: GeminiEventType.Content, value: 'Partial content' },
+      const events: ServerACoderStreamEvent[] = [
+        { type: ACoderEventType.Content, value: 'Partial content' },
         {
-          type: GeminiEventType.AgentExecutionStopped,
+          type: ACoderEventType.AgentExecutionStopped,
           value: { reason: 'Stopped by hook' },
         },
       ];
 
-      mockGeminiClient.sendMessageStream.mockReturnValue(
+      mockACoderClient.sendMessageStream.mockReturnValue(
         createStreamFromEvents(events),
       );
 
@@ -2279,19 +2279,19 @@ describe('runNonInteractive', () => {
     });
 
     it('should handle AgentExecutionBlocked event', async () => {
-      const allEvents: ServerGeminiStreamEvent[] = [
+      const allEvents: ServerACoderStreamEvent[] = [
         {
-          type: GeminiEventType.AgentExecutionBlocked,
+          type: ACoderEventType.AgentExecutionBlocked,
           value: { reason: 'Blocked by hook' },
         },
-        { type: GeminiEventType.Content, value: 'Final answer' },
+        { type: ACoderEventType.Content, value: 'Final answer' },
         {
-          type: GeminiEventType.Finished,
+          type: ACoderEventType.Finished,
           value: { reason: undefined, usageMetadata: { totalTokenCount: 10 } },
         },
       ];
 
-      mockGeminiClient.sendMessageStream.mockReturnValue(
+      mockACoderClient.sendMessageStream.mockReturnValue(
         createStreamFromEvents(allEvents),
       );
 
@@ -2307,23 +2307,23 @@ describe('runNonInteractive', () => {
       );
       // Stream continues after blocked event — content should be output
       expect(getWrittenOutput()).toBe('Final answer\n');
-      expect(mockGeminiClient.sendMessageStream).toHaveBeenCalledTimes(1);
+      expect(mockACoderClient.sendMessageStream).toHaveBeenCalledTimes(1);
     });
 
     it('should emit ERROR event in STREAM_JSON mode when AgentExecutionBlocked occurs', async () => {
-      const allEvents: ServerGeminiStreamEvent[] = [
+      const allEvents: ServerACoderStreamEvent[] = [
         {
-          type: GeminiEventType.AgentExecutionBlocked,
+          type: ACoderEventType.AgentExecutionBlocked,
           value: { reason: 'Blocked by hook' },
         },
-        { type: GeminiEventType.Content, value: 'Final answer' },
+        { type: ACoderEventType.Content, value: 'Final answer' },
         {
-          type: GeminiEventType.Finished,
+          type: ACoderEventType.Finished,
           value: { reason: undefined, usageMetadata: { totalTokenCount: 10 } },
         },
       ];
 
-      mockGeminiClient.sendMessageStream.mockReturnValue(
+      mockACoderClient.sendMessageStream.mockReturnValue(
         createStreamFromEvents(allEvents),
       );
 
@@ -2358,19 +2358,19 @@ describe('runNonInteractive', () => {
     });
 
     it('should include warning in JSON mode when AgentExecutionBlocked occurs', async () => {
-      const allEvents: ServerGeminiStreamEvent[] = [
+      const allEvents: ServerACoderStreamEvent[] = [
         {
-          type: GeminiEventType.AgentExecutionBlocked,
+          type: ACoderEventType.AgentExecutionBlocked,
           value: { reason: 'Blocked by hook' },
         },
-        { type: GeminiEventType.Content, value: 'Final answer' },
+        { type: ACoderEventType.Content, value: 'Final answer' },
         {
-          type: GeminiEventType.Finished,
+          type: ACoderEventType.Finished,
           value: { reason: undefined, usageMetadata: { totalTokenCount: 10 } },
         },
       ];
 
-      mockGeminiClient.sendMessageStream.mockReturnValue(
+      mockACoderClient.sendMessageStream.mockReturnValue(
         createStreamFromEvents(allEvents),
       );
 
@@ -2391,23 +2391,23 @@ describe('runNonInteractive', () => {
     });
 
     it('should handle multiple AgentExecutionBlocked events and collect all warnings', async () => {
-      const allEvents: ServerGeminiStreamEvent[] = [
+      const allEvents: ServerACoderStreamEvent[] = [
         {
-          type: GeminiEventType.AgentExecutionBlocked,
+          type: ACoderEventType.AgentExecutionBlocked,
           value: { reason: 'Block 1', systemMessage: 'Reason 1' },
         },
         {
-          type: GeminiEventType.AgentExecutionBlocked,
+          type: ACoderEventType.AgentExecutionBlocked,
           value: { reason: 'Block 2', systemMessage: 'Reason 2' },
         },
-        { type: GeminiEventType.Content, value: 'Final answer' },
+        { type: ACoderEventType.Content, value: 'Final answer' },
         {
-          type: GeminiEventType.Finished,
+          type: ACoderEventType.Finished,
           value: { reason: undefined, usageMetadata: { totalTokenCount: 10 } },
         },
       ];
 
-      mockGeminiClient.sendMessageStream.mockImplementation(() =>
+      mockACoderClient.sendMessageStream.mockImplementation(() =>
         createStreamFromEvents(allEvents),
       );
       vi.spyOn(uiTelemetryService, 'getMetrics').mockReturnValue(
@@ -2430,15 +2430,15 @@ describe('runNonInteractive', () => {
     });
 
     it('should not include warnings field in JSON output if no blocks occur', async () => {
-      const allEvents: ServerGeminiStreamEvent[] = [
-        { type: GeminiEventType.Content, value: 'Clean answer' },
+      const allEvents: ServerACoderStreamEvent[] = [
+        { type: ACoderEventType.Content, value: 'Clean answer' },
         {
-          type: GeminiEventType.Finished,
+          type: ACoderEventType.Finished,
           value: { reason: undefined, usageMetadata: { totalTokenCount: 10 } },
         },
       ];
 
-      mockGeminiClient.sendMessageStream.mockImplementation(() =>
+      mockACoderClient.sendMessageStream.mockImplementation(() =>
         createStreamFromEvents(allEvents),
       );
       vi.spyOn(uiTelemetryService, 'getMetrics').mockReturnValue(
@@ -2467,16 +2467,16 @@ describe('runNonInteractive', () => {
     const PLAIN_TEXT_LINK = 'Link';
 
     it('should sanitize ANSI output by default', async () => {
-      const events: ServerGeminiStreamEvent[] = [
-        { type: GeminiEventType.Content, value: ANSI_SEQUENCE },
-        { type: GeminiEventType.Content, value: ' ' },
-        { type: GeminiEventType.Content, value: OSC_HYPERLINK },
+      const events: ServerACoderStreamEvent[] = [
+        { type: ACoderEventType.Content, value: ANSI_SEQUENCE },
+        { type: ACoderEventType.Content, value: ' ' },
+        { type: ACoderEventType.Content, value: OSC_HYPERLINK },
         {
-          type: GeminiEventType.Finished,
+          type: ACoderEventType.Finished,
           value: { reason: undefined, usageMetadata: { totalTokenCount: 10 } },
         },
       ];
-      mockGeminiClient.sendMessageStream.mockReturnValue(
+      mockACoderClient.sendMessageStream.mockReturnValue(
         createStreamFromEvents(events),
       );
 
@@ -2493,16 +2493,16 @@ describe('runNonInteractive', () => {
     });
 
     it('should allow ANSI output when rawOutput is true', async () => {
-      const events: ServerGeminiStreamEvent[] = [
-        { type: GeminiEventType.Content, value: ANSI_SEQUENCE },
-        { type: GeminiEventType.Content, value: ' ' },
-        { type: GeminiEventType.Content, value: OSC_HYPERLINK },
+      const events: ServerACoderStreamEvent[] = [
+        { type: ACoderEventType.Content, value: ANSI_SEQUENCE },
+        { type: ACoderEventType.Content, value: ' ' },
+        { type: ACoderEventType.Content, value: OSC_HYPERLINK },
         {
-          type: GeminiEventType.Finished,
+          type: ACoderEventType.Finished,
           value: { reason: undefined, usageMetadata: { totalTokenCount: 10 } },
         },
       ];
-      mockGeminiClient.sendMessageStream.mockReturnValue(
+      mockACoderClient.sendMessageStream.mockReturnValue(
         createStreamFromEvents(events),
       );
 
@@ -2520,14 +2520,14 @@ describe('runNonInteractive', () => {
     });
 
     it('should allow ANSI output when only acceptRawOutputRisk is true', async () => {
-      const events: ServerGeminiStreamEvent[] = [
-        { type: GeminiEventType.Content, value: ANSI_SEQUENCE },
+      const events: ServerACoderStreamEvent[] = [
+        { type: ACoderEventType.Content, value: ANSI_SEQUENCE },
         {
-          type: GeminiEventType.Finished,
+          type: ACoderEventType.Finished,
           value: { reason: undefined, usageMetadata: { totalTokenCount: 5 } },
         },
       ];
-      mockGeminiClient.sendMessageStream.mockReturnValue(
+      mockACoderClient.sendMessageStream.mockReturnValue(
         createStreamFromEvents(events),
       );
 
@@ -2545,13 +2545,13 @@ describe('runNonInteractive', () => {
     });
 
     it('should warn when rawOutput is true and acceptRisk is false', async () => {
-      const events: ServerGeminiStreamEvent[] = [
+      const events: ServerACoderStreamEvent[] = [
         {
-          type: GeminiEventType.Finished,
+          type: ACoderEventType.Finished,
           value: { reason: undefined, usageMetadata: { totalTokenCount: 0 } },
         },
       ];
-      mockGeminiClient.sendMessageStream.mockReturnValue(
+      mockACoderClient.sendMessageStream.mockReturnValue(
         createStreamFromEvents(events),
       );
 
@@ -2571,13 +2571,13 @@ describe('runNonInteractive', () => {
     });
 
     it('should not warn when rawOutput is true and acceptRisk is true', async () => {
-      const events: ServerGeminiStreamEvent[] = [
+      const events: ServerACoderStreamEvent[] = [
         {
-          type: GeminiEventType.Finished,
+          type: ACoderEventType.Finished,
           value: { reason: undefined, usageMetadata: { totalTokenCount: 0 } },
         },
       ];
-      mockGeminiClient.sendMessageStream.mockReturnValue(
+      mockACoderClient.sendMessageStream.mockReturnValue(
         createStreamFromEvents(events),
       );
 
@@ -2604,15 +2604,15 @@ describe('runNonInteractive', () => {
         MOCK_SESSION_METRICS,
       );
 
-      const streamEvents: ServerGeminiStreamEvent[] = [
-        { type: GeminiEventType.LoopDetected } as ServerGeminiStreamEvent,
-        { type: GeminiEventType.Content, value: 'Continuing after loop' },
+      const streamEvents: ServerACoderStreamEvent[] = [
+        { type: ACoderEventType.LoopDetected } as ServerACoderStreamEvent,
+        { type: ACoderEventType.Content, value: 'Continuing after loop' },
         {
-          type: GeminiEventType.Finished,
+          type: ACoderEventType.Finished,
           value: { reason: undefined, usageMetadata: { totalTokenCount: 5 } },
         },
       ];
-      mockGeminiClient.sendMessageStream.mockReturnValue(
+      mockACoderClient.sendMessageStream.mockReturnValue(
         createStreamFromEvents(streamEvents),
       );
 
@@ -2631,8 +2631,8 @@ describe('runNonInteractive', () => {
     });
 
     it('should report cancelled tool calls as success in stream-json mode (legacy parity)', async () => {
-      const toolCallEvent: ServerGeminiStreamEvent = {
-        type: GeminiEventType.ToolCallRequest,
+      const toolCallEvent: ServerACoderStreamEvent = {
+        type: ACoderEventType.ToolCallRequest,
         value: {
           callId: 'tool-1',
           name: 'testTool',
@@ -2657,15 +2657,15 @@ describe('runNonInteractive', () => {
         },
       ]);
 
-      const events: ServerGeminiStreamEvent[] = [
+      const events: ServerACoderStreamEvent[] = [
         toolCallEvent,
         {
-          type: GeminiEventType.Content,
+          type: ACoderEventType.Content,
           value: 'Model continues...',
         },
       ];
 
-      mockGeminiClient.sendMessageStream.mockReturnValue(
+      mockACoderClient.sendMessageStream.mockReturnValue(
         createStreamFromEvents(events),
       );
 

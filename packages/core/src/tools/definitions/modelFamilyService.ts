@@ -8,7 +8,7 @@
  * Single source of truth for mapping model IDs to tool families.
  */
 
-import { isGemini3Model } from '../../config/models.js';
+import { isACoder3Model } from '../../config/models.js';
 import { type ToolFamily } from './types.js';
 
 /**
@@ -24,7 +24,7 @@ export function getToolFamily(modelId?: string): ToolFamily {
   }
 
   // Explicit mapping for Gemini 3 family
-  if (isGemini3Model(modelId)) {
+  if (isACoder3Model(modelId)) {
     return 'gemini-3';
   }
 

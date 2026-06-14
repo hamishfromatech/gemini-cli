@@ -1,7 +1,9 @@
 /**
  * @license
- * Copyright 2025 Google LLC
+ * Copyright 2026 Google LLC
  * SPDX-License-Identifier: Apache-2.0
+ *
+ * @license
  */
 
 export const ExperimentFlags = {
@@ -16,10 +18,10 @@ export const ExperimentFlags = {
   MASKING_PROTECTION_THRESHOLD: 45758817,
   MASKING_PRUNABLE_THRESHOLD: 45758818,
   MASKING_PROTECT_LATEST_TURN: 45758819,
-  GEMINI_3_1_PRO_LAUNCHED: 45760185,
+  A_CODER_3_1_PRO_LAUNCHED: 45760185,
   PRO_MODEL_NO_ACCESS: 45768879,
   DEFAULT_REQUEST_TIMEOUT: 45773134,
-  GEMINI_3_5_FLASH_GA_LAUNCHED: 45780819,
+  A_CODER_3_5_FLASH_GA_LAUNCHED: 45780819,
 } as const;
 
 export type ExperimentFlagName =

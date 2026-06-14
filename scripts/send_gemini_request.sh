@@ -5,13 +5,13 @@
 # Purpose:
 #   This script is used to replay a Gemini API request using a raw JSON payload.
 #   It is particularly useful for debugging the exact requests made by the
-#   Gemini CLI.
+#   A-Coder CLI.
 #
 # Prerequisites:
 #   1. Export your Gemini API key:
-#      export GEMINI_API_KEY="your_api_key_here"
+#      export A_CODER_API_KEY="your_api_key_here"
 #
-#   2. Generate a request payload from the Gemini CLI:
+#   2. Generate a request payload from the A-Coder CLI:
 #      Inside the CLI, run the `/chat debug` command. This will save the most
 #      recent API request to a file named `gcli-request-<timestamp>.json`.
 #
@@ -41,7 +41,7 @@ fi
 # Function to print usage
 usage() {
     echo "Usage: $0 --payload <path_to_json_file> --model <model_id> [--stream]"
-    echo "Ensure GEMINI_API_KEY environment variable is set."
+    echo "Ensure A_CODER_API_KEY environment variable is set."
     exit 1
 }
 
@@ -64,8 +64,8 @@ if [[ -z "${PAYLOAD_FILE}" ]] || [[ -z "${MODEL_ID}" ]]; then
     usage
 fi
 
-if [[ -z "${GEMINI_API_KEY}" ]]; then
-    echo "Error: GEMINI_API_KEY environment variable is not set."
+if [[ -z "${A_CODER_API_KEY}" ]]; then
+    echo "Error: A_CODER_API_KEY environment variable is not set."
     exit 1
 fi
 
@@ -92,13 +92,13 @@ if [[ "${STREAM_MODE}" = false ]] && command -v jq &> /dev/null; then
     # Invoke curl separately to avoid masking its return value
     output=$(curl -s -X POST \
       -H "Content-Type: application/json" \
-      "https://generativelanguage.googleapis.com/v1beta/models/${MODEL_ID}:${GENERATE_CONTENT_API}?key=${GEMINI_API_KEY}" \
+      "https://generativelanguage.googleapis.com/v1beta/models/${MODEL_ID}:${GENERATE_CONTENT_API}?key=${A_CODER_API_KEY}" \
       -d "@${PAYLOAD_FILE}")
     echo "${output}" | jq .
 else
     curl -X POST \
       -H "Content-Type: application/json" \
-      "https://generativelanguage.googleapis.com/v1beta/models/${MODEL_ID}:${GENERATE_CONTENT_API}?key=${GEMINI_API_KEY}" \
+      "https://generativelanguage.googleapis.com/v1beta/models/${MODEL_ID}:${GENERATE_CONTENT_API}?key=${A_CODER_API_KEY}" \
       -d "@${PAYLOAD_FILE}"
 fi
 

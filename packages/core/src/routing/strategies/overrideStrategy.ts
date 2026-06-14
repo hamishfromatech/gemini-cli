@@ -37,11 +37,11 @@ export class OverrideStrategy implements RoutingStrategy {
     return {
       model: resolveModel(
         overrideModel,
-        config.getGemini31LaunchedSync?.() ?? false,
+        config.getACoder31LaunchedSync?.() ?? false,
         false,
         config.getHasAccessToPreviewModel?.() ?? true,
         config,
-        config.hasGemini35FlashGAAccess?.() ?? false,
+        config.hasACoder35FlashGAAccess?.() ?? false,
       ),
       metadata: {
         source: this.name,

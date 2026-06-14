@@ -36,7 +36,7 @@ export class ModelMappingContentGenerator implements ContentGenerator {
   }
 
   get paidTier(): GeminiUserTier | undefined {
-    return this.wrapped.paidTier;
+    return this.wrapped.paidTier as GeminiUserTier | undefined;
   }
 
   private mapModel<T extends { model?: string }>(req: T): T {

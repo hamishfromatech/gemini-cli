@@ -5,7 +5,7 @@
  */
 
 import { describe, it, beforeAll, afterAll, afterEach } from 'vitest';
-import { TestRig, MemoryTestHarness } from '@google/gemini-cli-test-utils';
+import { TestRig, MemoryTestHarness } from '@the-a-tech-corporation/test-utils';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import {
@@ -28,8 +28,8 @@ const TOLERANCE_PERCENT = 10;
 
 // Fake API key for tests using fake responses
 const TEST_ENV = {
-  GEMINI_API_KEY: 'fake-memory-test-key',
-  GEMINI_MEMORY_MONITOR_INTERVAL: '100',
+  OPENAI_API_KEY: 'fake-memory-test-key',
+  A_CODER_MEMORY_MONITOR_INTERVAL: '100',
 };
 
 describe('Memory Usage Tests', () => {
@@ -278,7 +278,7 @@ describe('Memory Usage Tests', () => {
           // Ensure the history file is linked
           const targetChatsDir = join(
             rig.homeDir!,
-            '.gemini',
+            '.a-coder',
             'tmp',
             getProjectHash(rig.testDir!),
             'chats',
@@ -325,7 +325,7 @@ describe('Memory Usage Tests', () => {
           // Ensure the history file is linked
           const targetChatsDir = join(
             rig.homeDir!,
-            '.gemini',
+            '.a-coder',
             'tmp',
             getProjectHash(rig.testDir!),
             'chats',

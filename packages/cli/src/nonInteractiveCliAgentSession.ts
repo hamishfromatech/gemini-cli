@@ -10,7 +10,7 @@ import type {
   UserFeedbackPayload,
   AgentEvent,
   ContentPart,
-} from '@google/gemini-cli-core';
+} from '@the-a-tech-corporation/core';
 import { isSlashCommand } from './ui/utils/commandUtils.js';
 import type { LoadedSettings } from './config/settings.js';
 import {
@@ -39,7 +39,7 @@ import {
   geminiPartsToContentParts,
   displayContentToString,
   debugLogger,
-} from '@google/gemini-cli-core';
+} from '@the-a-tech-corporation/core';
 
 import type { Part } from '@google/genai';
 import readline from 'node:readline';
@@ -83,7 +83,7 @@ export async function runNonInteractive({
       },
     });
 
-    if (process.env['GEMINI_CLI_ACTIVITY_LOG_TARGET']) {
+    if (process.env['A_CODER_CLI_ACTIVITY_LOG_TARGET']) {
       const { setupInitialActivityLogger } = await import(
         './utils/devtoolsService.js'
       );
@@ -223,7 +223,7 @@ export async function runNonInteractive({
         }
       });
 
-      const geminiClient = config.getGeminiClient();
+      const aCoderClient = config.getACoderClient();
       scheduler = new Scheduler({
         context: config,
         messageBus: config.getMessageBus(),
@@ -233,7 +233,7 @@ export async function runNonInteractive({
 
       // Initialize chat.  Resume if resume data is passed.
       if (resumedSessionData) {
-        await geminiClient.resumeChat(
+        await aCoderClient.resumeChat(
           convertSessionToClientHistory(
             resumedSessionData.conversation.messages,
           ),
@@ -297,7 +297,7 @@ export async function runNonInteractive({
 
       // Create LegacyAgentSession — owns the agentic loop
       const session = new LegacyAgentSession({
-        client: geminiClient,
+        client: aCoderClient,
         scheduler,
         config,
         promptId: prompt_id,

@@ -13,14 +13,14 @@ import type { RoutingContext } from '../routingStrategy.js';
 import type { Config } from '../../config/config.js';
 import type { BaseLlmClient } from '../../core/baseLlmClient.js';
 import {
-  PREVIEW_GEMINI_FLASH_MODEL,
-  PREVIEW_GEMINI_MODEL,
-  PREVIEW_GEMINI_3_1_MODEL,
-  PREVIEW_GEMINI_3_1_CUSTOM_TOOLS_MODEL,
-  PREVIEW_GEMINI_MODEL_AUTO,
-  DEFAULT_GEMINI_MODEL_AUTO,
-  DEFAULT_GEMINI_MODEL,
-  DEFAULT_GEMINI_FLASH_MODEL,
+  PREVIEW_A_CODER_FLASH_MODEL,
+  PREVIEW_A_CODER_MODEL,
+  PREVIEW_A_CODER_3_1_MODEL,
+  PREVIEW_A_CODER_3_1_CUSTOM_TOOLS_MODEL,
+  PREVIEW_A_CODER_MODEL_AUTO,
+  DEFAULT_A_CODER_MODEL_AUTO,
+  DEFAULT_A_CODER_MODEL,
+  DEFAULT_A_CODER_FLASH_MODEL,
 } from '../../config/models.js';
 import { promptIdContext } from '../../utils/promptIdContext.js';
 import type { Content } from '@google/genai';
@@ -58,7 +58,7 @@ describe('NumericalClassifierStrategy', () => {
       modelConfigService: {
         getResolvedConfig: vi.fn().mockReturnValue(mockResolvedConfig),
       },
-      getModel: vi.fn().mockReturnValue(PREVIEW_GEMINI_MODEL_AUTO),
+      getModel: vi.fn().mockReturnValue(PREVIEW_A_CODER_MODEL_AUTO),
       getSessionId: vi.fn().mockReturnValue('control-group-id'), // Default to Control Group (Hash 71 >= 50)
       getNumericalRoutingEnabled: vi.fn().mockResolvedValue(true),
       getResolvedClassifierThreshold: vi.fn().mockResolvedValue(90),
@@ -103,7 +103,7 @@ describe('NumericalClassifierStrategy', () => {
   });
 
   it('should return null if the model is not a Gemini 3 model', async () => {
-    vi.mocked(mockConfig.getModel).mockReturnValue(DEFAULT_GEMINI_MODEL_AUTO);
+    vi.mocked(mockConfig.getModel).mockReturnValue(DEFAULT_A_CODER_MODEL_AUTO);
 
     const decision = await strategy.route(
       mockContext,
@@ -117,7 +117,7 @@ describe('NumericalClassifierStrategy', () => {
   });
 
   it('should return null if the model is explicitly a Gemini 2 model', async () => {
-    vi.mocked(mockConfig.getModel).mockReturnValue(DEFAULT_GEMINI_MODEL);
+    vi.mocked(mockConfig.getModel).mockReturnValue(DEFAULT_A_CODER_MODEL);
 
     const decision = await strategy.route(
       mockContext,
@@ -179,7 +179,7 @@ describe('NumericalClassifierStrategy', () => {
       );
 
       expect(decision).toEqual({
-        model: PREVIEW_GEMINI_FLASH_MODEL,
+        model: PREVIEW_A_CODER_FLASH_MODEL,
         metadata: {
           source: 'NumericalClassifier (Default)',
           latencyMs: expect.any(Number),
@@ -205,7 +205,7 @@ describe('NumericalClassifierStrategy', () => {
       );
 
       expect(decision).toEqual({
-        model: PREVIEW_GEMINI_MODEL,
+        model: PREVIEW_A_CODER_MODEL,
         metadata: {
           source: 'NumericalClassifier (Default)',
           latencyMs: expect.any(Number),
@@ -237,7 +237,7 @@ describe('NumericalClassifierStrategy', () => {
       );
 
       expect(decision).toEqual({
-        model: PREVIEW_GEMINI_FLASH_MODEL, // Score 60 < Threshold 70
+        model: PREVIEW_A_CODER_FLASH_MODEL, // Score 60 < Threshold 70
         metadata: {
           source: 'NumericalClassifier (Remote)',
           latencyMs: expect.any(Number),
@@ -267,7 +267,7 @@ describe('NumericalClassifierStrategy', () => {
       );
 
       expect(decision).toEqual({
-        model: PREVIEW_GEMINI_FLASH_MODEL, // Score 40 < Threshold 45.5
+        model: PREVIEW_A_CODER_FLASH_MODEL, // Score 40 < Threshold 45.5
         metadata: {
           source: 'NumericalClassifier (Remote)',
           latencyMs: expect.any(Number),
@@ -297,7 +297,7 @@ describe('NumericalClassifierStrategy', () => {
       );
 
       expect(decision).toEqual({
-        model: PREVIEW_GEMINI_MODEL, // Score 35 >= Threshold 30
+        model: PREVIEW_A_CODER_MODEL, // Score 35 >= Threshold 30
         metadata: {
           source: 'NumericalClassifier (Remote)',
           latencyMs: expect.any(Number),
@@ -325,7 +325,7 @@ describe('NumericalClassifierStrategy', () => {
       );
 
       expect(decision).toEqual({
-        model: PREVIEW_GEMINI_FLASH_MODEL, // Score 80 < Default Threshold 90
+        model: PREVIEW_A_CODER_FLASH_MODEL, // Score 80 < Default Threshold 90
         metadata: {
           source: 'NumericalClassifier (Default)',
           latencyMs: expect.any(Number),
@@ -352,7 +352,7 @@ describe('NumericalClassifierStrategy', () => {
       );
 
       expect(decision).toEqual({
-        model: PREVIEW_GEMINI_FLASH_MODEL,
+        model: PREVIEW_A_CODER_FLASH_MODEL,
         metadata: {
           source: 'NumericalClassifier (Default)',
           latencyMs: expect.any(Number),
@@ -379,7 +379,7 @@ describe('NumericalClassifierStrategy', () => {
       );
 
       expect(decision).toEqual({
-        model: PREVIEW_GEMINI_MODEL,
+        model: PREVIEW_A_CODER_MODEL,
         metadata: {
           source: 'NumericalClassifier (Default)',
           latencyMs: expect.any(Number),
@@ -831,7 +831,7 @@ describe('NumericalClassifierStrategy', () => {
   });
 
   describe('Gemini 3.1 and Custom Tools Routing', () => {
-    it('should route to PREVIEW_GEMINI_3_1_MODEL when Gemini 3.1 is launched', async () => {
+    it('should route to PREVIEW_A_CODER_3_1_MODEL when Gemini 3.1 is launched', async () => {
       vi.mocked(mockConfig.getGemini31Launched).mockResolvedValue(true);
       const mockApiResponse = {
         complexity_reasoning: 'Complex task',
@@ -848,9 +848,9 @@ describe('NumericalClassifierStrategy', () => {
         mockLocalLiteRtLmClient,
       );
 
-      expect(decision?.model).toBe(PREVIEW_GEMINI_3_1_MODEL);
+      expect(decision?.model).toBe(PREVIEW_A_CODER_3_1_MODEL);
     });
-    it('should route to PREVIEW_GEMINI_3_1_CUSTOM_TOOLS_MODEL when Gemini 3.1 is launched and auth is USE_GEMINI', async () => {
+    it('should route to PREVIEW_A_CODER_3_1_CUSTOM_TOOLS_MODEL when Gemini 3.1 is launched and auth is USE_GEMINI', async () => {
       vi.mocked(mockConfig.getGemini31Launched).mockResolvedValue(true);
       vi.mocked(mockConfig.getContentGeneratorConfig).mockReturnValue({
         authType: AuthType.USE_GEMINI,
@@ -870,7 +870,7 @@ describe('NumericalClassifierStrategy', () => {
         mockLocalLiteRtLmClient,
       );
 
-      expect(decision?.model).toBe(PREVIEW_GEMINI_3_1_CUSTOM_TOOLS_MODEL);
+      expect(decision?.model).toBe(PREVIEW_A_CODER_3_1_CUSTOM_TOOLS_MODEL);
     });
 
     it('should NOT route to custom tools model when auth is USE_VERTEX_AI', async () => {
@@ -893,12 +893,12 @@ describe('NumericalClassifierStrategy', () => {
         mockLocalLiteRtLmClient,
       );
 
-      expect(decision?.model).toBe(PREVIEW_GEMINI_3_1_MODEL);
+      expect(decision?.model).toBe(PREVIEW_A_CODER_3_1_MODEL);
     });
 
-    it('should route to DEFAULT_GEMINI_FLASH_MODEL when hasGemini35FlashGAAccess is true', async () => {
-      mockConfig.hasGemini35FlashGAAccess = vi.fn().mockReturnValue(true);
-      vi.mocked(mockConfig.getModel).mockReturnValue(PREVIEW_GEMINI_MODEL_AUTO);
+    it('should route to DEFAULT_A_CODER_FLASH_MODEL when hasACoder35FlashGAAccess is true', async () => {
+      mockConfig.hasACoder35FlashGAAccess = vi.fn().mockReturnValue(true);
+      vi.mocked(mockConfig.getModel).mockReturnValue(PREVIEW_A_CODER_MODEL_AUTO);
 
       const mockApiResponse = {
         complexity_reasoning: 'Simple task',
@@ -915,7 +915,7 @@ describe('NumericalClassifierStrategy', () => {
         mockLocalLiteRtLmClient,
       );
 
-      expect(decision?.model).toBe(DEFAULT_GEMINI_FLASH_MODEL);
+      expect(decision?.model).toBe(DEFAULT_A_CODER_FLASH_MODEL);
     });
   });
 });

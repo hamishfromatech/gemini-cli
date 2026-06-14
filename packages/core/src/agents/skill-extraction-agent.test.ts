@@ -15,14 +15,14 @@ import {
   SHELL_TOOL_NAME,
   WRITE_FILE_TOOL_NAME,
 } from '../tools/tool-names.js';
-import { PREVIEW_GEMINI_FLASH_MODEL } from '../config/models.js';
+import { PREVIEW_A_CODER_FLASH_MODEL } from '../config/models.js';
 
 describe('SkillExtractionAgent', () => {
   const skillsDir = '/tmp/skills';
   const sessionIndex =
     '[NEW] Debug login flow (12 user msgs) — /tmp/chats/session-1.json';
   const existingSkillsSummary =
-    '## Workspace Skills (.gemini/skills — do NOT duplicate)\n- **existing-skill**: Existing description';
+    '## Workspace Skills (.a-coder/skills — do NOT duplicate)\n- **existing-skill**: Existing description';
 
   const agent = SkillExtractionAgent(
     skillsDir,
@@ -34,7 +34,7 @@ describe('SkillExtractionAgent', () => {
     expect(agent.kind).toBe('local');
     expect(agent.name).toBe('confucius');
     expect(agent.displayName).toBe('Skill Extractor');
-    expect(agent.modelConfig.model).toBe(PREVIEW_GEMINI_FLASH_MODEL);
+    expect(agent.modelConfig.model).toBe(PREVIEW_A_CODER_FLASH_MODEL);
     expect(agent.memoryInboxAccess).toBe(true);
     expect(agent.autoMemoryExtractionWriteAccess).toBe(true);
     expect(agent.includeExtensionContext).toBe(false);
@@ -98,11 +98,11 @@ describe('SkillExtractionAgent', () => {
     expect(prompt).toContain(
       'the target MUST be exactly the single global personal memory',
     );
-    expect(prompt).toContain('~/.gemini/GEMINI.md');
+    expect(prompt).toContain('~/.a-coder/A_CODER.md');
     expect(prompt).not.toContain('memory.md');
     expect(prompt).not.toContain('and siblings');
     expect(prompt).toContain(
-      'Project/workspace shared instructions (GEMINI.md and similar files',
+      'Project/workspace shared instructions (A_CODER.md and similar files',
     );
     expect(prompt).toContain('MEMORY PATCH FORMAT (STRICT)');
     expect(prompt).toContain('--- /dev/null');

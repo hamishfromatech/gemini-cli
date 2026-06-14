@@ -23,27 +23,27 @@ import {
   type SlashCommandActionReturn,
 } from './types.js';
 import { getUrlOpenCommand } from '../../ui/utils/commandUtils.js';
-import { debugLogger } from '@google/gemini-cli-core';
+import { debugLogger } from '@the-a-tech-corporation/core';
 
 export const GITHUB_WORKFLOW_PATHS = [
-  'gemini-dispatch/gemini-dispatch.yml',
-  'gemini-assistant/gemini-invoke.yml',
-  'gemini-assistant/gemini-plan-execute.yml',
-  'issue-triage/gemini-triage.yml',
-  'issue-triage/gemini-scheduled-triage.yml',
-  'pr-review/gemini-review.yml',
+  'a-coder-dispatch/a-coder-dispatch.yml',
+  'a-coder-assistant/a-coder-invoke.yml',
+  'a-coder-assistant/a-coder-plan-execute.yml',
+  'issue-triage/a-coder-triage.yml',
+  'issue-triage/a-coder-scheduled-triage.yml',
+  'pr-review/a-coder-review.yml',
 ];
 
 export const GITHUB_COMMANDS_PATHS = [
-  'gemini-assistant/gemini-invoke.toml',
-  'gemini-assistant/gemini-plan-execute.toml',
-  'issue-triage/gemini-scheduled-triage.toml',
-  'issue-triage/gemini-triage.toml',
-  'pr-review/gemini-review.toml',
+  'a-coder-assistant/a-coder-invoke.toml',
+  'a-coder-assistant/a-coder-plan-execute.toml',
+  'issue-triage/a-coder-scheduled-triage.toml',
+  'issue-triage/a-coder-triage.toml',
+  'pr-review/a-coder-review.toml',
 ];
 
 const REPO_DOWNLOAD_URL =
-  'https://raw.githubusercontent.com/google-github-actions/run-gemini-cli';
+  'https://raw.githubusercontent.com/the-a-tech-corporation/run-a-coder-cli';
 const SOURCE_DIR = 'examples/workflows';
 // Generate OS-specific commands to open the GitHub pages needed for setup.
 function getOpenUrlsCommands(readmeUrl: string): string[] {
@@ -65,9 +65,9 @@ function getOpenUrlsCommands(readmeUrl: string): string[] {
   return commands;
 }
 
-// Add Gemini CLI specific entries to .gitignore file
+// Add A-Coder CLI specific entries to .gitignore file
 export async function updateGitignore(gitRepoRoot: string): Promise<void> {
-  const gitignoreEntries = ['.gemini/', 'gha-creds-*.json'];
+  const gitignoreEntries = ['.a-coder/', 'gha-creds-*.json'];
 
   const gitignorePath = path.join(gitRepoRoot, '.gitignore');
   try {
@@ -232,7 +232,7 @@ export const setupGithubCommand: SlashCommand = {
     // Get the latest release tag from GitHub
     const proxy = context?.services?.agentContext?.config.getProxy();
     const releaseTag = await getLatestGitHubRelease(proxy);
-    const readmeUrl = `https://github.com/google-github-actions/run-gemini-cli/blob/${releaseTag}/README.md#quick-start`;
+    const readmeUrl = `https://github.com/the-a-tech-corporation/run-a-coder-cli/blob/${releaseTag}/README.md#quick-start`;
 
     // Create workflows directory
     const workflowsDir = path.join(gitRepoRoot, '.github', 'workflows');

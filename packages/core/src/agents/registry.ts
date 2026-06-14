@@ -169,7 +169,7 @@ export class AgentRegistry {
       return;
     }
 
-    // Load project-level agents: .gemini/agents/ (relative to Project Root)
+    // Load project-level agents: .a-coder/agents/ (relative to Project Root)
     const folderTrustEnabled = this.config.getFolderTrust();
     const isTrustedFolder = this.config.isTrustedFolder();
 
@@ -231,7 +231,7 @@ export class AgentRegistry {
       );
     }
 
-    // Load user-level agents: ~/.gemini/agents/
+    // Load user-level agents: ~/.a-coder/agents/
     const userAgentsDir = Storage.getUserAgentsDir();
     const userAgents = await loadAgentsFromDirectory(userAgentsDir);
     for (const error of userAgents.errors) {

@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2026 Google LLC
+ * Copyright 2026 The A-Tech Corporation
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -8,7 +8,7 @@ import { execSync } from 'node:child_process';
 
 const PROJECT_ID = 36;
 const ORG = 'google-gemini';
-const REPO = 'google-gemini/gemini-cli';
+const REPO = 'hamishfromatech/a-coder-cli';
 const MAINTAINERS_REPO = 'google-gemini/maintainers-gemini-cli';
 
 // Parent issues to recursively traverse

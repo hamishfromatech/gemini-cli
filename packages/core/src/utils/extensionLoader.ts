@@ -32,7 +32,7 @@ export abstract class ExtensionLoader {
    * Fully initializes all active extensions.
    *
    * Called within `Config.initialize`, which must already have an
-   * McpClientManager, PromptRegistry, and GeminiChat set up.
+   * McpClientManager, PromptRegistry, and ACoderChat set up.
    */
   async start(config: Config): Promise<void> {
     this.isStarting = true;
@@ -125,7 +125,7 @@ export abstract class ExtensionLoader {
       // reload memory, this is somewhat expensive and also busts the context
       // cache, we want to only do it once.
       await this.config.getMemoryContextManager()?.refresh();
-      this.config.getGeminiClient().updateSystemInstruction();
+      this.config.getACoderClient().updateSystemInstruction();
       await this.config.getHookSystem()?.initialize();
       await this.config.getAgentRegistry().reload();
       await this.config.reloadSkills();
@@ -140,9 +140,9 @@ export abstract class ExtensionLoader {
     extension: GeminiCLIExtension,
   ): Promise<void> {
     if (extension.excludeTools && extension.excludeTools.length > 0) {
-      const geminiClient = this.config?.geminiClient;
-      if (geminiClient?.isInitialized()) {
-        await geminiClient.setTools();
+      const aCoderClient = this.config?.aCoderClient;
+      if (aCoderClient?.isInitialized()) {
+        await aCoderClient.setTools();
       }
     }
   }

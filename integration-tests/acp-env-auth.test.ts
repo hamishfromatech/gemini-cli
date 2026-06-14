@@ -13,7 +13,7 @@ import { Writable, Readable } from 'node:stream';
 import { env } from 'node:process';
 import * as acp from '@agentclientprotocol/sdk';
 
-const sandboxEnv = env['GEMINI_SANDBOX'];
+const sandboxEnv = env['A_CODER_SANDBOX'];
 const itMaybe = sandboxEnv && sandboxEnv !== 'false' ? it.skip : it;
 
 class MockClient implements acp.Client {
@@ -50,7 +50,7 @@ describe.skip('ACP Environment and Auth', () => {
       mkdirSync(projectDir, { recursive: true });
       writeFileSync(
         join(projectDir, '.env'),
-        'GEMINI_API_KEY=test-key-from-env\n',
+        'OPENAI_API_KEY=test-key-from-env\n',
       );
 
       const bundlePath = join(import.meta.dirname, '..', 'bundle/gemini.js');
@@ -60,8 +60,8 @@ describe.skip('ACP Environment and Auth', () => {
         stdio: ['pipe', 'pipe', 'inherit'],
         env: {
           ...process.env,
-          GEMINI_CLI_HOME: rig.homeDir!,
-          GEMINI_API_KEY: undefined,
+          A_CODER_CLI_HOME: rig.homeDir!,
+          OPENAI_API_KEY: undefined,
           VERBOSE: 'true',
         },
       });
@@ -125,8 +125,8 @@ describe.skip('ACP Environment and Auth', () => {
         stdio: ['pipe', 'pipe', 'inherit'],
         env: {
           ...process.env,
-          GEMINI_CLI_HOME: rig.homeDir!,
-          GEMINI_API_KEY: undefined,
+          A_CODER_CLI_HOME: rig.homeDir!,
+          OPENAI_API_KEY: undefined,
           VERBOSE: 'true',
         },
       });

@@ -12,7 +12,7 @@ import {
   FatalConfigError,
   ideContextStore,
   normalizePath,
-} from '@google/gemini-cli-core';
+} from '@the-a-tech-corporation/core';
 import {
   loadTrustedFolders,
   TrustLevel,
@@ -25,9 +25,9 @@ import { createMockSettings } from '../test-utils/settings.js';
 // We explicitly do NOT mock 'fs' or 'proper-lockfile' here to ensure
 // we are testing the actual behavior on the real file system.
 
-vi.mock('@google/gemini-cli-core', async (importOriginal) => {
+vi.mock('@the-a-tech-corporation/core', async (importOriginal) => {
   const actual =
-    await importOriginal<typeof import('@google/gemini-cli-core')>();
+    await importOriginal<typeof import('@the-a-tech-corporation/core')>();
   return {
     ...actual,
     homedir: () => '/mock/home/user',
@@ -53,12 +53,12 @@ describe('Trusted Folders', () => {
     trustedFoldersPath = path.join(tempDir, 'trustedFolders.json');
 
     // Set the environment variable to point to the temp file
-    vi.stubEnv('GEMINI_CLI_TRUSTED_FOLDERS_PATH', trustedFoldersPath);
+    vi.stubEnv('A_CODER_CLI_TRUSTED_FOLDERS_PATH', trustedFoldersPath);
 
     // Reset the internal state
     resetTrustedFoldersForTesting();
     vi.clearAllMocks();
-    delete process.env['GEMINI_CLI_TRUST_WORKSPACE'];
+    delete process.env['A_CODER_CLI_TRUST_WORKSPACE'];
   });
 
   afterEach(() => {
@@ -424,7 +424,7 @@ describe('Trusted Folders', () => {
     };
 
     it('should NOT return true when isHeadlessMode is true, ignoring config', async () => {
-      const geminiCore = await import('@google/gemini-cli-core');
+      const geminiCore = await import('@the-a-tech-corporation/core');
       vi.spyOn(geminiCore, 'isHeadlessMode').mockReturnValue(true);
 
       expect(isWorkspaceTrusted(mockSettings)).toEqual({
@@ -433,20 +433,20 @@ describe('Trusted Folders', () => {
       });
     });
 
-    it('should return true when GEMINI_CLI_TRUST_WORKSPACE is true', async () => {
-      process.env['GEMINI_CLI_TRUST_WORKSPACE'] = 'true';
+    it('should return true when A_CODER_CLI_TRUST_WORKSPACE is true', async () => {
+      process.env['A_CODER_CLI_TRUST_WORKSPACE'] = 'true';
       try {
         expect(isWorkspaceTrusted(mockSettings)).toEqual({
           isTrusted: true,
           source: 'env',
         });
       } finally {
-        delete process.env['GEMINI_CLI_TRUST_WORKSPACE'];
+        delete process.env['A_CODER_CLI_TRUST_WORKSPACE'];
       }
     });
 
     it('should fall back to config when isHeadlessMode is false', async () => {
-      const geminiCore = await import('@google/gemini-cli-core');
+      const geminiCore = await import('@the-a-tech-corporation/core');
       vi.spyOn(geminiCore, 'isHeadlessMode').mockReturnValue(false);
 
       const config = { '/projectA': TrustLevel.DO_NOT_TRUST };
@@ -458,7 +458,7 @@ describe('Trusted Folders', () => {
     });
 
     it('should return undefined for isPathTrusted when isHeadlessMode is true', async () => {
-      const geminiCore = await import('@google/gemini-cli-core');
+      const geminiCore = await import('@the-a-tech-corporation/core');
       vi.spyOn(geminiCore, 'isHeadlessMode').mockReturnValue(true);
 
       const folders = loadTrustedFolders();
@@ -536,9 +536,9 @@ describe('Trusted Folders', () => {
       fs.writeFileSync(trustedFoldersPath, JSON.stringify(config), 'utf-8');
 
       const envPath = path.join(untrustedDir, '.env');
-      fs.writeFileSync(envPath, 'GEMINI_API_KEY=secret', 'utf-8');
+      fs.writeFileSync(envPath, 'OPENAI_API_KEY=secret', 'utf-8');
 
-      vi.stubEnv('GEMINI_API_KEY', '');
+      vi.stubEnv('OPENAI_API_KEY', '');
 
       const settings = createMockSettings({
         security: { folderTrust: { enabled: true } },
@@ -546,7 +546,7 @@ describe('Trusted Folders', () => {
 
       loadEnvironment(settings.merged, untrustedDir);
 
-      expect(process.env['GEMINI_API_KEY']).toBe('');
+      expect(process.env['OPENAI_API_KEY']).toBe('');
 
       vi.unstubAllEnvs();
     });

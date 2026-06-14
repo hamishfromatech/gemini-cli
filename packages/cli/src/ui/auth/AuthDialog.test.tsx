@@ -16,7 +16,7 @@ import {
   type Mock,
 } from 'vitest';
 import { AuthDialog } from './AuthDialog.js';
-import { AuthType, type Config, debugLogger } from '@google/gemini-cli-core';
+import { AuthType, type Config, debugLogger } from '@the-a-tech-corporation/core';
 import type { LoadedSettings } from '../../config/settings.js';
 import { AuthState } from '../types.js';
 import { RadioButtonSelect } from '../components/shared/RadioButtonSelect.js';
@@ -27,9 +27,9 @@ import { Text } from 'ink';
 import { RELAUNCH_EXIT_CODE } from '../../utils/processUtils.js';
 
 // Mocks
-vi.mock('@google/gemini-cli-core', async (importOriginal) => {
+vi.mock('@the-a-tech-corporation/core', async (importOriginal) => {
   const actual =
-    await importOriginal<typeof import('@google/gemini-cli-core')>();
+    await importOriginal<typeof import('@the-a-tech-corporation/core')>();
   return {
     ...actual,
     clearCachedCredentialFile: vi.fn(),
@@ -78,9 +78,9 @@ describe('AuthDialog', () => {
   beforeEach(() => {
     vi.resetAllMocks();
     vi.stubEnv('CLOUD_SHELL', undefined as unknown as string);
-    vi.stubEnv('GEMINI_CLI_USE_COMPUTE_ADC', undefined as unknown as string);
-    vi.stubEnv('GEMINI_DEFAULT_AUTH_TYPE', undefined as unknown as string);
-    vi.stubEnv('GEMINI_API_KEY', undefined as unknown as string);
+    vi.stubEnv('A_CODER_CLI_USE_COMPUTE_ADC', undefined as unknown as string);
+    vi.stubEnv('A_CODER_DEFAULT_AUTH_TYPE', undefined as unknown as string);
+    vi.stubEnv('OPENAI_API_KEY', undefined as unknown as string);
 
     props = {
       config: {
@@ -123,10 +123,10 @@ describe('AuthDialog', () => {
         desc: 'in Cloud Shell',
       },
       {
-        env: { GEMINI_CLI_USE_COMPUTE_ADC: 'true' },
+        env: { A_CODER_CLI_USE_COMPUTE_ADC: 'true' },
         shouldContain: [computeAdcItem(metadataServerLabel)],
         shouldNotContain: [computeAdcItem(cloudShellLabel)],
-        desc: 'with GEMINI_CLI_USE_COMPUTE_ADC',
+        desc: 'with A_CODER_CLI_USE_COMPUTE_ADC',
       },
       {
         env: {},
@@ -187,17 +187,17 @@ describe('AuthDialog', () => {
       },
       {
         setup: () => {
-          vi.stubEnv('GEMINI_DEFAULT_AUTH_TYPE', AuthType.USE_GEMINI);
+          vi.stubEnv('A_CODER_DEFAULT_AUTH_TYPE', AuthType.USE_GEMINI);
         },
         expected: AuthType.USE_GEMINI,
-        desc: 'from GEMINI_DEFAULT_AUTH_TYPE env var',
+        desc: 'from A_CODER_DEFAULT_AUTH_TYPE env var',
       },
       {
         setup: () => {
-          vi.stubEnv('GEMINI_API_KEY', 'test-key');
+          vi.stubEnv('OPENAI_API_KEY', 'test-key');
         },
         expected: AuthType.USE_GEMINI,
-        desc: 'from GEMINI_API_KEY env var',
+        desc: 'from OPENAI_API_KEY env var',
       },
       {
         setup: () => {},
@@ -282,7 +282,7 @@ describe('AuthDialog', () => {
 
     it('always shows API key dialog even when env var is present', async () => {
       mockedValidateAuthMethod.mockResolvedValue(null);
-      vi.stubEnv('GEMINI_API_KEY', 'test-key-from-env');
+      vi.stubEnv('OPENAI_API_KEY', 'test-key-from-env');
       // props.settings.merged.security.auth.selectedType is undefined here, simulating initial setup
 
       const { unmount } = await renderWithProviders(<AuthDialog {...props} />);
@@ -298,7 +298,7 @@ describe('AuthDialog', () => {
 
     it('always shows API key dialog even when env var is empty string', async () => {
       mockedValidateAuthMethod.mockResolvedValue(null);
-      vi.stubEnv('GEMINI_API_KEY', ''); // Empty string
+      vi.stubEnv('OPENAI_API_KEY', ''); // Empty string
       // props.settings.merged.security.auth.selectedType is undefined here
 
       const { unmount } = await renderWithProviders(<AuthDialog {...props} />);
@@ -314,7 +314,7 @@ describe('AuthDialog', () => {
 
     it('shows API key dialog on initial setup if no env var is present', async () => {
       mockedValidateAuthMethod.mockResolvedValue(null);
-      // process.env['GEMINI_API_KEY'] is not set
+      // process.env['OPENAI_API_KEY'] is not set
       // props.settings.merged.security.auth.selectedType is undefined here, simulating initial setup
 
       const { unmount } = await renderWithProviders(<AuthDialog {...props} />);
@@ -330,7 +330,7 @@ describe('AuthDialog', () => {
 
     it('always shows API key dialog on re-auth even if env var is present', async () => {
       mockedValidateAuthMethod.mockResolvedValue(null);
-      vi.stubEnv('GEMINI_API_KEY', 'test-key-from-env');
+      vi.stubEnv('OPENAI_API_KEY', 'test-key-from-env');
       // Simulate switching from a different auth method (e.g., Google Login → API key)
       props.settings.merged.security.auth.selectedType =
         AuthType.LOGIN_WITH_GOOGLE;

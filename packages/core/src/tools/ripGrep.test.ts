@@ -16,7 +16,7 @@ import { isSubpath, resolveToRealPath } from '../utils/paths.js';
 import fs from 'node:fs/promises';
 import os from 'node:os';
 import type { Config } from '../config/config.js';
-import { GEMINI_IGNORE_FILE_NAME } from '../config/constants.js';
+import { A_CODER_IGNORE_FILE_NAME } from '../config/constants.js';
 import { createMockWorkspaceContext } from '../test-utils/mockWorkspaceContext.js';
 import { spawn, type ChildProcess } from 'node:child_process';
 import { PassThrough, Readable } from 'node:stream';
@@ -116,14 +116,14 @@ function createMockConfig(
     getDebugMode: () => false,
     getFileFilteringOptions: () => ({
       respectGitIgnore: true,
-      respectGeminiIgnore: true,
+      respectACoderIgnore: true,
       customIgnoreFilePaths: [],
     }),
     getFileFilteringRespectGitIgnore(this: Config) {
       return this.getFileFilteringOptions().respectGitIgnore;
     },
-    getFileFilteringRespectGeminiIgnore(this: Config) {
-      return this.getFileFilteringOptions().respectGeminiIgnore;
+    getFileFilteringRespectACoderIgnore(this: Config) {
+      return this.getFileFilteringOptions().respectACoderIgnore;
     },
     storage: {
       getProjectTempDir: vi.fn().mockReturnValue('/tmp/project'),
@@ -557,13 +557,13 @@ describe('RipGrepTool', () => {
     }, 10000);
 
     it('should filter out files based on FileDiscoveryService even if ripgrep returns them', async () => {
-      // Create .geminiignore to ignore 'ignored.txt'
+      // Create .a-coder-ignore to ignore 'ignored.txt'
       await fs.writeFile(
-        path.join(tempRootDir, GEMINI_IGNORE_FILE_NAME),
+        path.join(tempRootDir, A_CODER_IGNORE_FILE_NAME),
         'ignored.txt',
       );
 
-      // Re-initialize tool so FileDiscoveryService loads the new .geminiignore
+      // Re-initialize tool so FileDiscoveryService loads the new .a-coder-ignore
       const toolWithIgnore = new RipGrepTool(
         mockConfig,
         createMockMessageBus(),
@@ -1316,7 +1316,7 @@ describe('RipGrepTool', () => {
         'getFileFilteringOptions',
       ).mockReturnValue({
         respectGitIgnore: false,
-        respectGeminiIgnore: true,
+        respectACoderIgnore: true,
         customIgnoreFilePaths: [],
       });
       const gitIgnoreDisabledTool = new RipGrepTool(
@@ -1350,8 +1350,8 @@ describe('RipGrepTool', () => {
       );
     });
 
-    it('should add .geminiignore when enabled and patterns exist', async () => {
-      const geminiIgnorePath = path.join(tempRootDir, GEMINI_IGNORE_FILE_NAME);
+    it('should add .a-coder-ignore when enabled and patterns exist', async () => {
+      const geminiIgnorePath = path.join(tempRootDir, A_CODER_IGNORE_FILE_NAME);
       await fs.writeFile(geminiIgnorePath, 'ignored.log');
 
       const configWithGeminiIgnore = createMockConfig(tempRootDir);
@@ -1360,7 +1360,7 @@ describe('RipGrepTool', () => {
         'getFileFilteringOptions',
       ).mockReturnValue({
         respectGitIgnore: true,
-        respectGeminiIgnore: true,
+        respectACoderIgnore: true,
         customIgnoreFilePaths: [],
       });
       const geminiIgnoreTool = new RipGrepTool(
@@ -1394,8 +1394,8 @@ describe('RipGrepTool', () => {
       );
     });
 
-    it('should skip .geminiignore when disabled', async () => {
-      const geminiIgnorePath = path.join(tempRootDir, GEMINI_IGNORE_FILE_NAME);
+    it('should skip .a-coder-ignore when disabled', async () => {
+      const geminiIgnorePath = path.join(tempRootDir, A_CODER_IGNORE_FILE_NAME);
       await fs.writeFile(geminiIgnorePath, 'ignored.log');
       const configWithoutGeminiIgnore = createMockConfig(tempRootDir);
       vi.spyOn(
@@ -1403,7 +1403,7 @@ describe('RipGrepTool', () => {
         'getFileFilteringOptions',
       ).mockReturnValue({
         respectGitIgnore: true,
-        respectGeminiIgnore: false,
+        respectACoderIgnore: false,
         customIgnoreFilePaths: [],
       });
       const geminiIgnoreTool = new RipGrepTool(

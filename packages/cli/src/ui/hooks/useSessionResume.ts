@@ -8,12 +8,12 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import {
   coreEvents,
   convertSessionToClientHistory,
-} from '@google/gemini-cli-core';
+} from '@the-a-tech-corporation/core';
 import type {
   HistoryTurn,
   Config,
   ResumedSessionData,
-} from '@google/gemini-cli-core';
+} from '@the-a-tech-corporation/core';
 import type { HistoryItemWithoutId } from '../types.js';
 import type { UseHistoryManagerReturn } from './useHistoryManager.js';
 import { convertSessionToHistoryFormats } from './useSessionBrowser.js';
@@ -23,7 +23,7 @@ interface UseSessionResumeParams {
   config: Config;
   historyManager: UseHistoryManagerReturn;
   refreshStatic: () => void;
-  isGeminiClientInitialized: boolean;
+  isACoderClientInitialized: boolean;
   setQuittingMessages: (messages: null) => void;
   resumedSessionData?: ResumedSessionData;
   isAuthenticating: boolean;
@@ -38,7 +38,7 @@ export function useSessionResume({
   config,
   historyManager,
   refreshStatic,
-  isGeminiClientInitialized,
+  isACoderClientInitialized,
   setQuittingMessages,
   resumedSessionData,
   isAuthenticating,
@@ -63,7 +63,7 @@ export function useSessionResume({
       resumedData: ResumedSessionData,
     ) => {
       // Wait for the client.
-      if (!isGeminiClientInitialized) {
+      if (!isACoderClientInitialized) {
         return;
       }
 
@@ -89,7 +89,7 @@ export function useSessionResume({
         }
 
         // Give the history to the Gemini client.
-        await config.getGeminiClient()?.resumeChat(clientHistory, resumedData);
+        await config.getACoderClient()?.resumeChat(clientHistory, resumedData);
       } catch (error) {
         coreEvents.emitFeedback(
           'error',
@@ -100,7 +100,7 @@ export function useSessionResume({
         setIsResuming(false);
       }
     },
-    [config, isGeminiClientInitialized, setQuittingMessages],
+    [config, isACoderClientInitialized, setQuittingMessages],
   );
 
   // Handle interactive resume from the command line (-r/--resume without -p/--prompt-interactive).
@@ -110,7 +110,7 @@ export function useSessionResume({
     if (
       resumedSessionData &&
       !isAuthenticating &&
-      isGeminiClientInitialized &&
+      isACoderClientInitialized &&
       !hasLoadedResumedSession.current
     ) {
       hasLoadedResumedSession.current = true;
@@ -126,7 +126,7 @@ export function useSessionResume({
   }, [
     resumedSessionData,
     isAuthenticating,
-    isGeminiClientInitialized,
+    isACoderClientInitialized,
     loadHistoryForResume,
   ]);
 

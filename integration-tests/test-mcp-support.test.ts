@@ -37,7 +37,7 @@ describe('test-mcp-support', () => {
     });
 
     // Workaround for ProjectRegistry save issue
-    const userGeminiDir = join(rig.homeDir!, '.gemini');
+    const userGeminiDir = join(rig.homeDir!, '.a-coder');
     fs.writeFileSync(join(userGeminiDir, 'projects.json'), '{"projects":{}}');
 
     const builder = new TestMcpServerBuilder('weather-server').addTool(
@@ -57,7 +57,7 @@ describe('test-mcp-support', () => {
     // Run the CLI asking for weather
     const output = await rig.run({
       args: 'What is the weather in London? Answer with the raw tool response snippet.',
-      env: { GEMINI_API_KEY: 'dummy' },
+      env: { OPENAI_API_KEY: 'dummy' },
     });
 
     // Assert tool call

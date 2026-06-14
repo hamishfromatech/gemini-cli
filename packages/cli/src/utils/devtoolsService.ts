@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { debugLogger, type Config } from '@google/gemini-cli-core';
+import { debugLogger, type Config } from '@the-a-tech-corporation/core';
 import WebSocket from 'ws';
 import {
   initActivityLogger,
@@ -60,7 +60,7 @@ async function startOrJoinDevTools(
   defaultHost: string,
   defaultPort: number,
 ): Promise<{ host: string; port: number }> {
-  const mod = await import('@google/gemini-cli-devtools');
+  const mod = await import('@the-a-tech-corporation/devtools');
   const devtools: IDevTools = mod.DevTools.getInstance();
   const url = await devtools.start();
   const actualPort = devtools.getPort();
@@ -119,7 +119,7 @@ async function handlePromotion(config: Config) {
  * Transport is only attached when the user presses F12.
  */
 export function setupInitialActivityLogger(config: Config) {
-  const target = process.env['GEMINI_CLI_ACTIVITY_LOG_TARGET'];
+  const target = process.env['A_CODER_CLI_ACTIVITY_LOG_TARGET'];
 
   if (target) {
     if (!config.storage) return;
@@ -208,7 +208,7 @@ export async function toggleDevToolsPanel(
 
   try {
     const { openBrowserSecurely, shouldLaunchBrowser } = await import(
-      '@google/gemini-cli-core'
+      '@the-a-tech-corporation/core'
     );
     const url = await startDevToolsServer(config);
     if (shouldLaunchBrowser()) {

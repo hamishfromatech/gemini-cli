@@ -18,7 +18,7 @@ import {
   isTerminalEditor,
   isValidEditorType,
   resolveEditorTypeFromCommand,
-} from '@google/gemini-cli-core';
+} from '@the-a-tech-corporation/core';
 
 /**
  * Command name substrings used to guess whether an unknown $VISUAL/$EDITOR

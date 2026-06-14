@@ -1,20 +1,20 @@
-# Sandboxing in Gemini CLI
+# Sandboxing in A-Coder CLI
 
-This document provides a guide to sandboxing in Gemini CLI, including
+This document provides a guide to sandboxing in A-Coder CLI, including
 prerequisites, quickstart, and configuration.
 
 ## Prerequisites
 
-Before using sandboxing, you need to install and set up Gemini CLI:
+Before using sandboxing, you need to install and set up A-Coder CLI:
 
 ```bash
-npm install -g @google/gemini-cli
+npm install -g @the-a-tech-corporation/a-coder-cli
 ```
 
 To verify the installation:
 
 ```bash
-gemini --version
+a-coder-cli --version
 ```
 
 ## Overview of sandboxing
@@ -39,7 +39,7 @@ configuration file.
 ### Using the command flag
 
 ```bash
-gemini -s -p "analyze the code structure"
+a-coder-cli -s -p "analyze the code structure"
 ```
 
 ### Using an environment variable
@@ -47,15 +47,15 @@ gemini -s -p "analyze the code structure"
 **macOS/Linux**
 
 ```bash
-export GEMINI_SANDBOX=true
-gemini -p "run the test suite"
+export A_CODER_SANDBOX=true
+a-coder-cli -p "run the test suite"
 ```
 
 **Windows (PowerShell)**
 
 ```powershell
-$env:GEMINI_SANDBOX="true"
-gemini -p "run the test suite"
+$env:A_CODER_SANDBOX="true"
+a-coder-cli -p "run the test suite"
 ```
 
 ### Configuring via settings.json
@@ -74,7 +74,7 @@ Enable sandboxing using one of the following methods (in order of precedence):
 
 1. **Command flag**: `-s` or `--sandbox`
 2. **Environment variable**:
-   `GEMINI_SANDBOX=true|docker|podman|sandbox-exec|runsc|lxc`
+   `A_CODER_SANDBOX=true|docker|podman|sandbox-exec|runsc|lxc`
 3. **Settings file**: `"sandbox": true` in the `tools` object of your
    `settings.json` file (for example, `{"tools": {"sandbox": true}}`).
 
@@ -102,7 +102,7 @@ Built-in profiles (set via `SEATBELT_PROFILE` env var):
 ### 2. Container-based (Docker/Podman)
 
 Cross-platform sandboxing with complete process isolation using container
-technology. By default, it uses the `ghcr.io/google/gemini-cli:latest` image.
+technology. By default, it uses the `ghcr.io/google/a-coder-cli-cli:latest` image.
 
 **Prerequisites:**
 
@@ -119,13 +119,13 @@ files while remaining isolated from the rest of your system.
 
 **Quick setup:**
 
-To enable Docker sandboxing, run Gemini CLI with the sandbox flag and specify
+To enable Docker sandboxing, run A-Coder CLI with the sandbox flag and specify
 Docker as the provider:
 
 ```bash
 # Using the environment variable (Recommended)
-export GEMINI_SANDBOX=docker
-gemini -p "build the project"
+export A_CODER_SANDBOX=docker
+a-coder-cli -p "build the project"
 
 # Or configure it permanently in your settings.json
 # {"tools": {"sandbox": "docker"}}
@@ -134,7 +134,7 @@ gemini -p "build the project"
 **Customizing the Sandbox Image:**
 
 If your project requires specific dependencies, you can specify a custom image
-name or have Gemini CLI build one for you automatically. You can use any Docker
+name or have A-Coder CLI build one for you automatically. You can use any Docker
 or Podman image as your sandbox, provided it has standard shell utilities (like
 `bash`) available.
 
@@ -142,7 +142,7 @@ or Podman image as your sandbox, provided it has standard shell utilities (like
 
 To configure a custom image that is hosted on a registry (or built locally),
 update your `settings.json` to use an object for the sandbox configuration, or
-set the `GEMINI_SANDBOX_IMAGE` environment variable.
+set the `A_CODER_SANDBOX_IMAGE` environment variable.
 
 _Example: Configuring via `settings.json`_
 
@@ -160,21 +160,21 @@ _Example: Configuring via `settings.json`_
 _Example: Configuring via environment variable_
 
 ```bash
-export GEMINI_SANDBOX_IMAGE="us-central1-docker.pkg.dev/my-project/my-repo/my-custom-sandbox:latest"
+export A_CODER_SANDBOX_IMAGE="us-central1-docker.pkg.dev/my-project/my-repo/my-custom-sandbox:latest"
 ```
 
 **Option B: Building a local custom image automatically**
 
 If you prefer to define your environment as code, you can provide a Dockerfile
-and Gemini CLI will build the image automatically.
+and A-Coder CLI will build the image automatically.
 
-1.  Create a `.gemini/sandbox.Dockerfile` in your project root.
+1.  Create a `.a-coder-cli/sandbox.Dockerfile` in your project root.
 2.  Ensure you have the `gh` CLI installed and authenticated (if you are using
-    the default `ghcr.io/google/gemini-cli` image as a base).
+    the default `ghcr.io/google/a-coder-cli-cli` image as a base).
 3.  Run your command with the `BUILD_SANDBOX` environment variable set:
 
 ```bash
-BUILD_SANDBOX=1 GEMINI_SANDBOX=docker gemini -p "run my custom build"
+BUILD_SANDBOX=1 A_CODER_SANDBOX=docker a-coder-cli -p "run my custom build"
 ```
 
 ### 3. Windows Native Sandbox (Windows only)
@@ -208,10 +208,10 @@ strong security barrier between AI operations and the host OS.
 - Docker installed and running
 - gVisor/runsc runtime configured
 
-When you set `sandbox: "runsc"`, Gemini CLI runs
+When you set `sandbox: "runsc"`, A-Coder CLI runs
 `docker run --runtime=runsc ...` to execute containers with gVisor isolation.
 runsc is not auto-detected; you must specify it explicitly (e.g.
-`GEMINI_SANDBOX=runsc` or `sandbox: "runsc"`).
+`A_CODER_SANDBOX=runsc` or `sandbox: "runsc"`).
 
 To set up runsc:
 
@@ -230,7 +230,7 @@ such as Snapcraft and Rockcraft.
 
 - Linux only.
 - LXC/LXD must be installed (`snap install lxd` or `apt install lxd`).
-- A container must be created and running before starting Gemini CLI. Gemini
+- A container must be created and running before starting A-Coder CLI. A-Coder
   does **not** create the container automatically.
 
 **Quick setup**:
@@ -240,19 +240,19 @@ such as Snapcraft and Rockcraft.
 lxd init --auto
 
 # Create and start an Ubuntu container
-lxc launch ubuntu:24.04 gemini-sandbox
+lxc launch ubuntu:24.04 a-coder-cli-sandbox
 
 # Enable LXC sandboxing
-export GEMINI_SANDBOX=lxc
-gemini -p "build the project"
+export A_CODER_SANDBOX=lxc
+a-coder-cli -p "build the project"
 ```
 
 **Custom container name**:
 
 ```bash
-export GEMINI_SANDBOX=lxc
-export GEMINI_SANDBOX_IMAGE=my-snapcraft-container
-gemini -p "build the snap"
+export A_CODER_SANDBOX=lxc
+export A_CODER_SANDBOX_IMAGE=my-snapcraft-container
+a-coder-cli -p "build the snap"
 ```
 
 **Limitations**:
@@ -266,7 +266,7 @@ gemini -p "build the snap"
 ## Tool sandboxing
 
 Tool-level sandboxing provides granular isolation for individual tool executions
-(like `shell_exec` and `write_file`) instead of sandboxing the entire Gemini CLI
+(like `shell_exec` and `write_file`) instead of sandboxing the entire A-Coder CLI
 process.
 
 This approach offers better integration with your local environment for non-tool
@@ -289,22 +289,22 @@ you can disable it by setting `security.toolSandboxing` to `false` in your
 
 <!-- prettier-ignore -->
 > [!NOTE]
-> Changing the `security.toolSandboxing` setting requires a restart of Gemini
+> Changing the `security.toolSandboxing` setting requires a restart of A-Coder
 > CLI to take effect.
 
 ## Sandbox expansion
 
-Sandbox expansion is a dynamic permission system that lets Gemini CLI request
+Sandbox expansion is a dynamic permission system that lets A-Coder CLI request
 additional permissions for a command when needed.
 
 When a sandboxed command fails due to permission restrictions (like restricted
 file paths or network access), or when a command is proactively identified as
-requiring extra permissions (like `npm install`), Gemini CLI will present you
+requiring extra permissions (like `npm install`), A-Coder CLI will present you
 with a "Sandbox Expansion Request."
 
 ### How sandbox expansion works
 
-1.  **Detection**: Gemini CLI detects a sandbox denial or proactively identifies
+1.  **Detection**: A-Coder CLI detects a sandbox denial or proactively identifies
     a command that requires extra permissions.
 2.  **Request**: A modal dialog is shown, explaining which additional
     permissions (e.g., specific directories or network access) are required.
@@ -335,7 +335,7 @@ export SANDBOX_MOUNTS="/path/on/host:/path/in/container:rw,/another/path:ro"
 
 ## Running inside a Docker container
 
-If you are running Gemini CLI itself from within an official or custom Docker
+If you are running A-Coder CLI itself from within an official or custom Docker
 container and want to enable sandboxing, you must share the host's Docker socket
 and ensure your workspace paths align.
 
@@ -353,8 +353,8 @@ docker run -it \
   -v /var/run/docker.sock:/var/run/docker.sock \
   -v /absolute/path/on/host/project:/absolute/path/on/host/project \
   -w /absolute/path/on/host/project \
-  -e GEMINI_SANDBOX=docker \
-  ghcr.io/google/gemini-cli:latest
+  -e A_CODER_SANDBOX=docker \
+  ghcr.io/google/a-coder-cli-cli:latest
 ```
 
 ## Advanced settings
@@ -427,7 +427,7 @@ $env:SANDBOX_SET_UID_GID="false"  # Disable UID/GID mapping
 **Missing commands**
 
 - Add to a custom Dockerfile. Automatic `BUILD_SANDBOX` builds are only
-  available when running Gemini CLI from source; npm installs need a prebuilt
+  available when running A-Coder CLI from source; npm installs need a prebuilt
   image instead.
 - Install via `sandbox.bashrc`.
 
@@ -439,23 +439,23 @@ $env:SANDBOX_SET_UID_GID="false"  # Disable UID/GID mapping
 ### Debug mode
 
 ```bash
-DEBUG=1 gemini -s -p "debug command"
+DEBUG=1 a-coder-cli -s -p "debug command"
 ```
 
 <!-- prettier-ignore -->
 > [!NOTE]
 > If you have `DEBUG=true` in a project's `.env` file, it won't affect
-> gemini-cli due to automatic exclusion. Use `.gemini/.env` files for
-> gemini-cli specific debug settings.
+> a-coder-cli-cli due to automatic exclusion. Use `.a-coder-cli/.env` files for
+> a-coder-cli-cli specific debug settings.
 
 ### Inspect sandbox
 
 ```bash
 # Check environment
-gemini -s -p "run shell command: env | grep SANDBOX"
+a-coder-cli -s -p "run shell command: env | grep SANDBOX"
 
 # List mounts
-gemini -s -p "run shell command: mount | grep workspace"
+a-coder-cli -s -p "run shell command: mount | grep workspace"
 ```
 
 ## Security notes

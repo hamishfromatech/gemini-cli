@@ -5,8 +5,8 @@
  */
 
 import fs from 'node:fs';
-import { debugLogger } from '@google/gemini-cli-core';
-import type { GemmaModelRouterSettings } from '@google/gemini-cli-core';
+import { debugLogger } from '@the-a-tech-corporation/core';
+import type { GemmaModelRouterSettings } from '@the-a-tech-corporation/core';
 import { getBinaryPath, isServerRunning } from '../commands/gemma/platform.js';
 import { DEFAULT_PORT } from '../commands/gemma/constants.js';
 
@@ -19,7 +19,7 @@ export class LiteRtServerManager {
     const binaryPath = getBinaryPath();
     if (!binaryPath || !fs.existsSync(binaryPath)) {
       debugLogger.log(
-        '[LiteRtServerManager] Binary not installed, skipping auto-start. Run "gemini gemma setup".',
+        '[LiteRtServerManager] Binary not installed, skipping auto-start. Run "a-coder-cli gemma setup".',
       );
       return;
     }

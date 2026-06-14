@@ -12,22 +12,22 @@ import { fileURLToPath } from 'node:url';
 import { env } from 'node:process';
 import { setTimeout as sleep } from 'node:timers/promises';
 import {
-  PREVIEW_GEMINI_FLASH_MODEL,
-  GEMINI_DIR,
-} from '@google/gemini-cli-core';
-export { GEMINI_DIR };
+  PREVIEW_A_CODER_FLASH_MODEL,
+  A_CODER_DIR,
+} from '@the-a-tech-corporation/core';
+export { A_CODER_DIR };
 import * as pty from '@lydell/node-pty';
 import stripAnsi from 'strip-ansi';
 import * as os from 'node:os';
 import type { TestMcpConfig } from './test-mcp-server.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const BUNDLE_PATH = join(__dirname, '..', '..', '..', 'bundle/gemini.js');
+const BUNDLE_PATH = join(__dirname, '..', '..', '..', 'bundle/a-coder.js');
 
 // Get timeout based on environment
 export function getDefaultTimeout() {
   if (env['CI']) return 60000; // 1 minute in CI
-  if (env['GEMINI_SANDBOX']) return 30000; // 30s in containers
+  if (env['A_CODER_SANDBOX']) return 30000; // 30s in containers
   return 15000; // 15s locally
 }
 
@@ -382,7 +382,7 @@ export class TestRig {
     this.testName = testName;
     const sanitizedName = sanitizeTestName(testName);
     const testFileDir =
-      env['INTEGRATION_TEST_FILE_DIR'] || join(os.tmpdir(), 'gemini-cli-tests');
+      env['INTEGRATION_TEST_FILE_DIR'] || join(os.tmpdir(), 'a-coder-cli-tests');
     this.testDir = join(testFileDir, sanitizedName);
     this.homeDir = join(testFileDir, sanitizedName + '-home');
 
@@ -441,11 +441,11 @@ export class TestRig {
   }
 
   private _createSettingsFile(overrideSettings?: Record<string, unknown>) {
-    const projectGeminiDir = join(this.testDir!, GEMINI_DIR);
-    mkdirSync(projectGeminiDir, { recursive: true });
+    const projectACoderDir = join(this.testDir!, A_CODER_DIR);
+    mkdirSync(projectACoderDir, { recursive: true });
 
-    const userGeminiDir = join(this.homeDir!, GEMINI_DIR);
-    mkdirSync(userGeminiDir, { recursive: true });
+    const userACoderDir = join(this.homeDir!, A_CODER_DIR);
+    mkdirSync(userACoderDir, { recursive: true });
 
     // In sandbox mode, use an absolute path for telemetry inside the container
     // The container mounts the test directory at the same path as the host
@@ -466,7 +466,7 @@ export class TestRig {
         },
         security: {
           auth: {
-            selectedType: 'gemini-api-key',
+            selectedType: 'openai-api-key',
           },
           folderTrust: {
             enabled: false,
@@ -475,34 +475,34 @@ export class TestRig {
         ui: {
           useAlternateBuffer: true,
         },
-        ...(env['GEMINI_TEST_TYPE'] === 'integration'
+        ...(env['A_CODER_TEST_TYPE'] === 'integration'
           ? {
               model: {
-                name: PREVIEW_GEMINI_FLASH_MODEL,
+                name: PREVIEW_A_CODER_FLASH_MODEL,
               },
             }
           : {}),
         sandbox:
-          env['GEMINI_SANDBOX'] !== 'false' ? env['GEMINI_SANDBOX'] : false,
+          env['A_CODER_SANDBOX'] !== 'false' ? env['A_CODER_SANDBOX'] : false,
         // Don't show the IDE connection dialog when running from VsCode
         ide: { enabled: false, hasSeenNudge: true },
       },
       overrideSettings ?? {},
     );
     writeFileSync(
-      join(projectGeminiDir, 'settings.json'),
+      join(projectACoderDir, 'settings.json'),
       JSON.stringify(settings, null, 2),
     );
     writeFileSync(
-      join(userGeminiDir, 'settings.json'),
+      join(userACoderDir, 'settings.json'),
       JSON.stringify(settings, null, 2),
     );
   }
 
   private _createStateFile(overrideState?: Record<string, unknown>) {
     if (!this.homeDir) throw new Error('TestRig homeDir is not initialized');
-    const userGeminiDir = join(this.homeDir, GEMINI_DIR);
-    mkdirSync(userGeminiDir, { recursive: true });
+    const userACoderDir = join(this.homeDir, A_CODER_DIR);
+    mkdirSync(userACoderDir, { recursive: true });
 
     const state = deepMerge(
       {
@@ -512,7 +512,7 @@ export class TestRig {
     );
 
     writeFileSync(
-      join(userGeminiDir, 'state.json'),
+      join(userACoderDir, 'state.json'),
       JSON.stringify(state, null, 2),
     );
   }
@@ -534,25 +534,25 @@ export class TestRig {
   }
 
   /**
-   * The command and args to use to invoke Gemini CLI. Allows us to switch
-   * between using the bundled gemini.js (the default) and using the installed
-   * 'gemini' (used to verify npm bundles).
+   * The command and args to use to invoke A-Coder CLI. Allows us to switch
+   * between using the bundled a-coder.js (the default) and using the installed
+   * 'a-coder-cli' (used to verify npm bundles).
    */
   private _getCommandAndArgs(extraInitialArgs: string[] = []): {
     command: string;
     initialArgs: string[];
   } {
-    const binaryPath = env['INTEGRATION_TEST_GEMINI_BINARY_PATH'];
+    const binaryPath = env['INTEGRATION_TEST_A_CODER_BINARY_PATH'];
     const isNpmReleaseTest =
-      env['INTEGRATION_TEST_USE_INSTALLED_GEMINI'] === 'true';
-    const geminiCommand = os.platform() === 'win32' ? 'gemini.cmd' : 'gemini';
+      env['INTEGRATION_TEST_USE_INSTALLED_A_CODER'] === 'true';
+    const aCoderCommand = os.platform() === 'win32' ? 'a-coder-cli.cmd' : 'a-coder-cli';
     let command = 'node';
     let initialArgs = [BUNDLE_PATH, ...extraInitialArgs];
     if (binaryPath) {
       command = binaryPath;
       initialArgs = extraInitialArgs;
     } else if (isNpmReleaseTest) {
-      command = geminiCommand;
+      command = aCoderCommand;
       initialArgs = extraInitialArgs;
     }
     if (this.fakeResponsesPath) {
@@ -637,12 +637,12 @@ export class TestRig {
 
     // Update settings in workspace and home
     const updateSettings = (dir: string) => {
-      const settingsPath = join(dir, GEMINI_DIR, 'settings.json');
+      const settingsPath = join(dir, A_CODER_DIR, 'settings.json');
       let settings: any = {};
       if (fs.existsSync(settingsPath)) {
         settings = JSON.parse(fs.readFileSync(settingsPath, 'utf-8'));
       } else {
-        fs.mkdirSync(join(dir, GEMINI_DIR), { recursive: true });
+        fs.mkdirSync(join(dir, A_CODER_DIR), { recursive: true });
       }
 
       if (!settings.mcpServers) {
@@ -674,14 +674,14 @@ export class TestRig {
     for (const key of Object.keys(cleanEnv)) {
       if (
         (key.startsWith('GEMINI_') || key.startsWith('GOOGLE_GEMINI_')) &&
-        key !== 'GEMINI_API_KEY' &&
+        key !== 'OPENAI_API_KEY' &&
         key !== 'GOOGLE_API_KEY' &&
-        key !== 'GEMINI_MODEL' &&
-        key !== 'GEMINI_DEBUG' &&
-        key !== 'GEMINI_CLI_TEST_VAR' &&
-        key !== 'GEMINI_CLI_INTEGRATION_TEST' &&
-        key !== 'GOOGLE_GEMINI_BASE_URL' &&
-        !key.startsWith('GEMINI_CLI_ACTIVITY_LOG')
+        key !== 'A_CODER_MODEL' &&
+        key !== 'A_CODER_DEBUG' &&
+        key !== 'A_CODER_CLI_TEST_VAR' &&
+        key !== 'A_CODER_CLI_INTEGRATION_TEST' &&
+        key !== 'A_CODER_BASE_URL' &&
+        !key.startsWith('A_CODER_CLI_ACTIVITY_LOG')
       ) {
         delete cleanEnv[key];
       }
@@ -689,8 +689,8 @@ export class TestRig {
 
     return {
       ...cleanEnv,
-      GEMINI_CLI_HOME: this.homeDir!,
-      GEMINI_PTY_INFO: 'child_process',
+      A_CODER_CLI_HOME: this.homeDir!,
+      A_CODER_PTY_INFO: 'child_process',
       ...extraEnv,
     };
   }
@@ -813,7 +813,7 @@ export class TestRig {
   }
 
   private _filterPodmanTelemetry(stdout: string): string {
-    if (env['GEMINI_SANDBOX'] !== 'podman') {
+    if (env['A_CODER_SANDBOX'] !== 'podman') {
       return stdout;
     }
 
@@ -1094,7 +1094,7 @@ export class TestRig {
         return logs.some(
           (logData) =>
             logData.attributes &&
-            logData.attributes['event.name'] === `gemini_cli.${eventName}`,
+            logData.attributes['event.name'] === `a_coder_cli.${eventName}`,
         );
       },
       timeout,
@@ -1294,7 +1294,7 @@ export class TestRig {
                 }
               } else if (
                 obj.attributes &&
-                obj.attributes['event.name'] === 'gemini_cli.tool_call'
+                obj.attributes['event.name'] === 'a_coder_cli.tool_call'
               ) {
                 logs.push({
                   timestamp: obj.attributes['event.timestamp'],
@@ -1365,7 +1365,7 @@ export class TestRig {
   readToolLogs() {
     // For Podman, first check if telemetry file exists and has content
     // If not, fall back to parsing from stdout
-    if (env['GEMINI_SANDBOX'] === 'podman') {
+    if (env['A_CODER_SANDBOX'] === 'podman') {
       // Try reading from file first
       const logFilePath = join(this.homeDir!, 'telemetry.log');
 
@@ -1408,7 +1408,7 @@ export class TestRig {
       // Look for tool call logs
       if (
         logData.attributes &&
-        logData.attributes['event.name'] === 'gemini_cli.tool_call'
+        logData.attributes['event.name'] === 'a_coder_cli.tool_call'
       ) {
         const toolName = logData.attributes.function_name!;
         logs.push({
@@ -1433,7 +1433,7 @@ export class TestRig {
     const apiRequests = logs.filter(
       (logData) =>
         logData.attributes &&
-        logData.attributes['event.name'] === `gemini_cli.api_request`,
+        logData.attributes['event.name'] === `a_coder_cli.api_request`,
     );
     return apiRequests;
   }
@@ -1443,7 +1443,7 @@ export class TestRig {
     const apiRequests = logs.filter(
       (logData) =>
         logData.attributes &&
-        logData.attributes['event.name'] === `gemini_cli.api_request`,
+        logData.attributes['event.name'] === `a_coder_cli.api_request`,
     );
     return apiRequests.pop() || null;
   }
@@ -1451,9 +1451,9 @@ export class TestRig {
   async waitForMetric(metricName: string, timeout?: number) {
     await this.waitForTelemetryReady();
 
-    const fullName = metricName.startsWith('gemini_cli.')
+    const fullName = metricName.startsWith('a_coder_cli.')
       ? metricName
-      : `gemini_cli.${metricName}`;
+      : `a_coder_cli.${metricName}`;
 
     return poll(
       () => {
@@ -1482,7 +1482,7 @@ export class TestRig {
       if (logData && logData.scopeMetrics) {
         for (const scopeMetric of logData.scopeMetrics) {
           for (const metric of scopeMetric.metrics) {
-            if (metric.descriptor.name === `gemini_cli.${metricName}`) {
+            if (metric.descriptor.name === `a_coder_cli.${metricName}`) {
               return metric;
             }
           }
@@ -1580,7 +1580,7 @@ export class TestRig {
       if (logData && logData.scopeMetrics) {
         for (const scopeMetric of logData.scopeMetrics) {
           for (const metric of scopeMetric.metrics) {
-            if (metric.descriptor.name === 'gemini_cli.memory.usage') {
+            if (metric.descriptor.name === 'a_coder_cli.memory.usage') {
               for (const dp of metric.dataPoints) {
                 const sessionId =
                   (dp.attributes?.['session.id'] as string) || 'unknown';
@@ -1690,7 +1690,7 @@ export class TestRig {
       // Look for tool call logs
       if (
         logData.attributes &&
-        logData.attributes['event.name'] === 'gemini_cli.hook_call'
+        logData.attributes['event.name'] === 'a_coder_cli.hook_call'
       ) {
         logs.push({
           hookCall: {

@@ -6,7 +6,7 @@
 set -e
 set -o pipefail
 
-REPO="${1:-google-gemini/gemini-cli}"
+REPO="${1:-hamishfromatech/a-coder-cli}"
 WORKFLOW="gemini-automated-issue-triage.yml"
 
 echo "🔍 Searching for open issues in '${REPO}' that need triage (missing 'area/' label)..."

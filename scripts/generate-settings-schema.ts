@@ -25,7 +25,7 @@ import {
 
 const OUTPUT_RELATIVE_PATH = ['schemas', 'settings.schema.json'];
 const SCHEMA_ID =
-  'https://raw.githubusercontent.com/google-gemini/gemini-cli/main/schemas/settings.schema.json';
+  'https://raw.githubusercontent.com/hamishfromatech/a-coder-cli/main/schemas/settings.schema.json';
 
 type JsonPrimitive = string | number | boolean | null;
 type JsonValue = JsonPrimitive | JsonValue[] | { [key: string]: JsonValue };
@@ -112,9 +112,9 @@ function buildSchemaObject(schema: SettingsSchemaType): JsonSchema {
   const root: JsonSchema = {
     $schema: 'https://json-schema.org/draft/2020-12/schema',
     $id: SCHEMA_ID,
-    title: 'Gemini CLI Settings',
+    title: 'A-Coder CLI Settings',
     description:
-      'Configuration file schema for Gemini CLI settings. This schema enables IDE completion for `settings.json`.',
+      'Configuration file schema for A-Coder CLI settings. This schema enables IDE completion for `settings.json`.',
     type: 'object',
     additionalProperties: false,
     properties: {},

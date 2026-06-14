@@ -16,9 +16,9 @@ vi.mock('node:os', async (importOriginal) => {
   };
 });
 
-vi.mock('@google/gemini-cli-core', async (importOriginal) => {
+vi.mock('@the-a-tech-corporation/core', async (importOriginal) => {
   const actual =
-    await importOriginal<typeof import('@google/gemini-cli-core')>();
+    await importOriginal<typeof import('@the-a-tech-corporation/core')>();
   return {
     ...actual,
     homedir: vi.fn(() => path.resolve('/mock/home')),
@@ -29,7 +29,7 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import * as fs from 'node:fs';
 import * as os from 'node:os';
 import { loadEnvironment, type Settings } from './settings.js';
-import { GEMINI_DIR, homedir as coreHomedir } from '@google/gemini-cli-core';
+import { A_CODER_DIR, homedir as coreHomedir } from '@the-a-tech-corporation/core';
 
 vi.mock('node:fs');
 
@@ -48,7 +48,7 @@ describe('Environment Isolation', () => {
     process.argv = ['node', 'gemini'];
 
     // Clear env vars that might leak from the host environment
-    delete process.env['GEMINI_API_KEY'];
+    delete process.env['OPENAI_API_KEY'];
     delete process.env['OTHER_VAR'];
   });
 
@@ -62,7 +62,7 @@ describe('Environment Isolation', () => {
     vi.mocked(fs.existsSync).mockImplementation(
       (p) => p.toString() === workspaceEnv,
     );
-    vi.mocked(fs.readFileSync).mockReturnValue('GEMINI_API_KEY=local');
+    vi.mocked(fs.readFileSync).mockReturnValue('OPENAI_API_KEY=local');
 
     const settings = { advanced: { ignoreLocalEnv: false } } as Settings;
     loadEnvironment(settings, mockWorkspace, () => ({
@@ -70,8 +70,8 @@ describe('Environment Isolation', () => {
       source: 'file',
     }));
 
-    expect(process.env['GEMINI_API_KEY']).toBe('local');
-    delete process.env['GEMINI_API_KEY'];
+    expect(process.env['OPENAI_API_KEY']).toBe('local');
+    delete process.env['OPENAI_API_KEY'];
   });
 
   it('should ignore local .env when ignoreLocalEnv is true', () => {
@@ -84,8 +84,8 @@ describe('Environment Isolation', () => {
     });
     vi.mocked(fs.readFileSync).mockImplementation((p) => {
       const ps = p.toString();
-      if (ps === workspaceEnv) return 'GEMINI_API_KEY=local';
-      if (ps === homeEnv) return 'GEMINI_API_KEY=home';
+      if (ps === workspaceEnv) return 'OPENAI_API_KEY=local';
+      if (ps === homeEnv) return 'OPENAI_API_KEY=home';
       return '';
     });
 
@@ -96,16 +96,16 @@ describe('Environment Isolation', () => {
     }));
 
     // Should skip local and find home
-    expect(process.env['GEMINI_API_KEY']).toBe('home');
-    delete process.env['GEMINI_API_KEY'];
+    expect(process.env['OPENAI_API_KEY']).toBe('home');
+    delete process.env['OPENAI_API_KEY'];
   });
 
-  it('should still load .gemini/.env even if ignoreLocalEnv is true', () => {
-    const workspaceGeminiEnv = path.join(mockWorkspace, GEMINI_DIR, '.env');
+  it('should still load .a-coder/.env even if ignoreLocalEnv is true', () => {
+    const workspaceGeminiEnv = path.join(mockWorkspace, A_CODER_DIR, '.env');
     vi.mocked(fs.existsSync).mockImplementation(
       (p) => p.toString() === workspaceGeminiEnv,
     );
-    vi.mocked(fs.readFileSync).mockReturnValue('GEMINI_API_KEY=gemini-local');
+    vi.mocked(fs.readFileSync).mockReturnValue('OPENAI_API_KEY=gemini-local');
 
     const settings = { advanced: { ignoreLocalEnv: true } } as Settings;
     loadEnvironment(settings, mockWorkspace, () => ({
@@ -113,8 +113,8 @@ describe('Environment Isolation', () => {
       source: 'file',
     }));
 
-    expect(process.env['GEMINI_API_KEY']).toBe('gemini-local');
-    delete process.env['GEMINI_API_KEY'];
+    expect(process.env['OPENAI_API_KEY']).toBe('gemini-local');
+    delete process.env['OPENAI_API_KEY'];
   });
 
   it('should respect --ignore-env flag', () => {
@@ -122,7 +122,7 @@ describe('Environment Isolation', () => {
     vi.mocked(fs.existsSync).mockImplementation(
       (p) => p.toString() === workspaceEnv,
     );
-    vi.mocked(fs.readFileSync).mockReturnValue('GEMINI_API_KEY=local');
+    vi.mocked(fs.readFileSync).mockReturnValue('OPENAI_API_KEY=local');
 
     process.argv = ['node', 'gemini', '--ignore-env'];
     const settings = { advanced: { ignoreLocalEnv: false } } as Settings;
@@ -131,7 +131,7 @@ describe('Environment Isolation', () => {
       source: 'file',
     }));
 
-    expect(process.env['GEMINI_API_KEY']).toBeUndefined();
+    expect(process.env['OPENAI_API_KEY']).toBeUndefined();
   });
 
   it('should allow home .env even with ignoreLocalEnv true', () => {
@@ -139,7 +139,7 @@ describe('Environment Isolation', () => {
     vi.mocked(fs.existsSync).mockImplementation(
       (p) => p.toString() === homeEnv,
     );
-    vi.mocked(fs.readFileSync).mockReturnValue('GEMINI_API_KEY=home');
+    vi.mocked(fs.readFileSync).mockReturnValue('OPENAI_API_KEY=home');
 
     const settings = { advanced: { ignoreLocalEnv: true } } as Settings;
     // Running from home dir
@@ -148,8 +148,8 @@ describe('Environment Isolation', () => {
       source: 'file',
     }));
 
-    expect(process.env['GEMINI_API_KEY']).toBe('home');
-    delete process.env['GEMINI_API_KEY'];
+    expect(process.env['OPENAI_API_KEY']).toBe('home');
+    delete process.env['OPENAI_API_KEY'];
   });
 
   it('should skip local .env and its parents until home when ignoreLocalEnv is true', () => {
@@ -164,9 +164,9 @@ describe('Environment Isolation', () => {
     });
     vi.mocked(fs.readFileSync).mockImplementation((p) => {
       const ps = p.toString();
-      if (ps === deepEnv) return 'GEMINI_API_KEY=deep';
-      if (ps === parentEnv) return 'GEMINI_API_KEY=parent';
-      if (ps === homeEnv) return 'GEMINI_API_KEY=home';
+      if (ps === deepEnv) return 'OPENAI_API_KEY=deep';
+      if (ps === parentEnv) return 'OPENAI_API_KEY=parent';
+      if (ps === homeEnv) return 'OPENAI_API_KEY=home';
       return '';
     });
 
@@ -176,8 +176,8 @@ describe('Environment Isolation', () => {
       source: 'file',
     }));
 
-    expect(process.env['GEMINI_API_KEY']).toBe('home');
-    delete process.env['GEMINI_API_KEY'];
+    expect(process.env['OPENAI_API_KEY']).toBe('home');
+    delete process.env['OPENAI_API_KEY'];
   });
 
   it('should respect trust whitelist even when loading from home .env', () => {
@@ -187,7 +187,7 @@ describe('Environment Isolation', () => {
     );
     // Include one whitelisted and one non-whitelisted variable
     vi.mocked(fs.readFileSync).mockReturnValue(
-      'GEMINI_API_KEY=home\nOTHER_VAR=secret',
+      'OPENAI_API_KEY=home\nOTHER_VAR=secret',
     );
 
     const settings = { advanced: { ignoreLocalEnv: true } } as Settings;
@@ -197,9 +197,9 @@ describe('Environment Isolation', () => {
       source: 'file',
     }));
 
-    expect(process.env['GEMINI_API_KEY']).toBe('home');
+    expect(process.env['OPENAI_API_KEY']).toBe('home');
     expect(process.env['OTHER_VAR']).toBeUndefined();
-    delete process.env['GEMINI_API_KEY'];
+    delete process.env['OPENAI_API_KEY'];
   });
 
   it('should prioritize --ignore-env flag even if setting is false', () => {
@@ -207,7 +207,7 @@ describe('Environment Isolation', () => {
     vi.mocked(fs.existsSync).mockImplementation(
       (p) => p.toString() === workspaceEnv,
     );
-    vi.mocked(fs.readFileSync).mockReturnValue('GEMINI_API_KEY=local');
+    vi.mocked(fs.readFileSync).mockReturnValue('OPENAI_API_KEY=local');
 
     process.argv = ['node', 'gemini', '--ignore-env'];
     const settings = { advanced: { ignoreLocalEnv: false } } as Settings;
@@ -216,7 +216,7 @@ describe('Environment Isolation', () => {
       source: 'file',
     }));
 
-    expect(process.env['GEMINI_API_KEY']).toBeUndefined();
+    expect(process.env['OPENAI_API_KEY']).toBeUndefined();
   });
 
   it('should respect both -s and --ignore-env flags simultaneously', () => {
@@ -224,7 +224,7 @@ describe('Environment Isolation', () => {
     vi.mocked(fs.existsSync).mockImplementation(
       (p) => p.toString() === workspaceEnv,
     );
-    vi.mocked(fs.readFileSync).mockReturnValue('GEMINI_API_KEY=local');
+    vi.mocked(fs.readFileSync).mockReturnValue('OPENAI_API_KEY=local');
 
     process.argv = ['node', 'gemini', '-s', '--ignore-env'];
     const settings = { advanced: { ignoreLocalEnv: false } } as Settings;
@@ -233,6 +233,6 @@ describe('Environment Isolation', () => {
       source: 'file',
     }));
 
-    expect(process.env['GEMINI_API_KEY']).toBeUndefined();
+    expect(process.env['OPENAI_API_KEY']).toBeUndefined();
   });
 });

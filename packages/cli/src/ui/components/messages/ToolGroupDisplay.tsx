@@ -6,7 +6,7 @@
 
 import type React from 'react';
 import { Box, Text } from 'ink';
-import { CoreToolCallStatus } from '@google/gemini-cli-core';
+import { CoreToolCallStatus } from '@the-a-tech-corporation/core';
 import type {
   HistoryItem,
   HistoryItemWithoutId,

@@ -11,13 +11,13 @@ import {
   type SlashCommand,
   type CommandContext,
 } from '../ui/commands/types.js';
-import type { MessageActionReturn, Config } from '@google/gemini-cli-core';
+import type { MessageActionReturn, Config } from '@the-a-tech-corporation/core';
 import {
   isNightly,
   startupProfiler,
   getAdminErrorMessage,
   AuthType,
-} from '@google/gemini-cli-core';
+} from '@the-a-tech-corporation/core';
 import { aboutCommand } from '../ui/commands/aboutCommand.js';
 import { agentsCommand } from '../ui/commands/agentsCommand.js';
 import { authCommand } from '../ui/commands/authCommand.js';
@@ -44,7 +44,9 @@ import { initCommand } from '../ui/commands/initCommand.js';
 import { mcpCommand } from '../ui/commands/mcpCommand.js';
 import { memoryCommand } from '../ui/commands/memoryCommand.js';
 import { modelCommand } from '../ui/commands/modelCommand.js';
+import { modelsCommand } from '../ui/commands/modelsCommand.js';
 import { oncallCommand } from '../ui/commands/oncallCommand.js';
+import { providerCommand } from '../ui/commands/providerCommand.js';
 import { permissionsCommand } from '../ui/commands/permissionsCommand.js';
 import { planCommand } from '../ui/commands/planCommand.js';
 import { policiesCommand } from '../ui/commands/policiesCommand.js';
@@ -68,7 +70,7 @@ import { voiceCommand } from '../ui/commands/voiceCommand.js';
 
 /**
  * Loads the core, hard-coded slash commands that are an integral part
- * of the Gemini CLI application.
+ * of the A-Coder CLI application.
  */
 export class BuiltinCommandLoader implements ICommandLoader {
   constructor(private config: Config | null) {}
@@ -189,7 +191,9 @@ export class BuiltinCommandLoader implements ICommandLoader {
         : [mcpCommand]),
       memoryCommand(this.config),
       modelCommand,
+      modelsCommand,
       ...(this.config?.getFolderTrust() ? [permissionsCommand] : []),
+      providerCommand,
       ...(this.config?.isPlanEnabled() ? [planCommand] : []),
       policiesCommand,
       privacyCommand,

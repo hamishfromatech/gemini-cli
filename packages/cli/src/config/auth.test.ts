@@ -4,13 +4,13 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { AuthType } from '@google/gemini-cli-core';
+import { AuthType } from '@the-a-tech-corporation/core';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { validateAuthMethod } from './auth.js';
 
-vi.mock('@google/gemini-cli-core', async (importOriginal) => {
+vi.mock('@the-a-tech-corporation/core', async (importOriginal) => {
   const actual =
-    await importOriginal<typeof import('@google/gemini-cli-core')>();
+    await importOriginal<typeof import('@the-a-tech-corporation/core')>();
   return {
     ...actual,
     loadApiKey: vi.fn().mockResolvedValue(null),
@@ -26,7 +26,7 @@ vi.mock('./settings.js', () => ({
 
 describe('validateAuthMethod', () => {
   beforeEach(() => {
-    vi.stubEnv('GEMINI_API_KEY', undefined);
+    vi.stubEnv('OPENAI_API_KEY', undefined);
     vi.stubEnv('GOOGLE_CLOUD_PROJECT', undefined);
     vi.stubEnv('GOOGLE_CLOUD_LOCATION', undefined);
     vi.stubEnv('GOOGLE_API_KEY', undefined);
@@ -50,18 +50,18 @@ describe('validateAuthMethod', () => {
       expected: null,
     },
     {
-      description: 'should return null for USE_GEMINI if GEMINI_API_KEY is set',
+      description: 'should return null for USE_GEMINI if OPENAI_API_KEY is set',
       authType: AuthType.USE_GEMINI,
-      envs: { GEMINI_API_KEY: 'test-key' },
+      envs: { OPENAI_API_KEY: 'test-key' },
       expected: null,
     },
     {
       description:
-        'should return an error message for USE_GEMINI if GEMINI_API_KEY is not set',
+        'should return an error message for USE_GEMINI if OPENAI_API_KEY is not set',
       authType: AuthType.USE_GEMINI,
       envs: {},
       expected:
-        'When using Gemini API, you must specify the GEMINI_API_KEY environment variable.\n' +
+        'When using Gemini API, you must specify the OPENAI_API_KEY environment variable.\n' +
         'Update your environment and try again (no reload needed if using .env)!',
     },
     {

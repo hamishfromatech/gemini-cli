@@ -18,7 +18,7 @@ import {
   AuthType,
   clearCachedCredentialFile,
   type Config,
-} from '@google/gemini-cli-core';
+} from '@the-a-tech-corporation/core';
 import { useKeypress } from '../hooks/useKeypress.js';
 import { AuthState } from '../types.js';
 import { validateAuthMethodWithSettings } from './useAuth.js';
@@ -56,7 +56,7 @@ export function AuthDialog({
             key: AuthType.COMPUTE_ADC,
           },
         ]
-      : process.env['GEMINI_CLI_USE_COMPUTE_ADC'] === 'true'
+      : process.env['A_CODER_CLI_USE_COMPUTE_ADC'] === 'true'
         ? [
             {
               label: 'Use metadata server application default credentials',
@@ -84,7 +84,7 @@ export function AuthDialog({
   }
 
   let defaultAuthType = null;
-  const defaultAuthTypeEnv = process.env['GEMINI_DEFAULT_AUTH_TYPE'];
+  const defaultAuthTypeEnv = process.env['A_CODER_DEFAULT_AUTH_TYPE'];
   if (
     defaultAuthTypeEnv &&
     // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion
@@ -103,7 +103,7 @@ export function AuthDialog({
       return item.value === defaultAuthType;
     }
 
-    if (process.env['GEMINI_API_KEY']) {
+    if (process.env['OPENAI_API_KEY']) {
       return item.value === AuthType.USE_GEMINI;
     }
 
@@ -144,7 +144,7 @@ export function AuthDialog({
         if (authType === AuthType.USE_GEMINI) {
           // Always show the API key input dialog so the user can
           // explicitly enter or confirm their key, regardless of
-          // whether GEMINI_API_KEY env var or a stored key exists.
+          // whether OPENAI_API_KEY env var or a stored key exists.
           setAuthState(AuthState.AwaitingApiKeyInput);
           return;
         }
@@ -202,7 +202,7 @@ export function AuthDialog({
         alignItems="flex-start"
       >
         <Text color={theme.text.primary}>
-          Logging in with Google... Restarting Gemini CLI to continue.
+          Logging in with Google... Restarting A-Coder CLI to continue.
         </Text>
       </Box>
     );
@@ -247,12 +247,12 @@ export function AuthDialog({
         </Box>
         <Box marginTop={1}>
           <Text color={theme.text.primary}>
-            Terms of Services and Privacy Notice for Gemini CLI
+            Terms of Services and Privacy Notice for A-Coder CLI
           </Text>
         </Box>
         <Box marginTop={1}>
           <Text color={theme.text.link}>
-            {'https://geminicli.com/docs/resources/tos-privacy/'}
+            {'https://a-coder-cli.com/docs/resources/tos-privacy/'}
           </Text>
         </Box>
       </Box>

@@ -18,7 +18,7 @@ import {
   ApprovalMode,
   hasRedirection,
   debugLogger,
-} from '@google/gemini-cli-core';
+} from '@the-a-tech-corporation/core';
 import { useToolActions } from '../../contexts/ToolActionsContext.js';
 import {
   RadioButtonSelect,
@@ -912,7 +912,7 @@ export const ToolConfirmationMessage: React.FC<
           <Text color={titleColor} wrap="truncate">
             {item.label}{' '}
             <Text color={theme.text.secondary}>
-              ~/.gemini/policies/auto-saved.toml
+              ~/.a-coder/policies/auto-saved.toml
             </Text>
           </Text>
         );

@@ -11,7 +11,7 @@ import {
   debugLogger,
   type Config,
   type TranscriptionProvider,
-} from '@google/gemini-cli-core';
+} from '@the-a-tech-corporation/core';
 import type { TextBuffer } from '../components/shared/text-buffer.js';
 import type { MergedSettings } from '../../config/settingsSchema.js';
 import type { Key } from './useKeypress.js';
@@ -125,7 +125,7 @@ export function useVoiceMode({
 
     const apiKey =
       config.getContentGeneratorConfig()?.apiKey ||
-      process.env['GEMINI_API_KEY'] ||
+      process.env['OPENAI_API_KEY'] ||
       '';
 
     const startAsync = async () => {
@@ -162,11 +162,11 @@ export function useVoiceMode({
       if (cleanupIfStopped()) return;
 
       const voiceBackend =
-        settings.experimental.voice?.backend ?? 'gemini-live';
+        settings.experimental.voice?.backend ?? 'openai-whisper';
 
-      if (!apiKey && voiceBackend === 'gemini-live') {
+      if (!apiKey && voiceBackend === 'openai-whisper') {
         setQueueErrorMessage(
-          'Cloud voice mode requires a GEMINI_API_KEY. Please set it in your environment or ~/.gemini/.env.',
+          'Cloud voice mode requires a OPENAI_API_KEY. Please set it in your environment or ~/.a-coder/.env.',
         );
         setIsRecording(false);
         isRecordingRef.current = false;
@@ -176,7 +176,7 @@ export function useVoiceMode({
         return;
       }
 
-      if (voiceBackend === 'gemini-live') {
+      if (voiceBackend === 'openai-whisper') {
         recorderRef.current = new AudioRecorder();
       }
 
@@ -257,10 +257,10 @@ export function useVoiceMode({
         setIsConnecting(false);
 
         const currentVoiceBackend =
-          settings.experimental.voice?.backend ?? 'gemini-live';
+          settings.experimental.voice?.backend ?? 'openai-whisper';
 
         recorderRef.current?.on('data', (chunk) => {
-          if (currentVoiceBackend === 'gemini-live') {
+          if (currentVoiceBackend === 'openai-whisper') {
             currentService.sendAudioChunk(chunk);
           }
         });

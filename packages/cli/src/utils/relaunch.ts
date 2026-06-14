@@ -13,7 +13,7 @@ import {
 import {
   writeToStderr,
   type AdminControlsSettings,
-} from '@google/gemini-cli-core';
+} from '@the-a-tech-corporation/core';
 
 export async function relaunchOnExitCode(runner: () => Promise<number>) {
   while (true) {
@@ -40,7 +40,7 @@ export async function relaunchAppInChildProcess(
   additionalScriptArgs: string[],
   remoteAdminSettings?: AdminControlsSettings,
 ) {
-  if (process.env['GEMINI_CLI_NO_RELAUNCH']) {
+  if (process.env['A_CODER_CLI_NO_RELAUNCH']) {
     return;
   }
 

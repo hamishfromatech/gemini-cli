@@ -12,7 +12,7 @@ const getPackageJson = vi.hoisted(() => vi.fn());
 const debugLogger = vi.hoisted(() => ({
   warn: vi.fn(),
 }));
-vi.mock('@google/gemini-cli-core', () => ({
+vi.mock('@the-a-tech-corporation/core', () => ({
   getPackageJson,
   debugLogger,
   ReleaseChannel: {

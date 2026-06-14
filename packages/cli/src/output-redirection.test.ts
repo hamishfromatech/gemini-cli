@@ -5,13 +5,13 @@
  */
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { initializeOutputListenersAndFlush } from './gemini.js';
-import { coreEvents, CoreEvent, type Config } from '@google/gemini-cli-core';
+import { initializeOutputListenersAndFlush } from './a-coder.js';
+import { coreEvents, CoreEvent, type Config } from '@the-a-tech-corporation/core';
 
 // Mock core dependencies
-vi.mock('@google/gemini-cli-core', async (importOriginal) => {
+vi.mock('@the-a-tech-corporation/core', async (importOriginal) => {
   const actual =
-    await importOriginal<typeof import('@google/gemini-cli-core')>();
+    await importOriginal<typeof import('@the-a-tech-corporation/core')>();
   return {
     ...actual,
     writeToStdout: vi.fn(),
@@ -19,7 +19,7 @@ vi.mock('@google/gemini-cli-core', async (importOriginal) => {
   };
 });
 
-import { writeToStdout, writeToStderr } from '@google/gemini-cli-core';
+import { writeToStdout, writeToStderr } from '@the-a-tech-corporation/core';
 
 describe('Output Redirection', () => {
   beforeEach(() => {

@@ -11,8 +11,8 @@ topics on:
 ## Authentication or login errors
 
 - **Error:
-  `You must be a named user on your organization's Gemini Code Assist Standard edition subscription to use this service. Please contact your administrator to request an entitlement to Gemini Code Assist Standard edition.`**
-  - **Cause:** This error might occur if Gemini CLI detects the
+  `You must be a named user on your organization's A-Coder Code Assist Standard edition subscription to use this service. Please contact your administrator to request an entitlement to A-Coder Code Assist Standard edition.`**
+  - **Cause:** This error might occur if A-Coder CLI detects the
     `GOOGLE_CLOUD_PROJECT` or `GOOGLE_CLOUD_PROJECT_ID` environment variable is
     defined. Setting these variables forces an organization subscription check.
     This might be an issue if you are using an individual Google account not
@@ -26,24 +26,20 @@ topics on:
       using a different Google account.
 
     - **Organizational Users:** Contact your Google Cloud administrator to be
-      added to your organization's Gemini Code Assist subscription.
+      added to your organization's A-Coder Code Assist subscription.
 
 - **Error:
   `Failed to sign in. Message: Your current account is not eligible... because it is not currently available in your location.`**
-  - **Cause:** Gemini CLI does not currently support your location. For a full
+  - **Cause:** A-Coder CLI does not currently support your location. For a full
     list of supported locations, see the following pages:
-    - Gemini Code Assist for individuals:
-      [Available locations](https://developers.google.com/gemini-code-assist/resources/available-locations#americas)
+    - A-Coder CLI works anywhere you have access to an OpenAI-compatible API.
 
-- **Error: `Failed to sign in. Message: Request contains an invalid argument`**
-  - **Cause:** Users with Google Workspace accounts or Google Cloud accounts
-    associated with their Gmail accounts may not be able to activate the free
-    tier of the Google Code Assist plan.
-  - **Solution:** For Google Cloud accounts, you can work around this by setting
-    `GOOGLE_CLOUD_PROJECT` to your project ID. Alternatively, you can obtain the
-    Gemini API key from
-    [Google AI Studio](http://aistudio.google.com/app/apikey), which also
-    includes a separate free tier.
+- **Error: `Failed to authenticate. Message: Invalid API key`**
+  - **Cause:** The `A_CODER_API_KEY` environment variable is missing, empty, or
+    contains an invalid key for your configured provider.
+  - **Solution:** Set a valid OpenAI-compatible API key. For OpenAI, obtain one at
+    [OpenAI API keys](https://platform.openai.com/api-keys). If using a custom
+    provider, also set `A_CODER_BASE_URL` to the provider's endpoint.
 
 - **Error: `UNABLE_TO_GET_ISSUER_CERT_LOCALLY` or
   `unable to get local issuer certificate`**
@@ -71,17 +67,17 @@ topics on:
   - **Solution:** Either stop the other process that is using the port or
     configure the MCP server to use a different port.
 
-- **Error: Command not found (when attempting to run Gemini CLI with
-  `gemini`).**
-  - **Cause:** Gemini CLI is not correctly installed or it is not in your
+- **Error: Command not found (when attempting to run A-Coder CLI with
+  `a-coder-cli`).**
+  - **Cause:** A-Coder CLI is not correctly installed or it is not in your
     system's `PATH`.
-  - **Solution:** The update depends on how you installed Gemini CLI:
-    - If you installed `gemini` globally, check that your `npm` global binary
-      directory is in your `PATH`. You can update Gemini CLI using the command
-      `npm install -g @google/gemini-cli@latest`.
-    - If you are running `gemini` from source, ensure you are using the correct
+  - **Solution:** The update depends on how you installed A-Coder CLI:
+    - If you installed `a-coder-cli` globally, check that your `npm` global binary
+      directory is in your `PATH`. You can update A-Coder CLI using the command
+      `npm install -g @the-a-tech-corporation/a-coder-cli@latest`.
+    - If you are running `a-coder-cli` from source, ensure you are using the correct
       command to invoke it (for example, `node packages/cli/dist/index.js ...`).
-      To update Gemini CLI, pull the latest changes from the repository, and
+      To update A-Coder CLI, pull the latest changes from the repository, and
       then rebuild using the command `npm run build`.
 
 - **Error: `MODULE_NOT_FOUND` or import errors.**
@@ -93,15 +89,15 @@ topics on:
     3.  Verify that the build completed successfully with `npm run start`.
 
 - **Error: "Operation not permitted", "Permission denied", or similar.**
-  - **Cause:** When sandboxing is enabled, Gemini CLI may attempt operations
+  - **Cause:** When sandboxing is enabled, A-Coder CLI may attempt operations
     that are restricted by your sandbox configuration, such as writing outside
     the project directory or system temp directory.
   - **Solution:** Refer to the [Configuration: Sandboxing](../cli/sandbox.md)
     documentation for more information, including how to customize your sandbox
     configuration.
 
-- **Gemini CLI is not running in interactive mode in "CI" environments**
-  - **Issue:** Gemini CLI does not enter interactive mode (no prompt appears) if
+- **A-Coder CLI is not running in interactive mode in "CI" environments**
+  - **Issue:** A-Coder CLI does not enter interactive mode (no prompt appears) if
     an environment variable starting with `CI_` (for example, `CI_TOKEN`) is
     set. This is because the `is-in-ci` package, used by the underlying UI
     framework, detects these variables and assumes a non-interactive CI
@@ -109,30 +105,30 @@ topics on:
   - **Cause:** The `is-in-ci` package checks for the presence of `CI`,
     `CONTINUOUS_INTEGRATION`, or any environment variable with a `CI_` prefix.
     When any of these are found, it signals that the environment is
-    non-interactive, which prevents Gemini CLI from starting in its interactive
+    non-interactive, which prevents A-Coder CLI from starting in its interactive
     mode.
   - **Solution:** If the `CI_` prefixed variable is not needed for the CLI to
     function, you can temporarily unset it for the command. For example,
-    `env -u CI_TOKEN gemini`
+    `env -u CI_TOKEN a-coder-cli`
 
 - **DEBUG mode not working from project .env file**
   - **Issue:** Setting `DEBUG=true` in a project's `.env` file doesn't enable
-    debug mode for gemini-cli.
+    debug mode for a-coder-cli-cli.
   - **Cause:** The `DEBUG` and `DEBUG_MODE` variables are automatically excluded
-    from project `.env` files to prevent interference with gemini-cli behavior.
-  - **Solution:** Use a `.gemini/.env` file instead, or configure the
+    from project `.env` files to prevent interference with a-coder-cli-cli behavior.
+  - **Solution:** Use a `.a-coder-cli/.env` file instead, or configure the
     `advanced.excludedEnvVars` setting in your `settings.json` to exclude fewer
     variables.
 
 - **Warning: `npm WARN deprecated node-domexception@1.0.0` or
   `npm WARN deprecated glob` during install/update**
-  - **Issue:** When installing or updating Gemini CLI globally via
-    `npm install -g @google/gemini-cli` or `npm update -g @google/gemini-cli`,
+  - **Issue:** When installing or updating A-Coder CLI globally via
+    `npm install -g @the-a-tech-corporation/a-coder-cli` or `npm update -g @the-a-tech-corporation/a-coder-cli`,
     you might see deprecation warnings regarding `node-domexception` or old
     versions of `glob`.
   - **Cause:** These warnings occur because some dependencies (or their
     sub-dependencies, like `google-auth-library`) rely on older package
-    versions. Since Gemini CLI requires Node.js 20 or higher, the platform's
+    versions. Since A-Coder CLI requires Node.js 20 or higher, the platform's
     native features (like the native `DOMException`) are used, making these
     warnings purely informational.
   - **Solution:** These warnings are harmless and can be safely ignored. Your
@@ -141,7 +137,7 @@ topics on:
 
 ## Exit codes
 
-Gemini CLI uses specific exit codes to indicate the reason for termination. This
+A-Coder CLI uses specific exit codes to indicate the reason for termination. This
 is especially useful for scripting and automation.
 
 | Exit Code | Error Type                 | Description                                                                                         |
@@ -182,8 +178,8 @@ is especially useful for scripting and automation.
 ## Existing GitHub issues similar to yours or creating new issues
 
 If you encounter an issue that was not covered here in this _Troubleshooting
-guide_, consider searching Gemini CLI
-[Issue tracker on GitHub](https://github.com/google-gemini/gemini-cli/issues).
+guide_, consider searching A-Coder CLI
+[Issue tracker on GitHub](https://github.com/google-a-coder-cli/a-coder-cli-cli/issues).
 If you can't find an issue similar to yours, consider creating a new GitHub
 Issue with a detailed description. Pull requests are also welcome!
 

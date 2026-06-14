@@ -50,7 +50,7 @@ import { WRITE_FILE_DEFINITION } from './definitions/coreTools.js';
 import { resolveToolDeclaration } from './definitions/resolver.js';
 import { detectOmissionPlaceholders } from './omissionPlaceholderDetector.js';
 import { resolveAndValidatePlanPath } from '../utils/planUtils.js';
-import { isGemini3Model } from '../config/models.js';
+import { isACoder3Model } from '../config/models.js';
 import { discoverJitContext, appendJitContext } from './jit-context.js';
 
 /**
@@ -131,7 +131,7 @@ export async function getCorrectedFileContent(
     }
   }
 
-  const aggressiveUnescape = !isGemini3Model(config.getActiveModel());
+  const aggressiveUnescape = !isACoder3Model(config.getActiveModel());
 
   correctedContent = await ensureCorrectFileContent(
     proposedContent,

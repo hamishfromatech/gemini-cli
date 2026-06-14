@@ -8,7 +8,7 @@ import {
   debugLogger,
   startMemoryService,
   type Config,
-} from '@google/gemini-cli-core';
+} from '@the-a-tech-corporation/core';
 
 export function startAutoMemoryIfEnabled(config: Config): void {
   if (!config.isAutoMemoryEnabled()) {

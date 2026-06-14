@@ -10,12 +10,12 @@ import type { RoutingContext } from '../routingStrategy.js';
 import type { BaseLlmClient } from '../../core/baseLlmClient.js';
 import type { LocalLiteRtLmClient } from '../../core/localLiteRtLmClient.js';
 import {
-  DEFAULT_GEMINI_MODEL,
-  PREVIEW_GEMINI_MODEL,
-  PREVIEW_GEMINI_MODEL_AUTO,
-  DEFAULT_GEMINI_MODEL_AUTO,
-  GEMINI_MODEL_ALIAS_AUTO,
-  PREVIEW_GEMINI_FLASH_MODEL,
+  DEFAULT_A_CODER_MODEL,
+  PREVIEW_A_CODER_MODEL,
+  PREVIEW_A_CODER_MODEL_AUTO,
+  DEFAULT_A_CODER_MODEL_AUTO,
+  A_CODER_MODEL_ALIAS_AUTO,
+  PREVIEW_A_CODER_FLASH_MODEL,
 } from '../../config/models.js';
 import type { Config } from '../../config/config.js';
 
@@ -24,7 +24,7 @@ describe('DefaultStrategy', () => {
     const strategy = new DefaultStrategy();
     const mockContext = {} as RoutingContext;
     const mockConfig = {
-      getModel: vi.fn().mockReturnValue(DEFAULT_GEMINI_MODEL_AUTO),
+      getModel: vi.fn().mockReturnValue(DEFAULT_A_CODER_MODEL_AUTO),
     } as unknown as Config;
     const mockClient = {} as BaseLlmClient;
     const mockLocalLiteRtLmClient = {} as LocalLiteRtLmClient;
@@ -37,11 +37,11 @@ describe('DefaultStrategy', () => {
     );
 
     expect(decision).toEqual({
-      model: DEFAULT_GEMINI_MODEL,
+      model: DEFAULT_A_CODER_MODEL,
       metadata: {
         source: 'default',
         latencyMs: 0,
-        reasoning: `Routing to default model: ${DEFAULT_GEMINI_MODEL}`,
+        reasoning: `Routing to default model: ${DEFAULT_A_CODER_MODEL}`,
       },
     });
   });
@@ -50,7 +50,7 @@ describe('DefaultStrategy', () => {
     const strategy = new DefaultStrategy();
     const mockContext = {} as RoutingContext;
     const mockConfig = {
-      getModel: vi.fn().mockReturnValue(PREVIEW_GEMINI_MODEL_AUTO),
+      getModel: vi.fn().mockReturnValue(PREVIEW_A_CODER_MODEL_AUTO),
     } as unknown as Config;
     const mockClient = {} as BaseLlmClient;
     const mockLocalLiteRtLmClient = {} as LocalLiteRtLmClient;
@@ -63,11 +63,11 @@ describe('DefaultStrategy', () => {
     );
 
     expect(decision).toEqual({
-      model: PREVIEW_GEMINI_MODEL,
+      model: PREVIEW_A_CODER_MODEL,
       metadata: {
         source: 'default',
         latencyMs: 0,
-        reasoning: `Routing to default model: ${PREVIEW_GEMINI_MODEL}`,
+        reasoning: `Routing to default model: ${PREVIEW_A_CODER_MODEL}`,
       },
     });
   });
@@ -76,7 +76,7 @@ describe('DefaultStrategy', () => {
     const strategy = new DefaultStrategy();
     const mockContext = {} as RoutingContext;
     const mockConfig = {
-      getModel: vi.fn().mockReturnValue(GEMINI_MODEL_ALIAS_AUTO),
+      getModel: vi.fn().mockReturnValue(A_CODER_MODEL_ALIAS_AUTO),
     } as unknown as Config;
     const mockClient = {} as BaseLlmClient;
     const mockLocalLiteRtLmClient = {} as LocalLiteRtLmClient;
@@ -89,11 +89,11 @@ describe('DefaultStrategy', () => {
     );
 
     expect(decision).toEqual({
-      model: PREVIEW_GEMINI_MODEL,
+      model: PREVIEW_A_CODER_MODEL,
       metadata: {
         source: 'default',
         latencyMs: 0,
-        reasoning: `Routing to default model: ${PREVIEW_GEMINI_MODEL}`,
+        reasoning: `Routing to default model: ${PREVIEW_A_CODER_MODEL}`,
       },
     });
   });
@@ -103,7 +103,7 @@ describe('DefaultStrategy', () => {
     const strategy = new DefaultStrategy();
     const mockContext = {} as RoutingContext;
     const mockConfig = {
-      getModel: vi.fn().mockReturnValue(PREVIEW_GEMINI_FLASH_MODEL),
+      getModel: vi.fn().mockReturnValue(PREVIEW_A_CODER_FLASH_MODEL),
     } as unknown as Config;
     const mockClient = {} as BaseLlmClient;
     const mockLocalLiteRtLmClient = {} as LocalLiteRtLmClient;
@@ -116,11 +116,11 @@ describe('DefaultStrategy', () => {
     );
 
     expect(decision).toEqual({
-      model: PREVIEW_GEMINI_FLASH_MODEL,
+      model: PREVIEW_A_CODER_FLASH_MODEL,
       metadata: {
         source: 'default',
         latencyMs: 0,
-        reasoning: `Routing to default model: ${PREVIEW_GEMINI_FLASH_MODEL}`,
+        reasoning: `Routing to default model: ${PREVIEW_A_CODER_FLASH_MODEL}`,
       },
     });
   });

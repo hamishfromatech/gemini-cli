@@ -15,10 +15,10 @@ import { createDefaultPolicy, SILENT_ACTIONS } from './policyCatalog.js';
 import type { RetryAvailabilityContext } from './modelPolicy.js';
 import type { Config } from '../config/config.js';
 import {
-  DEFAULT_GEMINI_FLASH_LITE_MODEL,
-  DEFAULT_GEMINI_MODEL_AUTO,
-  PREVIEW_GEMINI_3_1_CUSTOM_TOOLS_MODEL,
-  PREVIEW_GEMINI_3_1_MODEL,
+  DEFAULT_A_CODER_FLASH_LITE_MODEL,
+  DEFAULT_A_CODER_MODEL_AUTO,
+  PREVIEW_A_CODER_3_1_CUSTOM_TOOLS_MODEL,
+  PREVIEW_A_CODER_3_1_MODEL,
 } from '../config/models.js';
 import { AuthType } from '../core/contentGenerator.js';
 import { ModelConfigService } from '../services/modelConfigService.js';
@@ -29,11 +29,11 @@ const createMockConfig = (overrides: Partial<Config> = {}): Config => {
   const config = {
     getUserTier: () => undefined,
     getModel: () => 'gemini-2.5-pro',
-    getGemini31LaunchedSync: () => false,
+    getACoder31LaunchedSync: () => false,
     getUseCustomToolModelSync: () => {
-      const useGemini31 = config.getGemini31LaunchedSync();
+      const useACoder31 = config.getACoder31LaunchedSync();
       const authType = config.getContentGeneratorConfig().authType;
-      return useGemini31 && authType === AuthType.USE_GEMINI;
+      return useACoder31 && authType === AuthType.USE_GEMINI;
     },
     getContentGeneratorConfig: () => ({ authType: undefined }),
     getHasAccessToPreviewModel: () => true,
@@ -67,7 +67,7 @@ describe('policyHelpers', () => {
 
     it('returns the default chain when active model is "auto"', () => {
       const config = createMockConfig({
-        getModel: () => DEFAULT_GEMINI_MODEL_AUTO,
+        getModel: () => DEFAULT_A_CODER_MODEL_AUTO,
       });
       const chain = resolvePolicyChain(config);
 
@@ -81,7 +81,7 @@ describe('policyHelpers', () => {
       const config = createMockConfig({
         getModel: () => 'gemini-2.5-pro',
       });
-      const chain = resolvePolicyChain(config, DEFAULT_GEMINI_MODEL_AUTO);
+      const chain = resolvePolicyChain(config, DEFAULT_A_CODER_MODEL_AUTO);
       expect(chain).toHaveLength(2);
       expect(chain[0]?.model).toBe('gemini-2.5-pro');
       expect(chain[1]?.model).toBe('gemini-2.5-flash');
@@ -89,7 +89,7 @@ describe('policyHelpers', () => {
 
     it('uses auto chain when configured model is auto even if preferred is concrete', () => {
       const config = createMockConfig({
-        getModel: () => DEFAULT_GEMINI_MODEL_AUTO,
+        getModel: () => DEFAULT_A_CODER_MODEL_AUTO,
       });
       const chain = resolvePolicyChain(config, 'gemini-2.5-pro');
       expect(chain).toHaveLength(2);
@@ -109,9 +109,9 @@ describe('policyHelpers', () => {
 
     it('returns flash-lite chain when preferred model is flash-lite', () => {
       const config = createMockConfig({
-        getModel: () => DEFAULT_GEMINI_MODEL_AUTO,
+        getModel: () => DEFAULT_A_CODER_MODEL_AUTO,
       });
-      const chain = resolvePolicyChain(config, DEFAULT_GEMINI_FLASH_LITE_MODEL);
+      const chain = resolvePolicyChain(config, DEFAULT_A_CODER_FLASH_LITE_MODEL);
       expect(chain).toHaveLength(3);
       expect(chain[0]?.model).toBe('gemini-3.1-flash-lite');
       expect(chain[1]?.model).toBe('gemini-2.5-flash');
@@ -120,7 +120,7 @@ describe('policyHelpers', () => {
 
     it('returns flash-lite chain when configured model is flash-lite', () => {
       const config = createMockConfig({
-        getModel: () => DEFAULT_GEMINI_FLASH_LITE_MODEL,
+        getModel: () => DEFAULT_A_CODER_FLASH_LITE_MODEL,
       });
       const chain = resolvePolicyChain(config);
       expect(chain).toHaveLength(3);
@@ -131,7 +131,7 @@ describe('policyHelpers', () => {
 
     it('wraps around the chain when wrapsAround is true', () => {
       const config = createMockConfig({
-        getModel: () => DEFAULT_GEMINI_MODEL_AUTO,
+        getModel: () => DEFAULT_A_CODER_MODEL_AUTO,
       });
       const chain = resolvePolicyChain(config, 'gemini-2.5-flash', true);
       expect(chain).toHaveLength(2);
@@ -155,28 +155,28 @@ describe('policyHelpers', () => {
     it('returns Gemini 3.1 Pro chain when launched and auto-gemini-3 requested', () => {
       const config = createMockConfig({
         getModel: () => 'auto-gemini-3',
-        getGemini31LaunchedSync: () => true,
+        getACoder31LaunchedSync: () => true,
       });
       const chain = resolvePolicyChain(config);
-      expect(chain[0]?.model).toBe(PREVIEW_GEMINI_3_1_MODEL);
+      expect(chain[0]?.model).toBe(PREVIEW_A_CODER_3_1_MODEL);
       expect(chain[1]?.model).toBe('gemini-3-flash-preview');
     });
 
     it('returns Gemini 3.1 Pro Custom Tools chain when launched, auth is Gemini, and auto-gemini-3 requested', () => {
       const config = createMockConfig({
         getModel: () => 'auto-gemini-3',
-        getGemini31LaunchedSync: () => true,
+        getACoder31LaunchedSync: () => true,
         getContentGeneratorConfig: () => ({ authType: AuthType.USE_GEMINI }),
       });
       const chain = resolvePolicyChain(config);
-      expect(chain[0]?.model).toBe(PREVIEW_GEMINI_3_1_CUSTOM_TOOLS_MODEL);
+      expect(chain[0]?.model).toBe(PREVIEW_A_CODER_3_1_CUSTOM_TOOLS_MODEL);
       expect(chain[1]?.model).toBe('gemini-3-flash-preview');
     });
 
     it('applies SILENT_ACTIONS when ApprovalMode is PLAN', () => {
       const config = createMockConfig({
         getApprovalMode: () => ApprovalMode.PLAN,
-        getModel: () => DEFAULT_GEMINI_MODEL_AUTO,
+        getModel: () => DEFAULT_A_CODER_MODEL_AUTO,
       });
       const chain = resolvePolicyChain(config);
 
@@ -188,19 +188,19 @@ describe('policyHelpers', () => {
 
   describe('resolvePolicyChain behavior is identical between dynamic and legacy implementations', () => {
     const testCases = [
-      { name: 'Default Auto', model: DEFAULT_GEMINI_MODEL_AUTO },
+      { name: 'Default Auto', model: DEFAULT_A_CODER_MODEL_AUTO },
       { name: 'Gemini 3 Auto', model: 'auto-gemini-3' },
       { name: 'Unified Auto', model: 'auto' },
-      { name: 'Flash Lite', model: DEFAULT_GEMINI_FLASH_LITE_MODEL },
+      { name: 'Flash Lite', model: DEFAULT_A_CODER_FLASH_LITE_MODEL },
       {
         name: 'Gemini 3 Auto (3.1 Enabled)',
         model: 'auto-gemini-3',
-        useGemini31: true,
+        useACoder31: true,
       },
       {
         name: 'Gemini 3 Auto (3.1 + Custom Tools)',
         model: 'auto-gemini-3',
-        useGemini31: true,
+        useACoder31: true,
         authType: AuthType.USE_GEMINI,
       },
       {
@@ -213,19 +213,19 @@ describe('policyHelpers', () => {
       { name: 'Custom Model', model: 'my-custom-model' },
       {
         name: 'Wrap Around',
-        model: DEFAULT_GEMINI_MODEL_AUTO,
+        model: DEFAULT_A_CODER_MODEL_AUTO,
         wrapsAround: true,
       },
     ];
 
     testCases.forEach(
-      ({ name, model, useGemini31, hasAccess, authType, wrapsAround }) => {
+      ({ name, model, useACoder31, hasAccess, authType, wrapsAround }) => {
         it(`achieves parity for: ${name}`, () => {
           const createBaseConfig = (dynamic: boolean) =>
             createMockConfig({
               getExperimentalDynamicModelConfiguration: () => dynamic,
               getModel: () => model,
-              getGemini31LaunchedSync: () => useGemini31 ?? false,
+              getACoder31LaunchedSync: () => useACoder31 ?? false,
               getHasAccessToPreviewModel: () => hasAccess ?? true,
               getContentGeneratorConfig: () => ({ authType }),
               getReleaseChannel: () => 'preview',

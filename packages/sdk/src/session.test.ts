@@ -30,7 +30,7 @@ const mockConfig = {
     unregisterTool: vi.fn(),
   }),
   getMessageBus: vi.fn().mockReturnValue({}),
-  getGeminiClient: vi.fn().mockReturnValue(mockClient),
+  getACoderClient: vi.fn().mockReturnValue(mockClient),
   getSessionId: vi.fn().mockReturnValue('mock-session-id'),
   getWorkingDir: vi.fn().mockReturnValue('/tmp'),
   setUserMemory: vi.fn(),
@@ -39,10 +39,10 @@ const mockConfig = {
 // Mock scheduleAgentTools at module level so tests can override it
 const mockScheduleAgentTools = vi.fn().mockResolvedValue([]);
 
-// Mock @google/gemini-cli-core to avoid heavy filesystem/auth/telemetry setup
-vi.mock('@google/gemini-cli-core', async (importOriginal) => {
+// Mock @the-a-tech-corporation/core to avoid heavy filesystem/auth/telemetry setup
+vi.mock('@the-a-tech-corporation/core', async (importOriginal) => {
   const actual =
-    await importOriginal<typeof import('@google/gemini-cli-core')>();
+    await importOriginal<typeof import('@the-a-tech-corporation/core')>();
   return {
     ...actual,
     Config: vi.fn().mockImplementation(() => mockConfig),
@@ -181,7 +181,7 @@ describe('GeminiCliSession initialize()', () => {
   });
 });
 
-// TODO(#24999): Mock uses getGeminiClient() method but session.ts expects geminiClient property.
+// TODO(#24999): Mock uses getACoderClient() method but session.ts expects aCoderClient property.
 describe.skip('GeminiCliSession sendStream()', () => {
   it('auto-initializes if not yet initialized', async () => {
     const session = new GeminiCliSession(
@@ -225,7 +225,7 @@ describe.skip('GeminiCliSession sendStream()', () => {
   });
 
   it('executes tool call loop and sends function response back to model', async () => {
-    const { GeminiEventType } = await import('@google/gemini-cli-core');
+    const { ACoderEventType } = await import('@the-a-tech-corporation/core');
 
     // First call: yield a ToolCallRequest, then end
     // Second call: empty stream (model is done after tool result)
@@ -235,7 +235,7 @@ describe.skip('GeminiCliSession sendStream()', () => {
       if (callCount === 1) {
         return (async function* () {
           yield {
-            type: GeminiEventType.ToolCallRequest,
+            type: ACoderEventType.ToolCallRequest,
             value: {
               callId: 'call-1',
               name: 'testTool',
@@ -274,7 +274,7 @@ describe.skip('GeminiCliSession sendStream()', () => {
 
     // The ToolCallRequest event should have been yielded to the caller
     expect(events).toHaveLength(1);
-    expect(events[0].type).toBe(GeminiEventType.ToolCallRequest);
+    expect(events[0].type).toBe(ACoderEventType.ToolCallRequest);
 
     // scheduleAgentTools should have been called with the tool call
     expect(mockScheduleAgentTools).toHaveBeenCalledOnce();

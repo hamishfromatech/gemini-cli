@@ -5,8 +5,8 @@
  */
 
 import { vi } from 'vitest';
-import { NoopSandboxManager } from '@google/gemini-cli-core';
-import type { Config } from '@google/gemini-cli-core';
+import { NoopSandboxManager } from '@the-a-tech-corporation/core';
+import type { Config } from '@the-a-tech-corporation/core';
 import {
   createTestMergedSettings,
   type LoadedSettings,
@@ -95,7 +95,7 @@ export const createMockConfig = (overrides: Partial<Config> = {}): Config =>
     getTelemetryOutfile: vi.fn().mockReturnValue(undefined),
     getTelemetryUseCollector: vi.fn().mockReturnValue(false),
     getTelemetryUseCliAuth: vi.fn().mockReturnValue(false),
-    getGeminiClient: vi.fn().mockReturnValue({
+    getACoderClient: vi.fn().mockReturnValue({
       isInitialized: vi.fn().mockReturnValue(true),
     }),
     updateSystemInstructionIfInitialized: vi.fn().mockResolvedValue(undefined),
@@ -103,7 +103,7 @@ export const createMockConfig = (overrides: Partial<Config> = {}): Config =>
     getModelAvailabilityService: vi.fn().mockReturnValue({}),
     getEnableRecursiveFileSearch: vi.fn().mockReturnValue(true),
     getFileFilteringEnableFuzzySearch: vi.fn().mockReturnValue(true),
-    getFileFilteringRespectGeminiIgnore: vi.fn().mockReturnValue(true),
+    getFileFilteringRespectACoderIgnore: vi.fn().mockReturnValue(true),
     getFileFilteringOptions: vi.fn().mockReturnValue({}),
     getCustomExcludes: vi.fn().mockReturnValue([]),
     getCheckpointingEnabled: vi.fn().mockReturnValue(false),

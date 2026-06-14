@@ -10,9 +10,9 @@ import { FakeContentGenerator } from '../core/fakeContentGenerator.js';
 import { Config } from '../config/config.js';
 import { RetryableQuotaError } from '../utils/googleQuotaErrors.js';
 import {
-  PREVIEW_GEMINI_MODEL,
-  PREVIEW_GEMINI_FLASH_MODEL,
-  PREVIEW_GEMINI_MODEL_AUTO,
+  PREVIEW_A_CODER_MODEL,
+  PREVIEW_A_CODER_FLASH_MODEL,
+  PREVIEW_A_CODER_MODEL_AUTO,
 } from '../config/models.js';
 import fs from 'node:fs';
 import { AuthType } from '../core/contentGenerator.js';
@@ -77,7 +77,7 @@ describe('Auto Routing Fallback Integration', () => {
       targetDir: '/test',
       debugMode: false,
       cwd: '/test',
-      model: PREVIEW_GEMINI_MODEL_AUTO, // Trigger auto mode
+      model: PREVIEW_A_CODER_MODEL_AUTO, // Trigger auto mode
     });
 
     // Force interactive mode to enable fallback handler in BaseLlmClient
@@ -101,14 +101,14 @@ describe('Auto Routing Fallback Integration', () => {
     // Spy on generateContent to simulate failures
     vi.spyOn(fakeGenerator, 'generateContent').mockImplementation(
       async (params) => {
-        if (params.model === PREVIEW_GEMINI_MODEL) {
+        if (params.model === PREVIEW_A_CODER_MODEL) {
           attemptsPro++;
           throw new RetryableQuotaError(
             'Quota exceeded for Pro',
             mockGoogleApiError,
             0,
           );
-        } else if (params.model === PREVIEW_GEMINI_FLASH_MODEL) {
+        } else if (params.model === PREVIEW_A_CODER_FLASH_MODEL) {
           attemptsFlash++;
           throw new RetryableQuotaError(
             'Quota exceeded for Flash',
@@ -123,7 +123,7 @@ describe('Auto Routing Fallback Integration', () => {
     // Set a fallback handler that approves the switch (simulating user or auto approval)
     config.setFallbackModelHandler(
       async (failed, _fallback, _error): Promise<FallbackIntent | null> => {
-        if (failed === PREVIEW_GEMINI_FLASH_MODEL) {
+        if (failed === PREVIEW_A_CODER_FLASH_MODEL) {
           return 'stop'; // Stop retrying after Flash fails
         }
         return 'retry_always'; // Trigger fallback to Flash
@@ -132,7 +132,7 @@ describe('Auto Routing Fallback Integration', () => {
 
     // Call generateContent
     const promise = client.generateContent({
-      modelConfigKey: { model: PREVIEW_GEMINI_MODEL, isChatModel: true },
+      modelConfigKey: { model: PREVIEW_A_CODER_MODEL, isChatModel: true },
       contents: [{ role: 'user', parts: [{ text: 'hi' }] }],
       abortSignal: new AbortController().signal,
       promptId: 'test-prompt',
@@ -156,7 +156,7 @@ describe('Auto Routing Fallback Integration', () => {
       targetDir: '/test',
       debugMode: false,
       cwd: '/test',
-      model: PREVIEW_GEMINI_MODEL, // Non-auto mode
+      model: PREVIEW_A_CODER_MODEL, // Non-auto mode
     });
 
     // Force interactive mode to enable fallback handler in BaseLlmClient
@@ -179,7 +179,7 @@ describe('Auto Routing Fallback Integration', () => {
     // Spy on generateContent to simulate failures
     vi.spyOn(fakeGenerator, 'generateContent').mockImplementation(
       async (params) => {
-        if (params.model === PREVIEW_GEMINI_MODEL) {
+        if (params.model === PREVIEW_A_CODER_MODEL) {
           attemptsPro++;
           throw new RetryableQuotaError(
             'Quota exceeded for Pro',
@@ -199,7 +199,7 @@ describe('Auto Routing Fallback Integration', () => {
     configNonAuto.setFallbackModelHandler(handler);
 
     const promise = clientNonAuto.generateContent({
-      modelConfigKey: { model: PREVIEW_GEMINI_MODEL, isChatModel: true },
+      modelConfigKey: { model: PREVIEW_A_CODER_MODEL, isChatModel: true },
       contents: [{ role: 'user', parts: [{ text: 'hi' }] }],
       abortSignal: new AbortController().signal,
       promptId: 'test-prompt',
@@ -218,8 +218,8 @@ describe('Auto Routing Fallback Integration', () => {
     // Verify handler was called once after 10 attempts to prompt user
     expect(handler).toHaveBeenCalledTimes(1);
     expect(handler).toHaveBeenCalledWith(
-      PREVIEW_GEMINI_MODEL,
-      PREVIEW_GEMINI_FLASH_MODEL,
+      PREVIEW_A_CODER_MODEL,
+      PREVIEW_A_CODER_FLASH_MODEL,
       expect.any(RetryableQuotaError),
     );
   });
@@ -231,7 +231,7 @@ describe('Auto Routing Fallback Integration', () => {
       targetDir: '/test',
       debugMode: false,
       cwd: '/test',
-      model: PREVIEW_GEMINI_MODEL_AUTO, // Trigger auto mode
+      model: PREVIEW_A_CODER_MODEL_AUTO, // Trigger auto mode
     });
 
     // Force interactive mode to enable fallback handler in BaseLlmClient
@@ -261,14 +261,14 @@ describe('Auto Routing Fallback Integration', () => {
     // Spy on generateContent to simulate failures
     vi.spyOn(fakeGenerator, 'generateContent').mockImplementation(
       async (params) => {
-        if (params.model === PREVIEW_GEMINI_MODEL) {
+        if (params.model === PREVIEW_A_CODER_MODEL) {
           attemptsPro++;
           throw new RetryableQuotaError(
             'Quota exceeded for Pro',
             mockGoogleApiError,
             0,
           );
-        } else if (params.model === PREVIEW_GEMINI_FLASH_MODEL) {
+        } else if (params.model === PREVIEW_A_CODER_FLASH_MODEL) {
           attemptsFlash++;
           throw new RetryableQuotaError(
             'Quota exceeded for Flash',
@@ -283,7 +283,7 @@ describe('Auto Routing Fallback Integration', () => {
     // Set a fallback handler that approves the switch
     configDynamic.setFallbackModelHandler(
       async (failed, _fallback, _error): Promise<FallbackIntent | null> => {
-        if (failed === PREVIEW_GEMINI_FLASH_MODEL) {
+        if (failed === PREVIEW_A_CODER_FLASH_MODEL) {
           return 'stop';
         }
         return 'retry_always';
@@ -291,7 +291,7 @@ describe('Auto Routing Fallback Integration', () => {
     );
 
     const promise = clientDynamic.generateContent({
-      modelConfigKey: { model: PREVIEW_GEMINI_MODEL, isChatModel: true },
+      modelConfigKey: { model: PREVIEW_A_CODER_MODEL, isChatModel: true },
       contents: [{ role: 'user', parts: [{ text: 'hi' }] }],
       abortSignal: new AbortController().signal,
       promptId: 'test-prompt',
@@ -315,7 +315,7 @@ describe('Auto Routing Fallback Integration', () => {
       targetDir: '/test',
       debugMode: false,
       cwd: '/test',
-      model: PREVIEW_GEMINI_MODEL_AUTO, // Trigger auto mode
+      model: PREVIEW_A_CODER_MODEL_AUTO, // Trigger auto mode
     });
 
     // Force interactive mode to enable fallback handler in BaseLlmClient
@@ -339,14 +339,14 @@ describe('Auto Routing Fallback Integration', () => {
     // Turn 1: Pro fails, Flash succeeds
     vi.spyOn(fakeGenerator, 'generateContent').mockImplementation(
       async (params) => {
-        if (params.model === PREVIEW_GEMINI_MODEL) {
+        if (params.model === PREVIEW_A_CODER_MODEL) {
           attemptsPro++;
           throw new RetryableQuotaError(
             'Quota exceeded for Pro',
             mockGoogleApiError,
             0,
           );
-        } else if (params.model === PREVIEW_GEMINI_FLASH_MODEL) {
+        } else if (params.model === PREVIEW_A_CODER_FLASH_MODEL) {
           attemptsFlash++;
           return {
             candidates: [
@@ -367,7 +367,7 @@ describe('Auto Routing Fallback Integration', () => {
 
     // Call generateContent for Turn 1
     const promise1 = client.generateContent({
-      modelConfigKey: { model: PREVIEW_GEMINI_MODEL, isChatModel: true },
+      modelConfigKey: { model: PREVIEW_A_CODER_MODEL, isChatModel: true },
       contents: [{ role: 'user', parts: [{ text: 'hi' }] }],
       abortSignal: new AbortController().signal,
       promptId: 'test-prompt-1',
@@ -390,7 +390,7 @@ describe('Auto Routing Fallback Integration', () => {
     // Let's make it succeed this time to verify it works!
     vi.spyOn(fakeGenerator, 'generateContent').mockImplementation(
       async (params) => {
-        if (params.model === PREVIEW_GEMINI_MODEL) {
+        if (params.model === PREVIEW_A_CODER_MODEL) {
           return {
             candidates: [
               { content: { role: 'model', parts: [{ text: 'Pro success' }] } },
@@ -402,7 +402,7 @@ describe('Auto Routing Fallback Integration', () => {
     );
 
     const promise2 = client.generateContent({
-      modelConfigKey: { model: PREVIEW_GEMINI_MODEL, isChatModel: true }, // Request Pro again
+      modelConfigKey: { model: PREVIEW_A_CODER_MODEL, isChatModel: true }, // Request Pro again
       contents: [{ role: 'user', parts: [{ text: 'hello again' }] }],
       abortSignal: new AbortController().signal,
       promptId: 'test-prompt-2',

@@ -6,7 +6,7 @@
 
 import type { Content } from '@google/genai';
 import type { BaseLlmClient } from '../core/baseLlmClient.js';
-import type { GeminiChat } from '../core/geminiChat.js';
+import type { ACoderChat } from '../core/geminiChat.js';
 import { isFunctionResponse } from './messageInspectors.js';
 import { debugLogger } from './debugLogger.js';
 import { LlmRole } from '../telemetry/types.js';
@@ -41,7 +41,7 @@ export interface NextSpeakerResponse {
 }
 
 export async function checkNextSpeaker(
-  chat: GeminiChat,
+  chat: ACoderChat,
   baseLlmClient: BaseLlmClient,
   abortSignal: AbortSignal,
   promptId: string,

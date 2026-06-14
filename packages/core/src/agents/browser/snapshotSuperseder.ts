@@ -14,7 +14,7 @@
  * model call so the model only ever sees the most recent snapshot in full.
  */
 
-import type { GeminiChat, HistoryTurn } from '../../core/geminiChat.js';
+import type { ACoderChat, HistoryTurn } from '../../core/geminiChat.js';
 import type { Part } from '@google/genai';
 import { debugLogger } from '../../utils/debugLogger.js';
 
@@ -36,9 +36,9 @@ export const SNAPSHOT_SUPERSEDED_PLACEHOLDER =
  * - There are fewer than 2 snapshots (nothing to supersede).
  * - All prior snapshots have already been superseded.
  *
- * Uses {@link GeminiChat.setHistory} to apply the modified history.
+ * Uses {@link ACoderChat.setHistory} to apply the modified history.
  */
-export function supersedeStaleSnapshots(chat: GeminiChat): void {
+export function supersedeStaleSnapshots(chat: ACoderChat): void {
   const history = chat.getHistoryTurns();
 
   // Locate all (contentIndex, partIndex) tuples for take_snapshot responses.

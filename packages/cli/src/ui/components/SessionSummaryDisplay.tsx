@@ -12,7 +12,7 @@ import {
   escapeShellArg,
   isWindows,
   type ShellType,
-} from '@google/gemini-cli-core';
+} from '@the-a-tech-corporation/core';
 
 interface SessionSummaryDisplayProps {
   duration: string;
@@ -34,11 +34,11 @@ export const SessionSummaryDisplay: React.FC<SessionSummaryDisplayProps> = ({
     !escapedSessionId.startsWith("'")
       ? `"${escapedSessionId}"`
       : escapedSessionId;
-  let footer = `To resume this session: gemini --resume ${footerSessionId}`;
+  let footer = `To resume this session: a-coder-cli --resume ${footerSessionId}`;
 
   if (worktreeSettings) {
     footer =
-      `To resume work in this worktree: cd ${escapeShellArg(worktreeSettings.path, shell)} && gemini --resume ${footerSessionId}\n` +
+      `To resume work in this worktree: cd ${escapeShellArg(worktreeSettings.path, shell)} && a-coder-cli --resume ${footerSessionId}\n` +
       `To remove manually: git worktree remove ${escapeShellArg(worktreeSettings.path, shell)}`;
   }
 

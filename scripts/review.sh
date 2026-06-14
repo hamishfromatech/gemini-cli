@@ -11,7 +11,7 @@ if [[ -z "${1}" ]]; then
 fi
 pr="${1}"
 model="${2:-gemini-3.1-pro-preview}"
-REPO="google-gemini/gemini-cli"
+REPO="hamishfromatech/a-coder-cli"
 REVIEW_DIR="${HOME}/git/review/gemini-cli"
 
 if [[ ! -d "${REVIEW_DIR}" ]]; then
@@ -21,7 +21,7 @@ if [[ ! -d "${REVIEW_DIR}" ]]; then
     echo "Instructions:"
     echo "  mkdir -p ~/git/review"
     echo "  cd ~/git/review"
-    echo "  git clone https://github.com/google-gemini/gemini-cli.git"
+    echo "  git clone https://github.com/hamishfromatech/a-coder-cli.git"
     exit 1
 fi
 

@@ -1,6 +1,6 @@
 # Get started with Agent Skills
 
-Agent Skills extend Gemini CLI with specialized expertise. In this tutorial,
+Agent Skills extend A-Coder CLI with specialized expertise. In this tutorial,
 you'll learn how to create your first skill, bundle custom logic, and activate
 it during a session.
 
@@ -19,19 +19,19 @@ scripts.
 **macOS/Linux**
 
 ```bash
-mkdir -p .gemini/skills/api-auditor/scripts
+mkdir -p .a-coder-cli/skills/api-auditor/scripts
 ```
 
 **Windows (PowerShell)**
 
 ```powershell
-New-Item -ItemType Directory -Force -Path ".gemini\skills\api-auditor\scripts"
+New-Item -ItemType Directory -Force -Path ".a-coder-cli\skills\api-auditor\scripts"
 ```
 
 ### 2. Create the definition (`SKILL.md`)
 
 The `SKILL.md` file defines the skill's purpose and instructions for the agent.
-Create a file at `.gemini/skills/api-auditor/SKILL.md`. This tells the agent
+Create a file at `.a-coder-cli/skills/api-auditor/SKILL.md`. This tells the agent
 _when_ to use the skill and _how_ to behave.
 
 ```markdown
@@ -58,11 +58,11 @@ active, you MUST:
 ### 3. Add the tool logic
 
 Skills can bundle resources like scripts to perform deterministic tasks. Create
-a file at `.gemini/skills/api-auditor/scripts/audit.js`. This is the code the
+a file at `.a-coder-cli/skills/api-auditor/scripts/audit.js`. This is the code the
 agent will run.
 
 ```javascript
-// .gemini/skills/api-auditor/scripts/audit.js
+// .a-coder-cli/skills/api-auditor/scripts/audit.js
 const url = process.argv[2];
 
 if (!url) {
@@ -78,10 +78,10 @@ fetch(url, { method: 'HEAD' })
 
 ## Verify discovery
 
-Gemini CLI automatically discovers skills in the `.gemini/skills` directory (as
+A-Coder CLI automatically discovers skills in the `.a-coder-cli/skills` directory (as
 well as the `.agents/skills` alias).
 
-To check if Gemini CLI found your new skill, use the `/skills list` command
+To check if A-Coder CLI found your new skill, use the `/skills list` command
 within an interactive session:
 
 ```bash
@@ -97,12 +97,12 @@ the session.
 If `/skills list` doesn't show your skill, check the following:
 
 1.  **The folder must be trusted (workspace skills only).** Skills under
-    `<workspace>/.gemini/skills/` are only loaded when the workspace folder is
+    `<workspace>/.a-coder-cli/skills/` are only loaded when the workspace folder is
     marked as trusted. Run `/trust` and restart the session if needed. Skills
-    under `~/.gemini/skills/` (user scope) are not affected by trust.
+    under `~/.a-coder-cli/skills/` (user scope) are not affected by trust.
 2.  **Check the path layout.** `SKILL.md` is discovered either at the root of
-    the skills directory (`.gemini/skills/SKILL.md`) or one directory deep
-    (`.gemini/skills/<skill-name>/SKILL.md`). The recommended layout uses a
+    the skills directory (`.a-coder-cli/skills/SKILL.md`) or one directory deep
+    (`.a-coder-cli/skills/<skill-name>/SKILL.md`). The recommended layout uses a
     subdirectory per skill so you can bundle scripts and other resources
     alongside it. Files nested more than one directory deep are not discovered.
 3.  **The filename must be exactly `SKILL.md`.** Capitalization matters on
@@ -124,17 +124,17 @@ Now that the skill is discovered, you can trigger its activation by asking a
 relevant question.
 
 1.  **Trigger**: Start a new session and ask: "Can you audit https://google.com"
-2.  **Activation**: Gemini identifies that the request matches the `api-auditor`
+2.  **Activation**: A-Coder identifies that the request matches the `api-auditor`
     description and calls the `activate_skill` tool.
 3.  **Consent**: You will see a confirmation prompt. Type **y** to approve.
-4.  **Execution**: Once activated, Gemini uses the `run_shell_command` tool to
+4.  **Execution**: Once activated, A-Coder uses the `run_shell_command` tool to
     execute your bundled script:
-    `node .gemini/skills/api-auditor/scripts/audit.js https://google.com`
+    `node .a-coder-cli/skills/api-auditor/scripts/audit.js https://google.com`
 
 ## Pro tip: Use the skill-creator
 
 If you don't want to create the files manually, you can use the built-in
-`skill-creator` skill. Simply ask Gemini:
+`skill-creator` skill. Simply ask A-Coder:
 
 > "Create a new skill called 'api-auditor' that tests if URLs are responding."
 
@@ -142,11 +142,11 @@ The `skill-creator` will handle the directory structure and boilerplate for you.
 
 ## Manage skills
 
-You can also manage skills using the `gemini skills` command from your terminal:
+You can also manage skills using the `a-coder-cli skills` command from your terminal:
 
-- **Install**: `gemini skills install <url-or-path>`
-- **Link**: `gemini skills link <path>` (useful for local development)
-- **Uninstall**: `gemini skills uninstall <name>`
+- **Install**: `a-coder-cli skills install <url-or-path>`
+- **Link**: `a-coder-cli skills link <path>` (useful for local development)
+- **Uninstall**: `a-coder-cli skills uninstall <name>`
 
 ## Next steps
 

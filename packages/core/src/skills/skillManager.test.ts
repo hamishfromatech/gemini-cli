@@ -81,10 +81,22 @@ description: project-desc
     vi.spyOn(Storage, 'getUserAgentSkillsDir').mockReturnValue(
       '/non-existent-user-agent',
     );
+    vi.spyOn(Storage, 'getUserClaudeSkillsDir').mockReturnValue(
+      '/non-existent-user-claude',
+    );
+    vi.spyOn(Storage, 'getUserOpencodeSkillsDir').mockReturnValue(
+      '/non-existent-user-opencode',
+    );
     const storage = new Storage('/dummy');
     vi.spyOn(storage, 'getProjectSkillsDir').mockReturnValue(projectDir);
     vi.spyOn(storage, 'getProjectAgentSkillsDir').mockReturnValue(
       '/non-existent-project-agent',
+    );
+    vi.spyOn(storage, 'getProjectClaudeSkillsDir').mockReturnValue(
+      '/non-existent-project-claude',
+    );
+    vi.spyOn(storage, 'getProjectOpencodeSkillsDir').mockReturnValue(
+      '/non-existent-project-opencode',
     );
 
     const service = new SkillManager();
@@ -144,10 +156,22 @@ description: project-desc
     vi.spyOn(Storage, 'getUserAgentSkillsDir').mockReturnValue(
       '/non-existent-user-agent',
     );
+    vi.spyOn(Storage, 'getUserClaudeSkillsDir').mockReturnValue(
+      '/non-existent-user-claude',
+    );
+    vi.spyOn(Storage, 'getUserOpencodeSkillsDir').mockReturnValue(
+      '/non-existent-user-opencode',
+    );
     const storage = new Storage('/dummy');
     vi.spyOn(storage, 'getProjectSkillsDir').mockReturnValue(projectDir);
     vi.spyOn(storage, 'getProjectAgentSkillsDir').mockReturnValue(
       '/non-existent-project-agent',
+    );
+    vi.spyOn(storage, 'getProjectClaudeSkillsDir').mockReturnValue(
+      '/non-existent-project-claude',
+    );
+    vi.spyOn(storage, 'getProjectOpencodeSkillsDir').mockReturnValue(
+      '/non-existent-project-opencode',
     );
 
     const service = new SkillManager();
@@ -161,6 +185,12 @@ description: project-desc
 
     // Test User > Extension
     vi.spyOn(storage, 'getProjectSkillsDir').mockReturnValue('/non-existent');
+    vi.spyOn(storage, 'getProjectClaudeSkillsDir').mockReturnValue(
+      '/non-existent-project-claude',
+    );
+    vi.spyOn(storage, 'getProjectOpencodeSkillsDir').mockReturnValue(
+      '/non-existent-project-opencode',
+    );
     await service.discoverSkills(storage, [mockExtension], true);
     expect(service.getSkills()[0].description).toBe('user-desc');
   });
@@ -183,7 +213,25 @@ description: project-desc
 
     const storage = new Storage('/dummy');
     vi.spyOn(storage, 'getProjectSkillsDir').mockReturnValue('/non-existent');
+    vi.spyOn(storage, 'getProjectAgentSkillsDir').mockReturnValue(
+      '/non-existent-project-agent',
+    );
+    vi.spyOn(storage, 'getProjectClaudeSkillsDir').mockReturnValue(
+      '/non-existent-project-claude',
+    );
+    vi.spyOn(storage, 'getProjectOpencodeSkillsDir').mockReturnValue(
+      '/non-existent-project-opencode',
+    );
     vi.spyOn(Storage, 'getUserSkillsDir').mockReturnValue('/non-existent');
+    vi.spyOn(Storage, 'getUserAgentSkillsDir').mockReturnValue(
+      '/non-existent-user-agent',
+    );
+    vi.spyOn(Storage, 'getUserClaudeSkillsDir').mockReturnValue(
+      '/non-existent-user-claude',
+    );
+    vi.spyOn(Storage, 'getUserOpencodeSkillsDir').mockReturnValue(
+      '/non-existent-user-opencode',
+    );
 
     await service.discoverSkills(storage, [], true);
 
@@ -211,9 +259,21 @@ body1`,
     vi.spyOn(storage, 'getProjectAgentSkillsDir').mockReturnValue(
       '/non-existent-project-agent',
     );
+    vi.spyOn(storage, 'getProjectClaudeSkillsDir').mockReturnValue(
+      '/non-existent-project-claude',
+    );
+    vi.spyOn(storage, 'getProjectOpencodeSkillsDir').mockReturnValue(
+      '/non-existent-project-opencode',
+    );
     vi.spyOn(Storage, 'getUserSkillsDir').mockReturnValue('/non-existent');
     vi.spyOn(Storage, 'getUserAgentSkillsDir').mockReturnValue(
       '/non-existent-user-agent',
+    );
+    vi.spyOn(Storage, 'getUserClaudeSkillsDir').mockReturnValue(
+      '/non-existent-user-claude',
+    );
+    vi.spyOn(Storage, 'getUserOpencodeSkillsDir').mockReturnValue(
+      '/non-existent-user-opencode',
     );
 
     const service = new SkillManager();
@@ -245,9 +305,21 @@ description: project-desc
     vi.spyOn(storage, 'getProjectAgentSkillsDir').mockReturnValue(
       '/non-existent-project-agent',
     );
+    vi.spyOn(storage, 'getProjectClaudeSkillsDir').mockReturnValue(
+      '/non-existent-project-claude',
+    );
+    vi.spyOn(storage, 'getProjectOpencodeSkillsDir').mockReturnValue(
+      '/non-existent-project-opencode',
+    );
     vi.spyOn(Storage, 'getUserSkillsDir').mockReturnValue('/non-existent');
     vi.spyOn(Storage, 'getUserAgentSkillsDir').mockReturnValue(
       '/non-existent-user-agent',
+    );
+    vi.spyOn(Storage, 'getUserClaudeSkillsDir').mockReturnValue(
+      '/non-existent-user-claude',
+    );
+    vi.spyOn(Storage, 'getUserOpencodeSkillsDir').mockReturnValue(
+      '/non-existent-user-opencode',
     );
 
     const service = new SkillManager();

@@ -16,12 +16,12 @@ import {
   escapePath,
   type Config,
   type FileSearch,
-} from '@google/gemini-cli-core';
+} from '@the-a-tech-corporation/core';
 import {
   createTmpDir,
   cleanupTmpDir,
   type FileSystemStructure,
-} from '@google/gemini-cli-test-utils';
+} from '@the-a-tech-corporation/test-utils';
 import type { Suggestion } from '../components/SuggestionsDisplay.js';
 
 // Test harness to capture the state from the hook's callbacks.
@@ -54,7 +54,7 @@ describe('useAtCompletion', () => {
     mockConfig = {
       getFileFilteringOptions: vi.fn(() => ({
         respectGitIgnore: true,
-        respectGeminiIgnore: true,
+        respectACoderIgnore: true,
       })),
       getEnableRecursiveFileSearch: () => true,
       getFileFilteringEnableFuzzySearch: () => true,
@@ -159,7 +159,7 @@ describe('useAtCompletion', () => {
         ignoreDirs: [],
         fileDiscoveryService: new FileDiscoveryService(testRootDir, {
           respectGitIgnore: false,
-          respectGeminiIgnore: false,
+          respectACoderIgnore: false,
         }),
         cache: false,
         cacheTtl: 0,
@@ -291,7 +291,7 @@ describe('useAtCompletion', () => {
         ignoreDirs: [],
         fileDiscoveryService: new FileDiscoveryService(testRootDir, {
           respectGitIgnore: true,
-          respectGeminiIgnore: true,
+          respectACoderIgnore: true,
         }),
         cache: false,
         cacheTtl: 0,
@@ -565,7 +565,7 @@ describe('useAtCompletion', () => {
       const configWithWatcher = {
         getFileFilteringOptions: vi.fn(() => ({
           respectGitIgnore: true,
-          respectGeminiIgnore: true,
+          respectACoderIgnore: true,
           enableFileWatcher: true,
         })),
         getEnableRecursiveFileSearch: () => true,
@@ -645,7 +645,7 @@ describe('useAtCompletion', () => {
         getEnableRecursiveFileSearch: () => false,
         getFileFilteringOptions: vi.fn(() => ({
           respectGitIgnore: true,
-          respectGeminiIgnore: true,
+          respectACoderIgnore: true,
         })),
         getFileFilteringEnableFuzzySearch: () => true,
       } as unknown as Config;

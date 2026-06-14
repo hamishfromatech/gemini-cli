@@ -15,8 +15,8 @@ import {
   FatalSandboxError,
   homedir,
   type SandboxConfig,
-} from '@google/gemini-cli-core';
-import { createMockSandboxConfig } from '@google/gemini-cli-test-utils';
+} from '@the-a-tech-corporation/core';
+import { createMockSandboxConfig } from '@the-a-tech-corporation/test-utils';
 import { EventEmitter } from 'node:events';
 
 const { mockedHomedir, mockedGetContainerPath, mockedExecCommands } =
@@ -85,9 +85,9 @@ vi.mock('node:util', async (importOriginal) => {
   };
 });
 
-vi.mock('@google/gemini-cli-core', async (importOriginal) => {
+vi.mock('@the-a-tech-corporation/core', async (importOriginal) => {
   const actual =
-    await importOriginal<typeof import('@google/gemini-cli-core')>();
+    await importOriginal<typeof import('@the-a-tech-corporation/core')>();
   return {
     ...actual,
     debugLogger: {
@@ -104,7 +104,7 @@ vi.mock('@google/gemini-cli-core', async (importOriginal) => {
         this.name = 'FatalSandboxError';
       }
     },
-    GEMINI_DIR: '.gemini',
+    A_CODER_DIR: '.a-coder',
     homedir: mockedHomedir,
   };
 });
@@ -187,7 +187,7 @@ describe('sandbox', () => {
       vi.stubEnv('SEATBELT_PROFILE', 'custom-test');
       vi.mocked(fs.existsSync).mockImplementation((p) =>
         String(p).includes(
-          path.join(homedir(), '.gemini', 'sandbox-macos-custom-test.sb'),
+          path.join(homedir(), '.a-coder', 'sandbox-macos-custom-test.sb'),
         ),
       );
       const config: SandboxConfig = createMockSandboxConfig({
@@ -225,19 +225,19 @@ describe('sandbox', () => {
       const profileArg = spawnArgs?.[spawnArgs.indexOf('-f') + 1];
       expect(profileArg).toEqual(
         expect.stringContaining(
-          path.join(homedir(), '.gemini', 'sandbox-macos-custom-test.sb'),
+          path.join(homedir(), '.a-coder', 'sandbox-macos-custom-test.sb'),
         ),
       );
     });
 
-    it('should fall back to project .gemini directory when user profile is missing', async () => {
+    it('should fall back to project .a-coder directory when user profile is missing', async () => {
       vi.mocked(os.platform).mockReturnValue('darwin');
       vi.stubEnv('SEATBELT_PROFILE', 'custom-test');
       vi.mocked(fs.existsSync).mockImplementation((p) => {
         const s = String(p);
         return (
-          s.includes(path.join('.gemini', 'sandbox-macos-custom-test.sb')) &&
-          !s.includes(path.join(homedir(), '.gemini'))
+          s.includes(path.join('.a-coder', 'sandbox-macos-custom-test.sb')) &&
+          !s.includes(path.join(homedir(), '.a-coder'))
         );
       });
       const config: SandboxConfig = createMockSandboxConfig({
@@ -275,7 +275,7 @@ describe('sandbox', () => {
       const profileArg = spawnArgs?.[spawnArgs.indexOf('-f') + 1];
       expect(profileArg).toEqual(
         expect.stringContaining(
-          path.join('.gemini', 'sandbox-macos-custom-test.sb'),
+          path.join('.a-coder', 'sandbox-macos-custom-test.sb'),
         ),
       );
       expect(profileArg).not.toContain(homedir());
@@ -372,7 +372,7 @@ describe('sandbox', () => {
         command: 'docker',
         image: 'gemini-cli-sandbox',
       });
-      process.env['GEMINI_CLI_INTEGRATION_TEST'] = 'true';
+      process.env['A_CODER_CLI_INTEGRATION_TEST'] = 'true';
 
       interface MockProcessWithStdout extends EventEmitter {
         stdout: EventEmitter;
@@ -577,7 +577,7 @@ describe('sandbox', () => {
           '--volume',
           '/host/path:/container/path:ro',
           '--volume',
-          expect.stringMatching(/[\\/]home[\\/]user[\\/]\.gemini/),
+          expect.stringMatching(/[\\/]home[\\/]user[\\/]\.a-coder/),
         ]),
         expect.any(Object),
       );
@@ -702,12 +702,12 @@ describe('sandbox', () => {
       );
     });
 
-    it('should pass through GOOGLE_GEMINI_BASE_URL and GOOGLE_VERTEX_BASE_URL', async () => {
+    it('should pass through A_CODER_BASE_URL and GOOGLE_VERTEX_BASE_URL', async () => {
       const config: SandboxConfig = createMockSandboxConfig({
         command: 'docker',
         image: 'gemini-cli-sandbox',
       });
-      process.env['GOOGLE_GEMINI_BASE_URL'] = 'http://gemini.proxy';
+      process.env['A_CODER_BASE_URL'] = 'http://gemini.proxy';
       process.env['GOOGLE_VERTEX_BASE_URL'] = 'http://vertex.proxy';
 
       // Mock image check to return true
@@ -741,7 +741,7 @@ describe('sandbox', () => {
         'docker',
         expect.arrayContaining([
           '--env',
-          'GOOGLE_GEMINI_BASE_URL=http://gemini.proxy',
+          'A_CODER_BASE_URL=http://gemini.proxy',
           '--env',
           'GOOGLE_VERTEX_BASE_URL=http://vertex.proxy',
         ]),
@@ -858,7 +858,7 @@ describe('sandbox', () => {
     });
 
     it('should register and unregister proxy exit handlers', async () => {
-      vi.stubEnv('GEMINI_SANDBOX_PROXY_COMMAND', 'some-proxy-cmd');
+      vi.stubEnv('A_CODER_SANDBOX_PROXY_COMMAND', 'some-proxy-cmd');
       const config: SandboxConfig = createMockSandboxConfig({
         command: 'docker',
         image: 'gemini-cli-sandbox',

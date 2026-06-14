@@ -14,7 +14,7 @@ import {
   type ExecuteOptions,
   Kind,
   type MessageBus,
-} from '@google/gemini-cli-core';
+} from '@the-a-tech-corporation/core';
 import type { SessionContext } from './types.js';
 
 export { z };
@@ -210,7 +210,7 @@ export class SdkTool<T extends z.ZodTypeAny> extends BaseDeclarativeTool<
  *
  * @example
  * ```typescript
- * import { z, tool } from '@google/gemini-cli-sdk';
+ * import { z, tool } from '@the-a-tech-corporation/sdk';
  *
  * const myTool = tool(
  *   {

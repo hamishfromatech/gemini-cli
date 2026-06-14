@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2026 Google LLC
+ * Copyright 2026 The A-Tech Corporation
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -84,7 +84,7 @@ function main() {
         markdown += `### Failure ${i + 1}: ${r.name}\n\n`;
       }
 
-      markdown += '#### 1. Ask Gemini CLI to fix it (Recommended)\n';
+      markdown += '#### 1. Ask A-Coder CLI to fix it (Recommended)\n';
       markdown += 'Copy and paste this prompt to the agent:\n';
       markdown += '```text\n';
       markdown += `The eval "${r.name}" in ${r.file} is failing. Investigate and fix it using the behavioral-evals skill.\n`;
@@ -94,7 +94,7 @@ function main() {
       markdown += 'Run the following command to see the failure trajectory:\n';
       markdown += '```bash\n';
       const pattern = r.name.replace(/'/g, '.');
-      markdown += `GEMINI_MODEL=${targetModel} npm run test:all_evals -- ${r.file} --testNamePattern="${pattern}"\n`;
+      markdown += `A_CODER_MODEL=${targetModel} npm run test:all_evals -- ${r.file} --testNamePattern="${pattern}"\n`;
 
       markdown += '```\n\n';
 
@@ -105,7 +105,7 @@ function main() {
 
     markdown += '#### 3. Manual Fix\n';
     markdown +=
-      'See the [Fixing Guide](https://github.com/google-gemini/gemini-cli/blob/main/evals/README.md#fixing-evaluations) for detailed troubleshooting steps.\n';
+      'See the [Fixing Guide](https://github.com/hamishfromatech/a-coder-cli/blob/main/evals/README.md#fixing-evaluations) for detailed troubleshooting steps.\n';
     markdown += '</details>\n';
 
     process.stdout.write(markdown);

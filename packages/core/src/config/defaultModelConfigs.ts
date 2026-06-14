@@ -470,11 +470,11 @@ export const DEFAULT_MODEL_CONFIGS: ModelConfigServiceConfig = {
       default: 'gemini-3-flash-preview',
       contexts: [
         {
-          condition: { hasAccessToPreview: false, useGemini3_5Flash: true },
+          condition: { hasAccessToPreview: false, useACoder3_5Flash: true },
           target: 'gemini-3.5-flash',
         },
         {
-          condition: { hasAccessToPreview: false, useGemini3_5Flash: false },
+          condition: { hasAccessToPreview: false, useACoder3_5Flash: false },
           target: 'gemini-2.5-flash',
         },
       ],
@@ -483,11 +483,11 @@ export const DEFAULT_MODEL_CONFIGS: ModelConfigServiceConfig = {
       default: 'gemini-3.5-flash',
       contexts: [
         {
-          condition: { useGemini3_5Flash: false, hasAccessToPreview: false },
+          condition: { useACoder3_5Flash: false, hasAccessToPreview: false },
           target: 'gemini-2.5-flash',
         },
         {
-          condition: { useGemini3_5Flash: false },
+          condition: { useACoder3_5Flash: false },
           target: 'gemini-3-flash-preview',
         },
       ],
@@ -495,7 +495,7 @@ export const DEFAULT_MODEL_CONFIGS: ModelConfigServiceConfig = {
     'gemini-2.5-flash': {
       default: 'gemini-2.5-flash',
       contexts: [
-        { condition: { useGemini3_5Flash: true }, target: 'gemini-3.5-flash' },
+        { condition: { useACoder3_5Flash: true }, target: 'gemini-3.5-flash' },
       ],
     },
     'gemini-3-pro-preview': {
@@ -546,7 +546,7 @@ export const DEFAULT_MODEL_CONFIGS: ModelConfigServiceConfig = {
     flash: {
       default: 'gemini-3-flash-preview',
       contexts: [
-        { condition: { useGemini3_5Flash: true }, target: 'gemini-3.5-flash' },
+        { condition: { useACoder3_5Flash: true }, target: 'gemini-3.5-flash' },
         {
           condition: { hasAccessToPreview: false },
           target: 'gemini-2.5-flash',
@@ -578,7 +578,7 @@ export const DEFAULT_MODEL_CONFIGS: ModelConfigServiceConfig = {
     flash: {
       default: 'gemini-3-flash-preview',
       contexts: [
-        { condition: { useGemini3_5Flash: true }, target: 'gemini-3.5-flash' },
+        { condition: { useACoder3_5Flash: true }, target: 'gemini-3.5-flash' },
         {
           condition: { hasAccessToPreview: false },
           target: 'gemini-2.5-flash',

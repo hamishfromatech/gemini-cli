@@ -1,13 +1,13 @@
-# Writing hooks for Gemini CLI
+# Writing hooks for A-Coder CLI
 
-This guide will walk you through creating hooks for Gemini CLI, from a simple
+This guide will walk you through creating hooks for A-Coder CLI, from a simple
 logging hook to a comprehensive workflow assistant.
 
 ## Prerequisites
 
 Before you start, make sure you have:
 
-- Gemini CLI installed and configured
+- A-Coder CLI installed and configured
 - Basic understanding of shell scripting or JavaScript/Node.js
 - Familiarity with JSON for hook input/output
 
@@ -31,8 +31,8 @@ Create a directory for hooks and a simple logging script.
 **macOS/Linux**
 
 ```bash
-mkdir -p .gemini/hooks
-cat > .gemini/hooks/log-tools.sh << 'EOF'
+mkdir -p .a-coder-cli/hooks
+cat > .a-coder-cli/hooks/log-tools.sh << 'EOF'
 #!/usr/bin/env bash
 # Read hook input from stdin
 input=$(cat)
@@ -44,20 +44,20 @@ tool_name=$(echo "$input" | jq -r '.tool_name')
 echo "Logging tool: $tool_name" >&2
 
 # Log to file
-echo "[$(date)] Tool executed: $tool_name" >> .gemini/tool-log.txt
+echo "[$(date)] Tool executed: $tool_name" >> .a-coder-cli/tool-log.txt
 
 # Return success (exit 0) with empty JSON
 echo "{}"
 exit 0
 EOF
 
-chmod +x .gemini/hooks/log-tools.sh
+chmod +x .a-coder-cli/hooks/log-tools.sh
 ```
 
 **Windows (PowerShell)**
 
 ```powershell
-New-Item -ItemType Directory -Force -Path ".gemini\hooks"
+New-Item -ItemType Directory -Force -Path ".a-coder-cli\hooks"
 @"
 # Read hook input from stdin
 `$inputJson = `$input | Out-String | ConvertFrom-Json
@@ -69,16 +69,16 @@ New-Item -ItemType Directory -Force -Path ".gemini\hooks"
 [Console]::Error.WriteLine("Logging tool: `$toolName")
 
 # Log to file
-"[`$(Get-Date -Format 'o')] Tool executed: `$toolName" | Out-File -FilePath ".gemini\tool-log.txt" -Append -Encoding utf8
+"[`$(Get-Date -Format 'o')] Tool executed: `$toolName" | Out-File -FilePath ".a-coder-cli\tool-log.txt" -Append -Encoding utf8
 
 # Return success with empty JSON
 "{}"
-"@ | Out-File -FilePath ".gemini\hooks\log-tools.ps1" -Encoding utf8
+"@ | Out-File -FilePath ".a-coder-cli\hooks\log-tools.ps1" -Encoding utf8
 ```
 
 ## Exit Code Strategies
 
-There are two ways to control or block an action in Gemini CLI:
+There are two ways to control or block an action in A-Coder CLI:
 
 | Strategy                   | Exit Code | Implementation                                                     | Best For                                                    |
 | :------------------------- | :-------- | :----------------------------------------------------------------- | :---------------------------------------------------------- |
@@ -92,7 +92,7 @@ There are two ways to control or block an action in Gemini CLI:
 Prevent committing files containing API keys or passwords. Note that we use
 **Exit Code 0** to provide a structured denial message to the agent.
 
-**`.gemini/hooks/block-secrets.sh`:**
+**`.a-coder-cli/hooks/block-secrets.sh`:**
 
 ```bash
 #!/usr/bin/env bash
@@ -126,7 +126,7 @@ exit 0
 
 Add relevant project context before each agent interaction.
 
-**`.gemini/hooks/inject-context.sh`:**
+**`.a-coder-cli/hooks/inject-context.sh`:**
 
 ```bash
 #!/usr/bin/env bash
@@ -150,7 +150,7 @@ EOF
 Use `BeforeToolSelection` to intelligently reduce the tool space. This example
 uses a Node.js script to check the user's prompt and allow only relevant tools.
 
-**`.gemini/hooks/filter-tools.js`:**
+**`.a-coder-cli/hooks/filter-tools.js`:**
 
 ```javascript
 #!/usr/bin/env node
@@ -207,7 +207,7 @@ main().catch((err) => {
 });
 ```
 
-**`.gemini/settings.json`:**
+**`.a-coder-cli/settings.json`:**
 
 ```json
 {
@@ -219,7 +219,7 @@ main().catch((err) => {
           {
             "name": "intent-filter",
             "type": "command",
-            "command": "node .gemini/hooks/filter-tools.js"
+            "command": "node .a-coder-cli/hooks/filter-tools.js"
           }
         ]
       }
@@ -251,7 +251,7 @@ security.
 6. **AfterAgent**: Validate final response quality (Retry).
 7. **SessionEnd**: Consolidate memories.
 
-### Configuration (`.gemini/settings.json`)
+### Configuration (`.a-coder-cli/settings.json`)
 
 ```json
 {
@@ -263,7 +263,7 @@ security.
           {
             "name": "init",
             "type": "command",
-            "command": "node .gemini/hooks/init.js"
+            "command": "node .a-coder-cli/hooks/init.js"
           }
         ]
       }
@@ -275,7 +275,7 @@ security.
           {
             "name": "memory",
             "type": "command",
-            "command": "node .gemini/hooks/inject-memories.js"
+            "command": "node .a-coder-cli/hooks/inject-memories.js"
           }
         ]
       }
@@ -287,7 +287,7 @@ security.
           {
             "name": "filter",
             "type": "command",
-            "command": "node .gemini/hooks/rag-filter.js"
+            "command": "node .a-coder-cli/hooks/rag-filter.js"
           }
         ]
       }
@@ -299,7 +299,7 @@ security.
           {
             "name": "security",
             "type": "command",
-            "command": "node .gemini/hooks/security.js"
+            "command": "node .a-coder-cli/hooks/security.js"
           }
         ]
       }
@@ -311,7 +311,7 @@ security.
           {
             "name": "record",
             "type": "command",
-            "command": "node .gemini/hooks/record.js"
+            "command": "node .a-coder-cli/hooks/record.js"
           }
         ]
       }
@@ -323,7 +323,7 @@ security.
           {
             "name": "validate",
             "type": "command",
-            "command": "node .gemini/hooks/validate.js"
+            "command": "node .a-coder-cli/hooks/validate.js"
           }
         ]
       }
@@ -335,7 +335,7 @@ security.
           {
             "name": "save",
             "type": "command",
-            "command": "node .gemini/hooks/consolidate.js"
+            "command": "node .a-coder-cli/hooks/consolidate.js"
           }
         ]
       }
@@ -419,8 +419,8 @@ const path = require('path');
 const input = JSON.parse(fs.readFileSync(0));
 const { llm_request, llm_response } = input;
 const logFile = path.join(
-  process.env.GEMINI_PROJECT_DIR,
-  '.gemini/memory/session.jsonl',
+  process.env.A_CODER_PROJECT_DIR,
+  '.a-coder-cli/memory/session.jsonl',
 );
 
 fs.appendFileSync(
@@ -470,5 +470,5 @@ console.error('Consolidating memories for session end...');
 
 While project-level hooks are great for specific repositories, you can share
 your hooks across multiple projects by packaging them as a
-[Gemini CLI extension](../extensions/index.md). This provides version control,
+[A-Coder CLI extension](../extensions/index.md). This provides version control,
 easy distribution, and centralized management.

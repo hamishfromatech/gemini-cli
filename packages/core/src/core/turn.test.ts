@@ -7,16 +7,16 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import {
   Turn,
-  GeminiEventType,
-  type ServerGeminiToolCallRequestEvent,
-  type ServerGeminiErrorEvent,
+  ACoderEventType,
+  type ServerACoderToolCallRequestEvent,
+  type ServerACoderErrorEvent,
 } from './turn.js';
 import type { GenerateContentResponse, Part, Content } from '@google/genai';
 import { reportError } from '../utils/errorReporting.js';
 import {
-  InvalidStreamError,
+  InvalidACoderStreamError,
   StreamEventType,
-  type GeminiChat,
+  type ACoderChat,
 } from './geminiChat.js';
 
 const mockSendMessageStream = vi.fn();
@@ -73,7 +73,7 @@ describe('Turn', () => {
         },
       },
     };
-    turn = new Turn(mockChatInstance as unknown as GeminiChat, 'prompt-id-1');
+    turn = new Turn(mockChatInstance as unknown as ACoderChat, 'prompt-id-1');
     mockGetHistory.mockReturnValue([]);
     mockSendMessageStream.mockResolvedValue((async function* () {})());
   });
@@ -128,8 +128,8 @@ describe('Turn', () => {
       );
 
       expect(events).toEqual([
-        { type: GeminiEventType.Content, value: 'Hello' },
-        { type: GeminiEventType.Content, value: ' world' },
+        { type: ACoderEventType.Content, value: 'Hello' },
+        { type: ACoderEventType.Content, value: ' world' },
       ]);
       expect(turn.getDebugResponses().length).toBe(2);
     });
@@ -168,8 +168,8 @@ describe('Turn', () => {
       }
 
       expect(events.length).toBe(2);
-      const event1 = events[0] as ServerGeminiToolCallRequestEvent;
-      expect(event1.type).toBe(GeminiEventType.ToolCallRequest);
+      const event1 = events[0] as ServerACoderToolCallRequestEvent;
+      expect(event1.type).toBe(ACoderEventType.ToolCallRequest);
       expect(event1.value).toEqual(
         expect.objectContaining({
           callId: 'tool1__fc1',
@@ -180,8 +180,8 @@ describe('Turn', () => {
       );
       expect(turn.pendingToolCalls[0]).toEqual(event1.value);
 
-      const event2 = events[1] as ServerGeminiToolCallRequestEvent;
-      expect(event2.type).toBe(GeminiEventType.ToolCallRequest);
+      const event2 = events[1] as ServerACoderToolCallRequestEvent;
+      expect(event2.type).toBe(ACoderEventType.ToolCallRequest);
       expect(event2.value).toEqual(
         expect.objectContaining({
           name: 'tool2',
@@ -231,14 +231,14 @@ describe('Turn', () => {
         events.push(event);
       }
       expect(events).toEqual([
-        { type: GeminiEventType.Content, value: 'First part' },
-        { type: GeminiEventType.UserCancelled },
+        { type: ACoderEventType.Content, value: 'First part' },
+        { type: ACoderEventType.UserCancelled },
       ]);
       expect(turn.getDebugResponses().length).toBe(1);
     });
 
-    it('should yield InvalidStream event if sendMessageStream throws InvalidStreamError', async () => {
-      const error = new InvalidStreamError(
+    it('should yield InvalidStream event if sendMessageStream throws InvalidACoderStreamError', async () => {
+      const error = new InvalidACoderStreamError(
         'Test invalid stream',
         'NO_FINISH_REASON',
       );
@@ -254,7 +254,7 @@ describe('Turn', () => {
         events.push(event);
       }
 
-      expect(events).toEqual([{ type: GeminiEventType.InvalidStream }]);
+      expect(events).toEqual([{ type: ACoderEventType.InvalidStream }]);
       expect(turn.getDebugResponses().length).toBe(0);
       expect(reportError).not.toHaveBeenCalled(); // Should not report as error
     });
@@ -278,8 +278,8 @@ describe('Turn', () => {
       }
 
       expect(events.length).toBe(1);
-      const errorEvent = events[0] as ServerGeminiErrorEvent;
-      expect(errorEvent.type).toBe(GeminiEventType.Error);
+      const errorEvent = events[0] as ServerACoderErrorEvent;
+      expect(errorEvent.type).toBe(ACoderEventType.Error);
       expect(errorEvent.value).toEqual({
         error: {
           message: 'API Error',
@@ -324,21 +324,21 @@ describe('Turn', () => {
       expect(events.length).toBe(3);
 
       // Assertions for each specific tool call event
-      const event1 = events[0] as ServerGeminiToolCallRequestEvent;
+      const event1 = events[0] as ServerACoderToolCallRequestEvent;
       expect(event1.value).toMatchObject({
         callId: 'generic_tool__fc1',
         name: 'generic_tool',
         args: { arg1: 'val1' },
       });
 
-      const event2 = events[1] as ServerGeminiToolCallRequestEvent;
+      const event2 = events[1] as ServerACoderToolCallRequestEvent;
       expect(event2.value).toMatchObject({
         callId: 'tool2__fc2',
         name: 'tool2',
         args: {},
       });
 
-      const event3 = events[2] as ServerGeminiToolCallRequestEvent;
+      const event3 = events[2] as ServerACoderToolCallRequestEvent;
       expect(event3.value).toMatchObject({
         callId: 'generic_tool__fc3',
         name: 'generic_tool',
@@ -399,9 +399,9 @@ describe('Turn', () => {
       }
 
       expect(events).toEqual([
-        { type: GeminiEventType.Content, value: contentText },
+        { type: ACoderEventType.Content, value: contentText },
         {
-          type: GeminiEventType.Finished,
+          type: ACoderEventType.Finished,
           value: { reason: finishReason, usageMetadata },
         },
       ]);
@@ -437,7 +437,7 @@ describe('Turn', () => {
 
       expect(events).toEqual([
         {
-          type: GeminiEventType.Content,
+          type: ACoderEventType.Content,
           value: 'Response without finish reason',
         },
       ]);
@@ -481,10 +481,10 @@ describe('Turn', () => {
       }
 
       expect(events).toEqual([
-        { type: GeminiEventType.Content, value: 'First part' },
-        { type: GeminiEventType.Content, value: 'Second part' },
+        { type: ACoderEventType.Content, value: 'First part' },
+        { type: ACoderEventType.Content, value: 'Second part' },
         {
-          type: GeminiEventType.Finished,
+          type: ACoderEventType.Finished,
           value: { reason: 'OTHER', usageMetadata: undefined },
         },
       ]);
@@ -524,13 +524,13 @@ describe('Turn', () => {
       }
 
       expect(events).toEqual([
-        { type: GeminiEventType.Content, value: 'Some text.' },
+        { type: ACoderEventType.Content, value: 'Some text.' },
         {
-          type: GeminiEventType.Citation,
+          type: ACoderEventType.Citation,
           value: 'Citations:\n(Source 1 Title) https://example.com/source1',
         },
         {
-          type: GeminiEventType.Finished,
+          type: ACoderEventType.Finished,
           value: { reason: 'STOP', usageMetadata: undefined },
         },
       ]);
@@ -574,14 +574,14 @@ describe('Turn', () => {
       }
 
       expect(events).toEqual([
-        { type: GeminiEventType.Content, value: 'Some text.' },
+        { type: ACoderEventType.Content, value: 'Some text.' },
         {
-          type: GeminiEventType.Citation,
+          type: ACoderEventType.Citation,
           value:
             'Citations:\n(Title1) https://example.com/source1\n(Title2) https://example.com/source2',
         },
         {
-          type: GeminiEventType.Finished,
+          type: ACoderEventType.Finished,
           value: { reason: 'STOP', usageMetadata: undefined },
         },
       ]);
@@ -621,10 +621,10 @@ describe('Turn', () => {
       }
 
       expect(events).toEqual([
-        { type: GeminiEventType.Content, value: 'Some text.' },
+        { type: ACoderEventType.Content, value: 'Some text.' },
       ]);
       // No Citation event (but we do get a Finished event with undefined reason)
-      expect(events.some((e) => e.type === GeminiEventType.Citation)).toBe(
+      expect(events.some((e) => e.type === ACoderEventType.Citation)).toBe(
         false,
       );
     });
@@ -667,13 +667,13 @@ describe('Turn', () => {
       }
 
       expect(events).toEqual([
-        { type: GeminiEventType.Content, value: 'Some text.' },
+        { type: ACoderEventType.Content, value: 'Some text.' },
         {
-          type: GeminiEventType.Citation,
+          type: ACoderEventType.Citation,
           value: 'Citations:\n(Good Source) https://example.com/source1',
         },
         {
-          type: GeminiEventType.Finished,
+          type: ACoderEventType.Finished,
           value: { reason: 'STOP', usageMetadata: undefined },
         },
       ]);
@@ -704,7 +704,7 @@ describe('Turn', () => {
         events.push(event);
       }
 
-      expect(events).toEqual([{ type: GeminiEventType.UserCancelled }]);
+      expect(events).toEqual([{ type: ACoderEventType.UserCancelled }]);
 
       expect(reportError).not.toHaveBeenCalled();
     });
@@ -731,8 +731,8 @@ describe('Turn', () => {
       }
 
       expect(events).toEqual([
-        { type: GeminiEventType.Retry },
-        { type: GeminiEventType.Content, value: 'Success' },
+        { type: ACoderEventType.Retry },
+        { type: ACoderEventType.Content, value: 'Success' },
       ]);
     });
 
@@ -742,7 +742,7 @@ describe('Turn', () => {
         part: { text: 'Hello' },
         responseId: 'trace-123',
         expectedEvent: {
-          type: GeminiEventType.Content,
+          type: ACoderEventType.Content,
           value: 'Hello',
           traceId: 'trace-123',
         },
@@ -752,7 +752,7 @@ describe('Turn', () => {
         part: { text: '[Thought: thinking]', thought: 'thinking' },
         responseId: 'trace-456',
         expectedEvent: {
-          type: GeminiEventType.Thought,
+          type: ACoderEventType.Thought,
           value: { subject: '', description: '[Thought: thinking]' },
           traceId: 'trace-456',
         },
@@ -832,31 +832,31 @@ describe('Turn', () => {
       expect(events.length).toBe(5);
 
       const thoughtEvent = events.find(
-        (e) => e.type === GeminiEventType.Thought,
+        (e) => e.type === ACoderEventType.Thought,
       );
       expect(thoughtEvent).toBeDefined();
       expect(thoughtEvent).toMatchObject({
-        type: GeminiEventType.Thought,
+        type: ACoderEventType.Thought,
         value: { subject: 'Planning', description: 'the solution' },
         traceId: 'trace-789',
       });
 
       const contentEvent = events.find(
-        (e) => e.type === GeminiEventType.Content,
+        (e) => e.type === ACoderEventType.Content,
       );
       expect(contentEvent).toBeDefined();
       expect(contentEvent).toMatchObject({
-        type: GeminiEventType.Content,
+        type: ACoderEventType.Content,
         value: 'I will help you with that.',
         traceId: 'trace-789',
       });
 
       const toolCallEvent = events.find(
-        (e) => e.type === GeminiEventType.ToolCallRequest,
+        (e) => e.type === ACoderEventType.ToolCallRequest,
       );
       expect(toolCallEvent).toBeDefined();
       expect(toolCallEvent).toMatchObject({
-        type: GeminiEventType.ToolCallRequest,
+        type: ACoderEventType.ToolCallRequest,
         value: expect.objectContaining({
           callId: 'ReadFile__fc1',
           name: 'ReadFile',
@@ -865,20 +865,20 @@ describe('Turn', () => {
       });
 
       const citationEvent = events.find(
-        (e) => e.type === GeminiEventType.Citation,
+        (e) => e.type === ACoderEventType.Citation,
       );
       expect(citationEvent).toBeDefined();
       expect(citationEvent).toMatchObject({
-        type: GeminiEventType.Citation,
+        type: ACoderEventType.Citation,
         value: expect.stringContaining('https://example.com'),
       });
 
       const finishedEvent = events.find(
-        (e) => e.type === GeminiEventType.Finished,
+        (e) => e.type === ACoderEventType.Finished,
       );
       expect(finishedEvent).toBeDefined();
       expect(finishedEvent).toMatchObject({
-        type: GeminiEventType.Finished,
+        type: ACoderEventType.Finished,
         value: { reason: 'STOP' },
       });
     });

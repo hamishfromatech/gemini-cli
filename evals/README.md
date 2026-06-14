@@ -6,7 +6,7 @@ for changes to system prompts, tool definitions, and other model-steering
 mechanisms, and as a tool for assessing feature reliability by model, and
 preventing regressions.
 
-> [!TIP] **Agent Automation**: If you are pair-programming with Gemini CLI, you
+> [!TIP] **Agent Automation**: If you are pair-programming with A-Coder CLI, you
 > can leverage the **behavioral-evals skill** to automate fixing failing tests
 > or promoting incubation candidates.
 
@@ -138,7 +138,7 @@ describe('my_feature', () => {
 
 ## Running Evaluations
 
-First, build the bundled Gemini CLI. You must do this after every code change.
+First, build the bundled A-Coder CLI. You must do this after every code change.
 
 ```bash
 npm run build
@@ -167,7 +167,7 @@ This command sets the `RUN_EVALS` environment variable to `1`, which enables the
 ## Ensuring Eval is Stable Prior to Check-in
 
 The
-[Evals: Nightly](https://github.com/google-gemini/gemini-cli/actions/workflows/evals-nightly.yml)
+[Evals: Nightly](https://github.com/hamishfromatech/a-coder-cli/actions/workflows/evals-nightly.yml)
 run is considered to be the source of truth for the quality of an eval test.
 Each run of it executes a test 3 times in a row, for each supported model. The
 result is then scored 0%, 33%, 66%, or 100% respectively, to indicate how many
@@ -200,10 +200,10 @@ evaluations into the CI.
 Results for evaluations are available on GitHub Actions:
 
 - **CI Evals**: Included in the
-  [E2E (Chained)](https://github.com/google-gemini/gemini-cli/actions/workflows/chained_e2e.yml)
+  [E2E (Chained)](https://github.com/hamishfromatech/a-coder-cli/actions/workflows/chained_e2e.yml)
   workflow. These must pass 100% for every PR.
 - **Nightly Evals**: Run daily via the
-  [Evals: Nightly](https://github.com/google-gemini/gemini-cli/actions/workflows/evals-nightly.yml)
+  [Evals: Nightly](https://github.com/hamishfromatech/a-coder-cli/actions/workflows/evals-nightly.yml)
   workflow. These track the long-term health and stability of model steering.
 
 ### Nightly Report Format
@@ -292,7 +292,7 @@ will automate the following process:
 4.  **Report**: Provide a summary of the success rate.
 
 When investigating failures manually, you can enable verbose agent logs by
-setting the `GEMINI_DEBUG_LOG_FILE` environment variable.
+setting the `A_CODER_DEBUG_LOG_FILE` environment variable.
 
 ### Best practices
 

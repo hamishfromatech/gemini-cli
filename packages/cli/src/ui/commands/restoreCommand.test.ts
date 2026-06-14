@@ -12,10 +12,10 @@ import { restoreCommand } from './restoreCommand.js';
 import { type CommandContext } from './types.js';
 import { createMockCommandContext } from '../../test-utils/mockCommandContext.js';
 import {
-  GEMINI_DIR,
+  A_CODER_DIR,
   type Config,
   type GitService,
-} from '@google/gemini-cli-core';
+} from '@the-a-tech-corporation/core';
 
 describe('restoreCommand', () => {
   let mockContext: CommandContext;
@@ -30,7 +30,7 @@ describe('restoreCommand', () => {
     testRootDir = await fs.mkdtemp(
       path.join(os.tmpdir(), 'restore-command-test-'),
     );
-    geminiTempDir = path.join(testRootDir, GEMINI_DIR);
+    geminiTempDir = path.join(testRootDir, A_CODER_DIR);
     checkpointsDir = path.join(geminiTempDir, 'checkpoints');
     // The command itself creates this, but for tests it's easier to have it ready.
     // Some tests might remove it to test error paths.
@@ -47,7 +47,7 @@ describe('restoreCommand', () => {
         getProjectTempCheckpointsDir: vi.fn().mockReturnValue(checkpointsDir),
         getProjectTempDir: vi.fn().mockReturnValue(geminiTempDir),
       },
-      geminiClient: {
+      aCoderClient: {
         setHistory: mockSetHistory,
       },
       get config() {
@@ -96,7 +96,7 @@ describe('restoreCommand', () => {
       ).toEqual({
         type: 'message',
         messageType: 'error',
-        content: 'Could not determine the .gemini directory path.',
+        content: 'Could not determine the .a-coder directory path.',
       });
     });
 

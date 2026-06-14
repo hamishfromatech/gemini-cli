@@ -12,7 +12,7 @@ import {
   ApprovalMode,
   makeFakeConfig,
   type SerializableConfirmationDetails,
-} from '@google/gemini-cli-core';
+} from '@the-a-tech-corporation/core';
 import { type UIState } from './contexts/UIStateContext.js';
 import { act } from 'react';
 import { StreamingState } from './types.js';
@@ -25,8 +25,8 @@ vi.mock('ink', async (importOriginal) => {
   };
 });
 
-vi.mock('./components/GeminiSpinner.js', () => ({
-  GeminiSpinner: () => null,
+vi.mock('./components/ACoderSpinner.js', () => ({
+  ACoderSpinner: () => null,
 }));
 
 vi.mock('./components/CliSpinner.js', () => ({
@@ -34,7 +34,7 @@ vi.mock('./components/CliSpinner.js', () => ({
 }));
 
 // Mock hooks to align with codebase style, even if App uses UIState directly
-vi.mock('./hooks/useGeminiStream.js');
+vi.mock('./hooks/useACoderStream.js');
 vi.mock('./hooks/useHistoryManager.js');
 vi.mock('./hooks/useQuotaAndFallback.js');
 vi.mock('./hooks/useThemeCommand.js');

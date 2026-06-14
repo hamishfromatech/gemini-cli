@@ -10,7 +10,7 @@
  * AgentEvents and exposing the executor result via getResult().
  *
  * Pattern mirrors LegacyAgentProtocol, but the loop body runs
- * LocalAgentExecutor instead of GeminiClient.sendMessageStream().
+ * LocalAgentExecutor instead of ACoderClient.sendMessageStream().
  */
 
 import { randomUUID } from 'node:crypto';

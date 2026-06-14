@@ -13,8 +13,8 @@ import {
   DEFAULT_CONTEXT_FILENAME,
 } from '../tools/memoryTool.js';
 import {
-  PREVIEW_GEMINI_MODEL,
-  DEFAULT_GEMINI_MODEL,
+  PREVIEW_A_CODER_MODEL,
+  DEFAULT_A_CODER_MODEL,
 } from '../config/models.js';
 import { ApprovalMode } from '../policy/types.js';
 import { DiscoveredMCPTool } from '../tools/mcp-tool.js';
@@ -42,8 +42,8 @@ describe('PromptProvider', () => {
 
   beforeEach(() => {
     vi.resetAllMocks();
-    vi.stubEnv('GEMINI_SYSTEM_MD', '');
-    vi.stubEnv('GEMINI_WRITE_SYSTEM_MD', '');
+    vi.stubEnv('A_CODER_SYSTEM_MD', '');
+    vi.stubEnv('A_CODER_WRITE_SYSTEM_MD', '');
 
     const mockToolRegistry = {
       getAllToolNames: vi.fn().mockReturnValue([]),
@@ -79,7 +79,7 @@ describe('PromptProvider', () => {
       getSkillManager: vi.fn().mockReturnValue({
         getSkills: vi.fn().mockReturnValue([]),
       }),
-      getActiveModel: vi.fn().mockReturnValue(PREVIEW_GEMINI_MODEL),
+      getActiveModel: vi.fn().mockReturnValue(PREVIEW_A_CODER_MODEL),
       getAgentRegistry: vi.fn().mockReturnValue({
         getAllDefinitions: vi.fn().mockReturnValue([]),
         getDefinition: vi.fn().mockReturnValue(undefined),
@@ -88,7 +88,7 @@ describe('PromptProvider', () => {
       getApprovalMode: vi.fn(),
       isTrackerEnabled: vi.fn().mockReturnValue(false),
       getHasAccessToPreviewModel: vi.fn().mockReturnValue(true),
-      getGemini31LaunchedSync: vi.fn().mockReturnValue(true),
+      getACoder31LaunchedSync: vi.fn().mockReturnValue(true),
     } as unknown as Config;
   });
 
@@ -361,7 +361,7 @@ describe('PromptProvider', () => {
         ]),
       });
       vi.mocked(mockConfig.getHasAccessToPreviewModel).mockReturnValue(true);
-      vi.mocked(mockConfig.getGemini31LaunchedSync).mockReturnValue(true);
+      vi.mocked(mockConfig.getACoder31LaunchedSync).mockReturnValue(true);
     });
 
     it('should include active topic context when narration is enabled', () => {
@@ -411,7 +411,7 @@ describe('PromptProvider', () => {
 
     it('should include topic update instructions in legacy model prompt when enabled', () => {
       vi.mocked(mockConfig.getActiveModel).mockReturnValue(
-        DEFAULT_GEMINI_MODEL,
+        DEFAULT_A_CODER_MODEL,
       );
       vi.mocked(mockConfig.isTopicUpdateNarrationEnabled).mockReturnValue(true);
 

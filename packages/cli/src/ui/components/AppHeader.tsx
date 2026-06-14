@@ -17,38 +17,31 @@ import { theme } from '../semantic-colors.js';
 import { ThemedGradient } from './ThemedGradient.js';
 import { CliSpinner } from './CliSpinner.js';
 
-import { isAppleTerminal } from '@google/gemini-cli-core';
-
-import { longAsciiLogoCompactText } from './AsciiArt.js';
-import { getAsciiArtWidth } from '../utils/textUtils.js';
+import { isAppleTerminal } from '@the-a-tech-corporation/core';
 
 interface AppHeaderProps {
   version: string;
   showDetails?: boolean;
 }
 
-const DEFAULT_ICON = `▝▜▄  
-  ▝▜▄
- ▗▟▀ 
-▝▀    `;
-
 /**
- * The default Apple Terminal.app adds significant line-height padding between
- * rows. This breaks Unicode block-drawing characters that rely on vertical
- * adjacency (like half-blocks). This version is perfectly symmetric vertically,
- * which makes the padding gaps look like an intentional "scanline" design
- * rather than a broken image.
+ * A-Coder CLI mark: a slanted block-drawing "A" that is unique to the brand.
  */
-const MAC_TERMINAL_ICON = `▝▜▄  
-  ▝▜▄
+const DEFAULT_ICON = ` ▝▜▄
+   ▝▜▄
   ▗▟▀
-▗▟▀  `;
+ ▝▀`;
 
 /**
- * The horizontal padding (in columns) required for metadata (version, identity, etc.)
- * when rendered alongside the ASCII logo.
+ * Apple Terminal.app adds extra line-height padding between rows, which breaks
+ * vertical adjacency for half-block characters. This variant keeps the same
+ * outer shape as DEFAULT_ICON but uses horizontally-connecting blocks so the
+ * padding gaps read as intentional scanlines rather than a broken diagonal.
  */
-const LOGO_METADATA_PADDING = 20;
+const MAC_TERMINAL_ICON = ` ▝▜▄
+   ▝▜▄
+   ▗▟▀
+ ▗▟▀`;
 
 /**
  * The terminal width below which we switch to a narrow/column layout to prevent
@@ -64,15 +57,10 @@ export const AppHeader = ({ version, showDetails = true }: AppHeaderProps) => {
     bannerData,
     bannerVisible,
     updateInfo,
-    isConfigInitialized,
-    isAuthenticating,
   } = useUIState();
 
   const { bannerText } = useBanner(bannerData);
   const { showTips } = useTips();
-
-  const authType = config.getContentGeneratorConfig()?.authType;
-  const loggedOut = isConfigInitialized && !isAuthenticating && !authType;
 
   const showHeader = !(
     settings.merged.ui.hideBanner || config.getScreenReader()
@@ -80,39 +68,22 @@ export const AppHeader = ({ version, showDetails = true }: AppHeaderProps) => {
 
   const ICON = isAppleTerminal() ? MAC_TERMINAL_ICON : DEFAULT_ICON;
 
-  let logoTextArt = '';
-  if (loggedOut) {
-    const widthOfLongLogo =
-      getAsciiArtWidth(longAsciiLogoCompactText) + LOGO_METADATA_PADDING;
-
-    if (terminalWidth >= widthOfLongLogo) {
-      logoTextArt = longAsciiLogoCompactText.trim();
-    }
-  }
-
   // If the terminal is too narrow to fit the icon and metadata (especially long nightly versions)
   // side-by-side, we switch to column mode to prevent wrapping.
   const isNarrow = terminalWidth < NARROW_TERMINAL_BREAKPOINT;
 
   const renderLogo = () => (
-    <Box flexDirection="row">
-      <Box flexShrink={0}>
-        <ThemedGradient>{ICON}</ThemedGradient>
-      </Box>
-      {logoTextArt && (
-        <Box marginLeft={3}>
-          <Text color={theme.text.primary}>{logoTextArt}</Text>
-        </Box>
-      )}
+    <Box flexShrink={0}>
+      <ThemedGradient>{ICON}</ThemedGradient>
     </Box>
   );
 
   const renderMetadata = (isBelow = false) => (
     <Box marginLeft={isBelow ? 0 : 2} flexDirection="column">
-      {/* Line 1: Gemini CLI vVersion [Updating] */}
+      {/* Line 1: A-Coder CLI vVersion [Updating] */}
       <Box>
         <Text bold color={theme.text.primary}>
-          Gemini CLI
+          A-Coder CLI
         </Text>
         <Text color={theme.text.secondary}> v{version}</Text>
         {updateInfo?.isUpdating && (
@@ -138,7 +109,7 @@ export const AppHeader = ({ version, showDetails = true }: AppHeaderProps) => {
     </Box>
   );
 
-  const useColumnLayout = !!logoTextArt || isNarrow;
+  const useColumnLayout = isNarrow;
 
   return (
     <Box flexDirection="column">

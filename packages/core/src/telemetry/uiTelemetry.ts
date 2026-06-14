@@ -9,13 +9,13 @@ import {
   EVENT_API_ERROR,
   EVENT_API_RESPONSE,
   EVENT_TOOL_CALL,
-  type ApiErrorEvent,
-  type ApiResponseEvent,
-  type ToolCallEvent,
-  type LlmRole,
+  ApiErrorEvent,
+  ApiResponseEvent,
+  ToolCallEvent,
+  LlmRole,
 } from './types.js';
 
-import { ToolCallDecision } from './tool-call-decision.js';
+import { ToolCallDecision } from './types.js';
 import { type ConversationRecord } from '../services/chatRecordingService.js';
 
 export type UiEvent =
@@ -373,17 +373,20 @@ export class UiTelemetryService extends EventEmitter {
     }
 
     if (event.decision) {
-      tools.totalDecisions[event.decision]++;
-      toolStats.decisions[event.decision]++;
+      const decision = event.decision as ToolCallDecision;
+      tools.totalDecisions[decision]++;
+      toolStats.decisions[decision]++;
     }
 
     // Aggregate line count data from metadata
-    if (event.metadata) {
-      if (event.metadata['model_added_lines'] !== undefined) {
-        files.totalLinesAdded += event.metadata['model_added_lines'];
+    const metadata =
+      'metadata' in event ? (event.metadata as Record<string, unknown> | null | undefined) : undefined;
+    if (metadata) {
+      if (metadata['model_added_lines'] !== undefined) {
+        files.totalLinesAdded += metadata['model_added_lines'] as number;
       }
-      if (event.metadata['model_removed_lines'] !== undefined) {
-        files.totalLinesRemoved += event.metadata['model_removed_lines'];
+      if (metadata['model_removed_lines'] !== undefined) {
+        files.totalLinesRemoved += metadata['model_removed_lines'] as number;
       }
     }
   }

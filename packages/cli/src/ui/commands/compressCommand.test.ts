@@ -7,8 +7,8 @@
 import {
   CompressionStatus,
   type ChatCompressionInfo,
-  type GeminiClient,
-} from '@google/gemini-cli-core';
+  type ACoderClient,
+} from '@the-a-tech-corporation/core';
 import { vi, describe, it, expect, beforeEach } from 'vitest';
 import { compressCommand } from './compressCommand.js';
 import { createMockCommandContext } from '../../test-utils/mockCommandContext.js';
@@ -23,9 +23,9 @@ describe('compressCommand', () => {
     context = createMockCommandContext({
       services: {
         agentContext: {
-          geminiClient: {
+          aCoderClient: {
             tryCompressChat: mockTryCompressChat,
-          } as unknown as GeminiClient,
+          } as unknown as ACoderClient,
         },
       },
     });

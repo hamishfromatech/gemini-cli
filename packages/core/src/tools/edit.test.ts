@@ -22,8 +22,8 @@ vi.mock('../utils/llm-edit-fixer.js', () => ({
   FixLLMEditWithInstruction: mockFixLLMEditWithInstruction,
 }));
 
-vi.mock('../core/client.js', () => ({
-  GeminiClient: vi.fn().mockImplementation(() => ({
+vi.mock('../core/a-coder-client.js', () => ({
+  ACoderClient: vi.fn().mockImplementation(() => ({
     generateJson: mockGenerateJson,
     getHistory: vi.fn().mockResolvedValue([]),
   })),
@@ -78,7 +78,7 @@ describe('EditTool', () => {
   let tempDir: string;
   let rootDir: string;
   let mockConfig: Config;
-  let geminiClient: any;
+  let aCoderClient: any;
   let fileSystemService: StandardFileSystemService;
   let baseLlmClient: BaseLlmClient;
 
@@ -88,7 +88,7 @@ describe('EditTool', () => {
     rootDir = path.join(tempDir, 'root');
     fs.mkdirSync(rootDir);
 
-    geminiClient = {
+    aCoderClient = {
       generateJson: mockGenerateJson,
       getHistory: vi.fn().mockResolvedValue([]),
     };
@@ -104,7 +104,7 @@ describe('EditTool', () => {
       getSessionId: vi.fn(() => 'mock-session-id'),
       getContentGeneratorConfig: vi.fn(() => ({ authType: 'mock' })),
       getProxy: vi.fn(() => undefined),
-      getGeminiClient: vi.fn().mockReturnValue(geminiClient),
+      getACoderClient: vi.fn().mockReturnValue(aCoderClient),
       getBaseLlmClient: vi.fn().mockReturnValue(baseLlmClient),
       getTargetDir: () => rootDir,
       getProjectRoot: () => rootDir,

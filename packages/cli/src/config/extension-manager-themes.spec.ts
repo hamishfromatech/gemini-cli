@@ -21,11 +21,11 @@ import { createExtension } from '../test-utils/createExtension.js';
 import { ExtensionManager } from './extension-manager.js';
 import { themeManager, DEFAULT_THEME } from '../ui/themes/theme-manager.js';
 import {
-  GEMINI_DIR,
+  A_CODER_DIR,
   type Config,
   tmpdir,
   NoopSandboxManager,
-} from '@google/gemini-cli-core';
+} from '@the-a-tech-corporation/core';
 import { createTestMergedSettings, SettingScope } from './settings.js';
 
 describe('ExtensionManager theme loading', () => {
@@ -46,8 +46,8 @@ describe('ExtensionManager theme loading', () => {
   });
 
   beforeEach(() => {
-    process.env['GEMINI_CLI_HOME'] = tempHomeDir;
-    userExtensionsDir = path.join(tempHomeDir, GEMINI_DIR, 'extensions');
+    process.env['A_CODER_CLI_HOME'] = tempHomeDir;
+    userExtensionsDir = path.join(tempHomeDir, A_CODER_DIR, 'extensions');
     // Ensure userExtensionsDir is clean for each test
     fs.rmSync(userExtensionsDir, { recursive: true, force: true });
     fs.mkdirSync(userExtensionsDir, { recursive: true });
@@ -70,7 +70,7 @@ describe('ExtensionManager theme loading', () => {
   });
 
   afterEach(() => {
-    delete process.env['GEMINI_CLI_HOME'];
+    delete process.env['A_CODER_CLI_HOME'];
   });
 
   it('should register themes from an extension when started', async () => {
@@ -97,7 +97,7 @@ describe('ExtensionManager theme loading', () => {
       getMcpClientManager: () => ({
         startExtension: vi.fn().mockResolvedValue(undefined),
       }),
-      getGeminiClient: () => ({
+      getACoderClient: () => ({
         isInitialized: () => false,
         updateSystemInstruction: vi.fn(),
         setTools: vi.fn(),
@@ -198,7 +198,7 @@ describe('ExtensionManager theme loading', () => {
       getImportFormat: () => 'tree',
       getFileFilteringOptions: () => ({
         respectGitIgnore: true,
-        respectGeminiIgnore: true,
+        respectACoderIgnore: true,
       }),
       getDiscoveryMaxDirs: () => 200,
       getMemoryBoundaryMarkers: () => ['.git'],
@@ -211,7 +211,7 @@ describe('ExtensionManager theme loading', () => {
       setGeminiMdFileCount: vi.fn(),
       setGeminiMdFilePaths: vi.fn(),
       getEnableExtensionReloading: () => true,
-      getGeminiClient: () => ({
+      getACoderClient: () => ({
         isInitialized: () => false,
         updateSystemInstruction: vi.fn(),
         setTools: vi.fn(),

@@ -1,6 +1,6 @@
 {
-  "name": "@google/gemini-cli",
-  "version": "0.48.0-nightly.20260609.g3a13b8eeb",
+  "name": "@the-a-tech-corporation/a-coder-cli",
+  "version": "0.1.0",
   "engines": {
     "node": ">=20.0.0"
   },
@@ -11,24 +11,21 @@
   "private": "true",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/google-gemini/gemini-cli.git"
+    "url": "git+https://github.com/hamishfromatech/a-coder-cli.git"
   },
   "config": {
-    "sandboxImageUri": "us-docker.pkg.dev/gemini-code-dev/gemini-cli/sandbox:0.48.0-nightly.20260609.g3a13b8eeb"
+    "sandboxImageUri": "a-coder-cli/sandbox:latest"
   },
   "scripts": {
     "start": "cross-env NODE_ENV=development node scripts/start.js",
     "start:prod": "cross-env NODE_ENV=production node scripts/start.js",
-    "start:a2a-server": "CODER_AGENT_PORT=41242 npm run start --workspace @google/gemini-cli-a2a-server",
+    "start:a2a-server": "CODER_AGENT_PORT=41242 npm run start --workspace @the-a-tech-corporation/a-coder-cli-a2a-server",
     "debug": "cross-env DEBUG=1 node --inspect-brk scripts/start.js",
     "deflake": "node scripts/deflake.js",
     "deflake:test:integration:sandbox:none": "npm run deflake -- --command=\"npm run test:integration:sandbox:none -- --retry=0\"",
     "deflake:test:integration:sandbox:docker": "npm run deflake -- --command=\"npm run test:integration:sandbox:docker -- --retry=0\"",
-    "auth:npm": "npx google-artifactregistry-auth",
-    "auth:docker": "gcloud auth configure-docker us-west1-docker.pkg.dev",
-    "auth": "npm run auth:npm && npm run auth:docker",
     "generate": "node scripts/generate-git-commit-info.js",
-    "predocs:settings": "npm run build --workspace @google/gemini-cli-core",
+    "predocs:settings": "npm run build --workspace @the-a-tech-corporation/core",
     "schema:settings": "tsx ./scripts/generate-settings-schema.ts",
     "docs:settings": "tsx ./scripts/generate-settings-doc.ts",
     "docs:keybindings": "tsx ./scripts/generate-keybindings-doc.ts",
@@ -39,7 +36,7 @@
     "build:packages": "npm run build --workspaces",
     "build:sandbox": "node scripts/build_sandbox.js",
     "build:binary": "node scripts/build_binary.js",
-    "bundle": "npm run generate && npm run build --workspace=@google/gemini-cli-devtools && npm run bundle:browser-mcp -w @google/gemini-cli-core && node esbuild.config.js && node scripts/copy_bundle_assets.js",
+    "bundle": "npm run generate && npm run build --workspace=@the-a-tech-corporation/devtools && npm run bundle:browser-mcp -w @the-a-tech-corporation/core && node esbuild.config.js && node scripts/copy_bundle_assets.js",
     "test": "npm run test --workspaces --if-present && npm run test:sea-launch",
     "test:ci": "npm run test:ci --workspaces --if-present && npm run test:scripts && npm run test:sea-launch",
     "test:scripts": "vitest run --config ./scripts/tests/vitest.config.ts",
@@ -50,13 +47,13 @@
     "test:e2e": "cross-env VERBOSE=true KEEP_OUTPUT=true npm run test:integration:sandbox:none",
     "test:integration:all": "npm run test:integration:sandbox:none && npm run test:integration:sandbox:docker && npm run test:integration:sandbox:podman",
     "test:integration:flaky": "cross-env RUN_FLAKY_INTEGRATION=1 npm run test:integration:sandbox:none",
-    "test:integration:sandbox:none": "cross-env GEMINI_SANDBOX=false vitest run --root ./integration-tests",
+    "test:integration:sandbox:none": "cross-env A_CODER_SANDBOX=false vitest run --root ./integration-tests",
     "test:memory": "vitest run --root ./memory-tests",
     "test:memory:update-baselines": "cross-env UPDATE_MEMORY_BASELINES=true vitest run --root ./memory-tests",
     "test:perf": "vitest run --root ./perf-tests",
     "test:perf:update-baselines": "cross-env UPDATE_PERF_BASELINES=true vitest run --root ./perf-tests",
-    "test:integration:sandbox:docker": "cross-env GEMINI_SANDBOX=docker npm run build:sandbox && cross-env GEMINI_SANDBOX=docker vitest run --root ./integration-tests",
-    "test:integration:sandbox:podman": "cross-env GEMINI_SANDBOX=podman vitest run --root ./integration-tests",
+    "test:integration:sandbox:docker": "cross-env A_CODER_SANDBOX=docker npm run build:sandbox && cross-env A_CODER_SANDBOX=docker vitest run --root ./integration-tests",
+    "test:integration:sandbox:podman": "cross-env A_CODER_SANDBOX=podman vitest run --root ./integration-tests",
     "lint": "cross-env NODE_OPTIONS=\"--max-old-space-size=8192\" eslint . --cache --max-warnings 0",
     "lint:fix": "eslint . --fix --ext .ts,.tsx && eslint integration-tests --fix && eslint scripts --fix && npm run format",
     "lint:ci": "npm run lint:all",
@@ -64,7 +61,7 @@
     "format": "prettier --experimental-cli --write .",
     "typecheck": "npm run typecheck --workspaces --if-present && tsc -b evals/tsconfig.json integration-tests/tsconfig.json memory-tests/tsconfig.json",
     "preflight": "npm run clean && npm ci && npm run format && npm run build && npm run lint:ci && npm run typecheck && npm run test:ci",
-    "prepare": "husky && npm run bundle",
+    "prepare": "husky",
     "prepare:package": "node scripts/prepare-package.js",
     "release:version": "node scripts/version.js",
     "telemetry": "node scripts/telemetry.js",
@@ -84,7 +81,7 @@
     "cross-spawn": "^7.0.6"
   },
   "bin": {
-    "gemini": "bundle/gemini.js"
+    "a-coder-cli": "bundle/a-coder.js"
   },
   "files": [
     "bundle/",
@@ -121,7 +118,6 @@
     "eslint-plugin-react-hooks": "^5.2.0",
     "glob": "^12.0.0",
     "globals": "^16.0.0",
-    "google-artifactregistry-auth": "^3.4.0",
     "husky": "^9.1.7",
     "json": "^11.0.0",
     "lint-staged": "^16.1.6",

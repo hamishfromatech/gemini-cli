@@ -20,14 +20,14 @@ import {
   type MCPServerConfig,
   type GeminiCLIExtension,
   Storage,
-} from '@google/gemini-cli-core';
+} from '@the-a-tech-corporation/core';
 import { loadCliConfig, parseArguments, type CliArgs } from './config.js';
 import {
   type Settings,
   type MergedSettings,
   createTestMergedSettings,
 } from './settings.js';
-import * as ServerConfig from '@google/gemini-cli-core';
+import * as ServerConfig from '@the-a-tech-corporation/core';
 
 import { isWorkspaceTrusted } from './trustedFolders.js';
 import { ExtensionManager } from './extension-manager.js';
@@ -97,9 +97,9 @@ vi.mock('read-package-up', () => ({
   ),
 }));
 
-vi.mock('@google/gemini-cli-core', async () => {
+vi.mock('@the-a-tech-corporation/core', async () => {
   const actualServer = await vi.importActual<typeof ServerConfig>(
-    '@google/gemini-cli-core',
+    '@the-a-tech-corporation/core',
   );
   return {
     ...actualServer,
@@ -113,12 +113,12 @@ vi.mock('@google/gemini-cli-core', async () => {
     loadEnvironment: vi.fn(),
     DEFAULT_MEMORY_FILE_FILTERING_OPTIONS: {
       respectGitIgnore: false,
-      respectGeminiIgnore: true,
+      respectACoderIgnore: true,
       customIgnoreFilePaths: [],
     },
     DEFAULT_FILE_FILTERING_OPTIONS: {
       respectGitIgnore: true,
-      respectGeminiIgnore: true,
+      respectACoderIgnore: true,
       customIgnoreFilePaths: [],
     },
     createPolicyEngineConfig: vi.fn(
@@ -164,12 +164,12 @@ vi.mock('./extension-manager.js', () => {
 
 // Global setup to ensure clean environment for all tests in this file
 const originalArgv = process.argv;
-const originalGeminiModel = process.env['GEMINI_MODEL'];
+const originalGeminiModel = process.env['A_CODER_MODEL'];
 const originalStdoutIsTTY = process.stdout.isTTY;
 const originalStdinIsTTY = process.stdin.isTTY;
 
 beforeEach(() => {
-  delete process.env['GEMINI_MODEL'];
+  delete process.env['A_CODER_MODEL'];
   // Restore ExtensionManager mocks by re-assigning them
   ExtensionManager.prototype.getExtensions = vi.fn().mockReturnValue([]);
   ExtensionManager.prototype.loadExtensions = vi
@@ -192,9 +192,9 @@ beforeEach(() => {
 afterEach(() => {
   process.argv = originalArgv;
   if (originalGeminiModel !== undefined) {
-    process.env['GEMINI_MODEL'] = originalGeminiModel;
+    process.env['A_CODER_MODEL'] = originalGeminiModel;
   } else {
-    delete process.env['GEMINI_MODEL'];
+    delete process.env['A_CODER_MODEL'];
   }
   Object.defineProperty(process.stdout, 'isTTY', {
     value: originalStdoutIsTTY,
@@ -773,7 +773,7 @@ describe('loadCliConfig', () => {
   beforeEach(() => {
     vi.resetAllMocks();
     vi.mocked(os.homedir).mockReturnValue('/mock/home/user');
-    vi.stubEnv('GEMINI_API_KEY', 'test-api-key');
+    vi.stubEnv('OPENAI_API_KEY', 'test-api-key');
     vi.spyOn(ExtensionManager.prototype, 'getExtensions').mockReturnValue([]);
   });
 
@@ -953,9 +953,9 @@ describe('loadCliConfig', () => {
     });
   });
 
-  it('should add IDE workspace folders from GEMINI_CLI_IDE_WORKSPACE_PATH to include directories', async () => {
+  it('should add IDE workspace folders from A_CODER_CLI_IDE_WORKSPACE_PATH to include directories', async () => {
     vi.stubEnv(
-      'GEMINI_CLI_IDE_WORKSPACE_PATH',
+      'A_CODER_CLI_IDE_WORKSPACE_PATH',
       ['/project/folderA', '/project/folderB'].join(path.delimiter),
     );
     process.argv = ['node', 'script.js'];
@@ -967,7 +967,7 @@ describe('loadCliConfig', () => {
     expect(dirs).toContain('/project/folderB');
   });
 
-  it('should skip inaccessible workspace folders from GEMINI_CLI_IDE_WORKSPACE_PATH', async () => {
+  it('should skip inaccessible workspace folders from A_CODER_CLI_IDE_WORKSPACE_PATH', async () => {
     vi.spyOn(ServerConfig, 'resolveToRealPath').mockImplementation((p) => {
       if (p.toString().includes('restricted')) {
         const err = new Error('EACCES: permission denied');
@@ -977,7 +977,7 @@ describe('loadCliConfig', () => {
       return p.toString();
     });
     vi.stubEnv(
-      'GEMINI_CLI_IDE_WORKSPACE_PATH',
+      'A_CODER_CLI_IDE_WORKSPACE_PATH',
       ['/project/folderA', '/nonexistent/restricted/folder'].join(
         path.delimiter,
       ),
@@ -999,8 +999,8 @@ describe('loadCliConfig', () => {
     expect(config.getFileFilteringRespectGitIgnore()).toBe(
       DEFAULT_FILE_FILTERING_OPTIONS.respectGitIgnore,
     );
-    expect(config.getFileFilteringRespectGeminiIgnore()).toBe(
-      DEFAULT_FILE_FILTERING_OPTIONS.respectGeminiIgnore,
+    expect(config.getFileFilteringRespectACoderIgnore()).toBe(
+      DEFAULT_FILE_FILTERING_OPTIONS.respectACoderIgnore,
     );
     expect(config.getCustomIgnoreFilePaths()).toEqual(
       DEFAULT_FILE_FILTERING_OPTIONS.customIgnoreFilePaths,
@@ -1497,7 +1497,7 @@ describe('loadCliConfig with allowed-mcp-server-names', () => {
   beforeEach(() => {
     vi.resetAllMocks();
     vi.mocked(os.homedir).mockReturnValue('/mock/home/user');
-    vi.stubEnv('GEMINI_API_KEY', 'test-api-key');
+    vi.stubEnv('OPENAI_API_KEY', 'test-api-key');
     vi.spyOn(ExtensionManager.prototype, 'getExtensions').mockReturnValue([]);
   });
 
@@ -1651,7 +1651,7 @@ describe('loadCliConfig with admin.mcp.config', () => {
   beforeEach(() => {
     vi.resetAllMocks();
     vi.mocked(os.homedir).mockReturnValue('/mock/home/user');
-    vi.stubEnv('GEMINI_API_KEY', 'test-api-key');
+    vi.stubEnv('OPENAI_API_KEY', 'test-api-key');
     vi.spyOn(ExtensionManager.prototype, 'getExtensions').mockReturnValue([]);
   });
 
@@ -1946,13 +1946,13 @@ describe('loadCliConfig folderTrust', () => {
   beforeEach(() => {
     vi.resetAllMocks();
     vi.mocked(os.homedir).mockReturnValue('/mock/home/user');
-    vi.stubEnv('GEMINI_API_KEY', 'test-api-key');
+    vi.stubEnv('OPENAI_API_KEY', 'test-api-key');
     vi.spyOn(ExtensionManager.prototype, 'getExtensions').mockReturnValue([]);
 
     originalVitest = process.env['VITEST'];
-    originalIntegrationTest = process.env['GEMINI_CLI_INTEGRATION_TEST'];
+    originalIntegrationTest = process.env['A_CODER_CLI_INTEGRATION_TEST'];
     delete process.env['VITEST'];
-    delete process.env['GEMINI_CLI_INTEGRATION_TEST'];
+    delete process.env['A_CODER_CLI_INTEGRATION_TEST'];
   });
 
   afterEach(() => {
@@ -1960,7 +1960,7 @@ describe('loadCliConfig folderTrust', () => {
       process.env['VITEST'] = originalVitest;
     }
     if (originalIntegrationTest !== undefined) {
-      process.env['GEMINI_CLI_INTEGRATION_TEST'] = originalIntegrationTest;
+      process.env['A_CODER_CLI_INTEGRATION_TEST'] = originalIntegrationTest;
     }
 
     vi.unstubAllEnvs();
@@ -2010,7 +2010,7 @@ describe('loadCliConfig with includeDirectories', () => {
     vi.mocked(os.homedir).mockReturnValue(
       path.resolve(path.sep, 'mock', 'home', 'user'),
     );
-    vi.stubEnv('GEMINI_API_KEY', 'test-api-key');
+    vi.stubEnv('OPENAI_API_KEY', 'test-api-key');
     vi.spyOn(process, 'cwd').mockReturnValue(
       path.resolve(path.sep, 'home', 'user', 'project'),
     );
@@ -2064,7 +2064,7 @@ describe('loadCliConfig compressionThreshold', () => {
   beforeEach(() => {
     vi.resetAllMocks();
     vi.mocked(os.homedir).mockReturnValue('/mock/home/user');
-    vi.stubEnv('GEMINI_API_KEY', 'test-api-key');
+    vi.stubEnv('OPENAI_API_KEY', 'test-api-key');
     vi.spyOn(ExtensionManager.prototype, 'getExtensions').mockReturnValue([]);
   });
 
@@ -2098,7 +2098,7 @@ describe('loadCliConfig useRipgrep', () => {
   beforeEach(() => {
     vi.resetAllMocks();
     vi.mocked(os.homedir).mockReturnValue('/mock/home/user');
-    vi.stubEnv('GEMINI_API_KEY', 'test-api-key');
+    vi.stubEnv('OPENAI_API_KEY', 'test-api-key');
     vi.spyOn(ExtensionManager.prototype, 'getExtensions').mockReturnValue([]);
   });
 
@@ -2136,7 +2136,7 @@ describe('loadCliConfig directWebFetch', () => {
   beforeEach(() => {
     vi.resetAllMocks();
     vi.mocked(os.homedir).mockReturnValue('/mock/home/user');
-    vi.stubEnv('GEMINI_API_KEY', 'test-api-key');
+    vi.stubEnv('OPENAI_API_KEY', 'test-api-key');
     vi.spyOn(ExtensionManager.prototype, 'getExtensions').mockReturnValue([]);
   });
 
@@ -2170,7 +2170,7 @@ describe('loadCliConfig context management', () => {
   beforeEach(() => {
     vi.resetAllMocks();
     vi.mocked(os.homedir).mockReturnValue('/mock/home/user');
-    vi.stubEnv('GEMINI_API_KEY', 'test-api-key');
+    vi.stubEnv('OPENAI_API_KEY', 'test-api-key');
     vi.spyOn(ExtensionManager.prototype, 'getExtensions').mockReturnValue([]);
   });
 
@@ -2208,7 +2208,7 @@ describe('screenReader configuration', () => {
   beforeEach(() => {
     vi.resetAllMocks();
     vi.mocked(os.homedir).mockReturnValue('/mock/home/user');
-    vi.stubEnv('GEMINI_API_KEY', 'test-api-key');
+    vi.stubEnv('OPENAI_API_KEY', 'test-api-key');
     vi.spyOn(ExtensionManager.prototype, 'getExtensions').mockReturnValue([]);
   });
 
@@ -2262,7 +2262,7 @@ describe('loadCliConfig tool exclusions', () => {
   beforeEach(() => {
     vi.resetAllMocks();
     vi.mocked(os.homedir).mockReturnValue('/mock/home/user');
-    vi.stubEnv('GEMINI_API_KEY', 'test-api-key');
+    vi.stubEnv('OPENAI_API_KEY', 'test-api-key');
     process.stdin.isTTY = true;
     vi.mocked(isWorkspaceTrusted).mockReturnValue({
       isTrusted: true,
@@ -2456,7 +2456,7 @@ describe('loadCliConfig interactive', () => {
   beforeEach(() => {
     vi.resetAllMocks();
     vi.mocked(os.homedir).mockReturnValue('/mock/home/user');
-    vi.stubEnv('GEMINI_API_KEY', 'test-api-key');
+    vi.stubEnv('OPENAI_API_KEY', 'test-api-key');
     process.stdin.isTTY = true;
     vi.spyOn(ExtensionManager.prototype, 'getExtensions').mockReturnValue([]);
   });
@@ -2661,7 +2661,7 @@ describe('loadCliConfig approval mode', () => {
   beforeEach(() => {
     vi.resetAllMocks();
     vi.mocked(os.homedir).mockReturnValue('/mock/home/user');
-    vi.stubEnv('GEMINI_API_KEY', 'test-api-key');
+    vi.stubEnv('OPENAI_API_KEY', 'test-api-key');
     process.argv = ['node', 'script.js']; // Reset argv for each test
     vi.mocked(isWorkspaceTrusted).mockReturnValue({
       isTrusted: true,
@@ -2951,7 +2951,7 @@ describe('loadCliConfig gemmaModelRouter', () => {
   beforeEach(() => {
     vi.resetAllMocks();
     vi.mocked(os.homedir).mockReturnValue('/mock/home/user');
-    vi.stubEnv('GEMINI_API_KEY', 'test-api-key');
+    vi.stubEnv('OPENAI_API_KEY', 'test-api-key');
     vi.spyOn(ExtensionManager.prototype, 'getExtensions').mockReturnValue([]);
   });
 
@@ -3031,7 +3031,7 @@ describe('loadCliConfig fileFiltering', () => {
   beforeEach(() => {
     vi.resetAllMocks();
     vi.mocked(os.homedir).mockReturnValue('/mock/home/user');
-    vi.stubEnv('GEMINI_API_KEY', 'test-api-key');
+    vi.stubEnv('OPENAI_API_KEY', 'test-api-key');
     process.argv = ['node', 'script.js']; // Reset argv for each test
     vi.spyOn(ExtensionManager.prototype, 'getExtensions').mockReturnValue([]);
   });
@@ -3071,13 +3071,13 @@ describe('loadCliConfig fileFiltering', () => {
       value: false,
     },
     {
-      property: 'respectGeminiIgnore',
-      getter: (c) => c.getFileFilteringRespectGeminiIgnore(),
+      property: 'respectACoderIgnore',
+      getter: (c) => c.getFileFilteringRespectACoderIgnore(),
       value: true,
     },
     {
-      property: 'respectGeminiIgnore',
-      getter: (c) => c.getFileFilteringRespectGeminiIgnore(),
+      property: 'respectACoderIgnore',
+      getter: (c) => c.getFileFilteringRespectACoderIgnore(),
       value: false,
     },
     {
@@ -3265,8 +3265,8 @@ describe('Telemetry configuration via environment variables', () => {
     vi.resetAllMocks();
   });
 
-  it('should prioritize GEMINI_TELEMETRY_ENABLED over settings', async () => {
-    vi.stubEnv('GEMINI_TELEMETRY_ENABLED', 'true');
+  it('should prioritize A_CODER_TELEMETRY_ENABLED over settings', async () => {
+    vi.stubEnv('A_CODER_TELEMETRY_ENABLED', 'true');
     process.argv = ['node', 'script.js'];
     const argv = await parseArguments(createTestMergedSettings());
     const settings = createTestMergedSettings({
@@ -3276,8 +3276,8 @@ describe('Telemetry configuration via environment variables', () => {
     expect(config.getTelemetryEnabled()).toBe(true);
   });
 
-  it('should prioritize GEMINI_TELEMETRY_TARGET over settings', async () => {
-    vi.stubEnv('GEMINI_TELEMETRY_TARGET', 'gcp');
+  it('should prioritize A_CODER_TELEMETRY_TARGET over settings', async () => {
+    vi.stubEnv('A_CODER_TELEMETRY_TARGET', 'gcp');
     process.argv = ['node', 'script.js'];
     const argv = await parseArguments(createTestMergedSettings());
     const settings = createTestMergedSettings({
@@ -3287,8 +3287,8 @@ describe('Telemetry configuration via environment variables', () => {
     expect(config.getTelemetryTarget()).toBe('gcp');
   });
 
-  it('should throw when GEMINI_TELEMETRY_TARGET is invalid', async () => {
-    vi.stubEnv('GEMINI_TELEMETRY_TARGET', 'bogus');
+  it('should throw when A_CODER_TELEMETRY_TARGET is invalid', async () => {
+    vi.stubEnv('A_CODER_TELEMETRY_TARGET', 'bogus');
     process.argv = ['node', 'script.js'];
     const argv = await parseArguments(createTestMergedSettings());
     const settings = createTestMergedSettings({
@@ -3300,9 +3300,9 @@ describe('Telemetry configuration via environment variables', () => {
     vi.unstubAllEnvs();
   });
 
-  it('should prioritize GEMINI_TELEMETRY_OTLP_ENDPOINT over settings and default env var', async () => {
+  it('should prioritize A_CODER_TELEMETRY_OTLP_ENDPOINT over settings and default env var', async () => {
     vi.stubEnv('OTEL_EXPORTER_OTLP_ENDPOINT', 'http://default.env.com');
-    vi.stubEnv('GEMINI_TELEMETRY_OTLP_ENDPOINT', 'http://gemini.env.com');
+    vi.stubEnv('A_CODER_TELEMETRY_OTLP_ENDPOINT', 'http://gemini.env.com');
     process.argv = ['node', 'script.js'];
     const argv = await parseArguments(createTestMergedSettings());
     const settings = createTestMergedSettings({
@@ -3312,8 +3312,8 @@ describe('Telemetry configuration via environment variables', () => {
     expect(config.getTelemetryOtlpEndpoint()).toBe('http://gemini.env.com');
   });
 
-  it('should prioritize GEMINI_TELEMETRY_OTLP_PROTOCOL over settings', async () => {
-    vi.stubEnv('GEMINI_TELEMETRY_OTLP_PROTOCOL', 'http');
+  it('should prioritize A_CODER_TELEMETRY_OTLP_PROTOCOL over settings', async () => {
+    vi.stubEnv('A_CODER_TELEMETRY_OTLP_PROTOCOL', 'http');
     process.argv = ['node', 'script.js'];
     const argv = await parseArguments(createTestMergedSettings());
     const settings = createTestMergedSettings({
@@ -3323,8 +3323,8 @@ describe('Telemetry configuration via environment variables', () => {
     expect(config.getTelemetryOtlpProtocol()).toBe('http');
   });
 
-  it('should prioritize GEMINI_TELEMETRY_LOG_PROMPTS over settings', async () => {
-    vi.stubEnv('GEMINI_TELEMETRY_LOG_PROMPTS', 'false');
+  it('should prioritize A_CODER_TELEMETRY_LOG_PROMPTS over settings', async () => {
+    vi.stubEnv('A_CODER_TELEMETRY_LOG_PROMPTS', 'false');
     process.argv = ['node', 'script.js'];
     const argv = await parseArguments(createTestMergedSettings());
     const settings = createTestMergedSettings({
@@ -3334,8 +3334,8 @@ describe('Telemetry configuration via environment variables', () => {
     expect(config.getTelemetryLogPromptsEnabled()).toBe(false);
   });
 
-  it('should prioritize GEMINI_TELEMETRY_OUTFILE over settings', async () => {
-    vi.stubEnv('GEMINI_TELEMETRY_OUTFILE', '/gemini/env/telemetry.log');
+  it('should prioritize A_CODER_TELEMETRY_OUTFILE over settings', async () => {
+    vi.stubEnv('A_CODER_TELEMETRY_OUTFILE', '/gemini/env/telemetry.log');
     process.argv = ['node', 'script.js'];
     const argv = await parseArguments(createTestMergedSettings());
     const settings = createTestMergedSettings({
@@ -3345,8 +3345,8 @@ describe('Telemetry configuration via environment variables', () => {
     expect(config.getTelemetryOutfile()).toBe('/gemini/env/telemetry.log');
   });
 
-  it('should prioritize GEMINI_TELEMETRY_USE_COLLECTOR over settings', async () => {
-    vi.stubEnv('GEMINI_TELEMETRY_USE_COLLECTOR', 'true');
+  it('should prioritize A_CODER_TELEMETRY_USE_COLLECTOR over settings', async () => {
+    vi.stubEnv('A_CODER_TELEMETRY_USE_COLLECTOR', 'true');
     process.argv = ['node', 'script.js'];
     const argv = await parseArguments(createTestMergedSettings());
     const settings = createTestMergedSettings({
@@ -3356,8 +3356,8 @@ describe('Telemetry configuration via environment variables', () => {
     expect(config.getTelemetryUseCollector()).toBe(true);
   });
 
-  it('should use settings value when GEMINI_TELEMETRY_ENABLED is not set', async () => {
-    vi.stubEnv('GEMINI_TELEMETRY_ENABLED', undefined);
+  it('should use settings value when A_CODER_TELEMETRY_ENABLED is not set', async () => {
+    vi.stubEnv('A_CODER_TELEMETRY_ENABLED', undefined);
     process.argv = ['node', 'script.js'];
     const argv = await parseArguments(createTestMergedSettings());
     const settings = createTestMergedSettings({ telemetry: { enabled: true } });
@@ -3365,8 +3365,8 @@ describe('Telemetry configuration via environment variables', () => {
     expect(config.getTelemetryEnabled()).toBe(true);
   });
 
-  it('should use settings value when GEMINI_TELEMETRY_TARGET is not set', async () => {
-    vi.stubEnv('GEMINI_TELEMETRY_TARGET', undefined);
+  it('should use settings value when A_CODER_TELEMETRY_TARGET is not set', async () => {
+    vi.stubEnv('A_CODER_TELEMETRY_TARGET', undefined);
     process.argv = ['node', 'script.js'];
     const argv = await parseArguments(createTestMergedSettings());
     const settings = createTestMergedSettings({
@@ -3376,8 +3376,8 @@ describe('Telemetry configuration via environment variables', () => {
     expect(config.getTelemetryTarget()).toBe('local');
   });
 
-  it("should treat GEMINI_TELEMETRY_ENABLED='1' as true", async () => {
-    vi.stubEnv('GEMINI_TELEMETRY_ENABLED', '1');
+  it("should treat A_CODER_TELEMETRY_ENABLED='1' as true", async () => {
+    vi.stubEnv('A_CODER_TELEMETRY_ENABLED', '1');
     process.argv = ['node', 'script.js'];
     const argv = await parseArguments(createTestMergedSettings());
     const config = await loadCliConfig(
@@ -3388,8 +3388,8 @@ describe('Telemetry configuration via environment variables', () => {
     expect(config.getTelemetryEnabled()).toBe(true);
   });
 
-  it("should treat GEMINI_TELEMETRY_ENABLED='0' as false", async () => {
-    vi.stubEnv('GEMINI_TELEMETRY_ENABLED', '0');
+  it("should treat A_CODER_TELEMETRY_ENABLED='0' as false", async () => {
+    vi.stubEnv('A_CODER_TELEMETRY_ENABLED', '0');
     process.argv = ['node', 'script.js'];
     const argv = await parseArguments(createTestMergedSettings());
     const config = await loadCliConfig(
@@ -3400,8 +3400,8 @@ describe('Telemetry configuration via environment variables', () => {
     expect(config.getTelemetryEnabled()).toBe(false);
   });
 
-  it("should treat GEMINI_TELEMETRY_LOG_PROMPTS='1' as true", async () => {
-    vi.stubEnv('GEMINI_TELEMETRY_LOG_PROMPTS', '1');
+  it("should treat A_CODER_TELEMETRY_LOG_PROMPTS='1' as true", async () => {
+    vi.stubEnv('A_CODER_TELEMETRY_LOG_PROMPTS', '1');
     process.argv = ['node', 'script.js'];
     const argv = await parseArguments(createTestMergedSettings());
     const config = await loadCliConfig(
@@ -3412,8 +3412,8 @@ describe('Telemetry configuration via environment variables', () => {
     expect(config.getTelemetryLogPromptsEnabled()).toBe(true);
   });
 
-  it("should treat GEMINI_TELEMETRY_LOG_PROMPTS='false' as false", async () => {
-    vi.stubEnv('GEMINI_TELEMETRY_LOG_PROMPTS', 'false');
+  it("should treat A_CODER_TELEMETRY_LOG_PROMPTS='false' as false", async () => {
+    vi.stubEnv('A_CODER_TELEMETRY_LOG_PROMPTS', 'false');
     process.argv = ['node', 'script.js'];
     const argv = await parseArguments(createTestMergedSettings());
     const config = await loadCliConfig(
@@ -3476,7 +3476,7 @@ describe('Policy Engine Integration in loadCliConfig', () => {
   beforeEach(() => {
     vi.resetAllMocks();
     vi.mocked(os.homedir).mockReturnValue('/mock/home/user');
-    vi.stubEnv('GEMINI_API_KEY', 'test-api-key');
+    vi.stubEnv('OPENAI_API_KEY', 'test-api-key');
     vi.spyOn(ExtensionManager.prototype, 'getExtensions').mockReturnValue([]);
   });
 
@@ -3559,7 +3559,7 @@ describe('loadCliConfig disableYoloMode', () => {
   beforeEach(() => {
     vi.resetAllMocks();
     vi.mocked(os.homedir).mockReturnValue('/mock/home/user');
-    vi.stubEnv('GEMINI_API_KEY', 'test-api-key');
+    vi.stubEnv('OPENAI_API_KEY', 'test-api-key');
     vi.spyOn(ExtensionManager.prototype, 'getExtensions').mockReturnValue([]);
     vi.mocked(isWorkspaceTrusted).mockReturnValue({
       isTrusted: true,
@@ -3598,7 +3598,7 @@ describe('loadCliConfig secureModeEnabled', () => {
   beforeEach(() => {
     vi.resetAllMocks();
     vi.mocked(os.homedir).mockReturnValue('/mock/home/user');
-    vi.stubEnv('GEMINI_API_KEY', 'test-api-key');
+    vi.stubEnv('OPENAI_API_KEY', 'test-api-key');
     vi.spyOn(ExtensionManager.prototype, 'getExtensions').mockReturnValue([]);
     vi.mocked(isWorkspaceTrusted).mockReturnValue({
       isTrusted: true,
@@ -3656,7 +3656,7 @@ describe('loadCliConfig mcpEnabled', () => {
   beforeEach(() => {
     vi.resetAllMocks();
     vi.mocked(os.homedir).mockReturnValue('/mock/home/user');
-    vi.stubEnv('GEMINI_API_KEY', 'test-api-key');
+    vi.stubEnv('OPENAI_API_KEY', 'test-api-key');
     vi.spyOn(ExtensionManager.prototype, 'getExtensions').mockReturnValue([]);
   });
 
@@ -3727,7 +3727,7 @@ describe('loadCliConfig mcpEnabled', () => {
   describe('extension plan settings', () => {
     beforeEach(() => {
       vi.spyOn(Storage.prototype, 'getProjectTempDir').mockReturnValue(
-        '/mock/home/user/.gemini/tmp/test-project',
+        '/mock/home/user/.a-coder/tmp/test-project',
       );
     });
 
@@ -3819,7 +3819,7 @@ describe('loadCliConfig mcpEnabled', () => {
           '/mock',
           'home',
           'user',
-          '.gemini',
+          '.a-coder',
           'tmp',
           'test-project',
           'test-session',
@@ -3834,7 +3834,7 @@ describe('loadCliConfig acpMode and clientName', () => {
   beforeEach(() => {
     vi.resetAllMocks();
     vi.mocked(os.homedir).mockReturnValue('/mock/home/user');
-    vi.stubEnv('GEMINI_API_KEY', 'test-api-key');
+    vi.stubEnv('OPENAI_API_KEY', 'test-api-key');
     vi.spyOn(ExtensionManager.prototype, 'getExtensions').mockReturnValue([]);
   });
 

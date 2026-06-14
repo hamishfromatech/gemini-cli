@@ -342,7 +342,7 @@ export function formatValidationError(
   }
 
   lines.push('Please fix the configuration.');
-  lines.push('See: https://geminicli.com/docs/reference/configuration/');
+  lines.push('See: https://a-coder-cli.com/docs/reference/configuration/');
 
   return lines.join('\n');
 }

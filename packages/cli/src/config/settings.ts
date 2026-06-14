@@ -12,7 +12,7 @@ import process from 'node:process';
 import {
   CoreEvent,
   FatalConfigError,
-  GEMINI_DIR,
+  A_CODER_DIR,
   getErrorMessage,
   getFsErrorMessage,
   Storage,
@@ -21,7 +21,7 @@ import {
   AuthType,
   type AdminControlsSettings,
   createCache,
-} from '@google/gemini-cli-core';
+} from '@the-a-tech-corporation/core';
 import stripJsonComments from 'strip-json-comments';
 import { DefaultLight } from '../ui/themes/builtin/light/default-light.js';
 import { DefaultDark } from '../ui/themes/builtin/dark/default-dark.js';
@@ -82,12 +82,12 @@ export const USER_SETTINGS_DIR = path.dirname(USER_SETTINGS_PATH);
 export const DEFAULT_EXCLUDED_ENV_VARS = [
   'DEBUG',
   'DEBUG_MODE',
-  'GEMINI_CLI_IDE_SERVER_STDIO_COMMAND',
-  'GEMINI_CLI_IDE_SERVER_STDIO_ARGS',
+  'A_CODER_CLI_IDE_SERVER_STDIO_COMMAND',
+  'A_CODER_CLI_IDE_SERVER_STDIO_ARGS',
 ];
 
 const AUTH_ENV_VAR_WHITELIST = [
-  'GEMINI_API_KEY',
+  'OPENAI_API_KEY',
   'GOOGLE_API_KEY',
   'GOOGLE_CLOUD_PROJECT',
   'GOOGLE_CLOUD_LOCATION',
@@ -102,8 +102,8 @@ export function sanitizeEnvVar(value: string): string {
 }
 
 export function getSystemSettingsPath(): string {
-  if (process.env['GEMINI_CLI_SYSTEM_SETTINGS_PATH']) {
-    return process.env['GEMINI_CLI_SYSTEM_SETTINGS_PATH'];
+  if (process.env['A_CODER_CLI_SYSTEM_SETTINGS_PATH']) {
+    return process.env['A_CODER_CLI_SYSTEM_SETTINGS_PATH'];
   }
   if (platform() === 'darwin') {
     return '/Library/Application Support/GeminiCli/settings.json';
@@ -115,8 +115,8 @@ export function getSystemSettingsPath(): string {
 }
 
 export function getSystemDefaultsPath(): string {
-  if (process.env['GEMINI_CLI_SYSTEM_DEFAULTS_PATH']) {
-    return process.env['GEMINI_CLI_SYSTEM_DEFAULTS_PATH'];
+  if (process.env['A_CODER_CLI_SYSTEM_DEFAULTS_PATH']) {
+    return process.env['A_CODER_CLI_SYSTEM_DEFAULTS_PATH'];
   }
   return path.join(
     path.dirname(getSystemSettingsPath()),
@@ -563,9 +563,9 @@ function findEnvFile(
 ): string | null {
   let currentDir = path.resolve(startDir);
   while (true) {
-    // prefer gemini-specific .env under GEMINI_DIR
+    // prefer gemini-specific .env under A_CODER_DIR
     if (isTrusted) {
-      const geminiEnvPath = path.join(currentDir, GEMINI_DIR, '.env');
+      const geminiEnvPath = path.join(currentDir, A_CODER_DIR, '.env');
       if (fs.existsSync(geminiEnvPath)) {
         return geminiEnvPath;
       }
@@ -580,7 +580,7 @@ function findEnvFile(
     if (parentDir === currentDir || !parentDir) {
       // check .env under home as fallback, again preferring gemini-specific .env
       if (isTrusted) {
-        const homeGeminiEnvPath = path.join(homedir(), GEMINI_DIR, '.env');
+        const homeGeminiEnvPath = path.join(homedir(), A_CODER_DIR, '.env');
         if (fs.existsSync(homeGeminiEnvPath)) {
           return homeGeminiEnvPath;
         }
@@ -598,7 +598,7 @@ function findEnvFile(
 // Internal env var used to preserve the user's original GOOGLE_CLOUD_PROJECT
 // across process restarts in Cloud Shell. This survives relaunch because child
 // processes inherit the parent's environment.
-const USER_GCP_PROJECT = '_GEMINI_USER_GCP_PROJECT';
+const USER_GCP_PROJECT = '_A_CODER_USER_GCP_PROJECT';
 
 export function setUpCloudShellEnvironment(
   envFilePath: string | null,
@@ -699,7 +699,7 @@ export function loadEnvironment(
 
       const excludedVars =
         settings?.advanced?.excludedEnvVars || DEFAULT_EXCLUDED_ENV_VARS;
-      const isProjectEnvFile = !envFilePath.includes(GEMINI_DIR);
+      const isProjectEnvFile = !envFilePath.includes(A_CODER_DIR);
 
       for (const key in parsedEnv) {
         if (Object.hasOwn(parsedEnv, key)) {

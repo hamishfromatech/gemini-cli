@@ -197,8 +197,8 @@ describe('KeychainService', () => {
       expect(FileKeychain).toHaveBeenCalled();
     });
 
-    it('should fallback to FileKeychain when GEMINI_FORCE_FILE_STORAGE is true', async () => {
-      process.env['GEMINI_FORCE_FILE_STORAGE'] = 'true';
+    it('should fallback to FileKeychain when A_CODER_FORCE_FILE_STORAGE is true', async () => {
+      process.env['A_CODER_FORCE_FILE_STORAGE'] = 'true';
       const available = await service.isAvailable();
       expect(available).toBe(true);
       expect(FileKeychain).toHaveBeenCalled();

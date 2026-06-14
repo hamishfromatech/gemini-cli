@@ -32,7 +32,7 @@ describe('mcp-resources-integration', () => {
     });
 
     // Workaround for ProjectRegistry save issue
-    const userGeminiDir = join(rig.homeDir!, '.gemini');
+    const userGeminiDir = join(rig.homeDir!, '.a-coder');
     fs.writeFileSync(join(userGeminiDir, 'projects.json'), '{"projects":{}}');
 
     // Add a dummy server to get setup done
@@ -82,7 +82,7 @@ await server.connect(transport);
 
     const output = await rig.run({
       args: 'List all available MCP resources.',
-      env: { GEMINI_API_KEY: 'dummy' },
+      env: { OPENAI_API_KEY: 'dummy' },
     });
 
     const foundCall = await rig.waitForToolCall('list_mcp_resources');
@@ -101,7 +101,7 @@ await server.connect(transport);
     });
 
     // Workaround for ProjectRegistry save issue
-    const userGeminiDir = join(rig.homeDir!, '.gemini');
+    const userGeminiDir = join(rig.homeDir!, '.a-coder');
     fs.writeFileSync(join(userGeminiDir, 'projects.json'), '{"projects":{}}');
 
     // Add a dummy server to get setup done
@@ -168,7 +168,7 @@ await server.connect(transport);
 
     const output = await rig.run({
       args: 'Read the MCP resource test://resource1.',
-      env: { GEMINI_API_KEY: 'dummy' },
+      env: { OPENAI_API_KEY: 'dummy' },
     });
 
     const foundCall = await rig.waitForToolCall('read_mcp_resource');

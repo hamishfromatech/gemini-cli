@@ -5,7 +5,7 @@ inputs:
   npm-package:
     description: 'NPM Package'
     required: true
-    default: '@google/gemini-cli@latest'
+    default: '@the-a-tech-corporation/a-coder-cli@latest'
   npm-registry-url:
     description: 'NPM Registry URL'
     required: true
@@ -91,11 +91,11 @@ runs:
     - name: '🔬 Run integration tests against NPM release'
       working-directory: '${{ inputs.working-directory }}'
       env:
-        GEMINI_API_KEY: '${{ inputs.gemini_api_key }}'
-        GEMINI_CLI_TRUST_WORKSPACE: true
+        A_CODER_API_KEY: '${{ inputs.a-coder_api_key }}'
+        A_CODER_CLI_TRUST_WORKSPACE: true
         INTEGRATION_TEST_USE_INSTALLED_GEMINI: 'true'
         # We must diable CI mode here because it interferes with interactive tests.
-        # See https://github.com/google-gemini/gemini-cli/issues/10517
+        # See https://github.com/hamishfromatech/a-coder-cli/issues/10517
         CI: 'false'
       shell: 'bash'
       run: 'npm run test:integration:sandbox:none'

@@ -1,7 +1,7 @@
-# Gemini CLI model selection (`/model` command)
+# A-Coder CLI model selection (`/model` command)
 
-Select your Gemini CLI model. The `/model` command lets you configure the model
-used by Gemini CLI, giving you more control over your results. Use **Pro**
+Select your A-Coder CLI model. The `/model` command lets you configure the model
+used by A-Coder CLI, giving you more control over your results. Use **Pro**
 models for complex tasks and reasoning, **Flash** models for high speed results,
 or the (recommended) **Auto** setting to choose the best model for your tasks.
 
@@ -13,7 +13,7 @@ or the (recommended) **Auto** setting to choose the best model for your tasks.
 
 ## How to use the `/model` command
 
-Use the following command in Gemini CLI:
+Use the following command in A-Coder CLI:
 
 ```
 /model
@@ -23,19 +23,19 @@ Running this command will open a dialog with your options:
 
 | Option            | Description                                                    | Models                                       |
 | ----------------- | -------------------------------------------------------------- | -------------------------------------------- |
-| Auto (Gemini 3)   | Let the system choose the best Gemini 3 model for your task.   | gemini-3-pro-preview, gemini-3-flash-preview |
-| Auto (Gemini 2.5) | Let the system choose the best Gemini 2.5 model for your task. | gemini-2.5-pro, gemini-2.5-flash             |
+| Auto (A-Coder 3)   | Let the system choose the best A-Coder 3 model for your task.   | a-coder-cli-3-pro-preview, a-coder-cli-3-flash-preview |
+| Auto (A-Coder 2.5) | Let the system choose the best A-Coder 2.5 model for your task. | a-coder-cli-2.5-pro, a-coder-cli-2.5-flash             |
 | Manual            | Select a specific model.                                       | Any available model.                         |
 
 We recommend selecting one of the above **Auto** options. However, you can
 select **Manual** to select a specific model from those available.
 
-You can also use the `--model` flag to specify a particular Gemini model on
+You can also use the `--model` flag to specify a particular A-Coder model on
 startup. For more details, refer to the
 [configuration documentation](../reference/configuration.md).
 
 Changes to these settings will be applied to all subsequent interactions with
-Gemini CLI.
+A-Coder CLI.
 
 ## Best practices for model selection
 

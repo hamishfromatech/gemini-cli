@@ -279,7 +279,7 @@
     <text x="0" y="580" fill="#333333" textLength="9" lengthAdjust="spacingAndGlyphs">│</text>
     <text x="36" y="580" fill="#ffffff" textLength="18" lengthAdjust="spacingAndGlyphs">3.</text>
     <text x="63" y="580" fill="#ffffff" textLength="387" lengthAdjust="spacingAndGlyphs">Allow for this file in all future sessions </text>
-    <text x="450" y="580" fill="#afafaf" textLength="306" lengthAdjust="spacingAndGlyphs">~/.gemini/policies/auto-saved.toml</text>
+    <text x="450" y="580" fill="#afafaf" textLength="306" lengthAdjust="spacingAndGlyphs">~/.a-coder/policies/auto-saved.toml</text>
     <text x="882" y="580" fill="#333333" textLength="18" lengthAdjust="spacingAndGlyphs">│█</text>
     <text x="0" y="597" fill="#333333" textLength="9" lengthAdjust="spacingAndGlyphs">│</text>
     <text x="36" y="597" fill="#ffffff" textLength="18" lengthAdjust="spacingAndGlyphs">4.</text>

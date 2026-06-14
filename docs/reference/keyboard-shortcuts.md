@@ -1,6 +1,6 @@
-# Gemini CLI keyboard shortcuts
+# A-Coder CLI keyboard shortcuts
 
-Gemini CLI ships with a set of default keyboard shortcuts for editing input,
+A-Coder CLI ships with a set of default keyboard shortcuts for editing input,
 navigating history, and controlling the UI. Use this reference to learn the
 available combinations.
 
@@ -109,8 +109,8 @@ available combinations.
 | `app.cycleApprovalMode`       | Cycle through approval modes: default (prompt), auto_edit (auto-approve edits), and plan (read-only). Plan mode is skipped when the agent is busy. | `Shift+Tab`        |
 | `app.showMoreLines`           | Expand and collapse blocks of content when not in alternate buffer mode.                                                                           | `Ctrl+O`           |
 | `app.expandPaste`             | Expand or collapse a paste placeholder when cursor is over placeholder.                                                                            | `Ctrl+O`           |
-| `app.focusShellInput`         | Move focus from Gemini to the active shell.                                                                                                        | `Tab`              |
-| `app.unfocusShellInput`       | Move focus from the shell back to Gemini.                                                                                                          | `Shift+Tab`        |
+| `app.focusShellInput`         | Move focus from A-Coder to the active shell.                                                                                                        | `Tab`              |
+| `app.unfocusShellInput`       | Move focus from the shell back to A-Coder.                                                                                                          | `Shift+Tab`        |
 | `app.clearScreen`             | Clear the terminal screen and redraw the UI.                                                                                                       | `Ctrl+L`           |
 | `app.restart`                 | Restart the application.                                                                                                                           | `R`<br />`Shift+R` |
 | `app.suspend`                 | Suspend the CLI and move it to the background.                                                                                                     | `Ctrl+Z`           |
@@ -126,8 +126,8 @@ available combinations.
 | `background.toggle`         | Toggle current background shell visibility.                        | `Ctrl+B`    |
 | `background.toggleList`     | Toggle background shell list.                                      | `Ctrl+L`    |
 | `background.kill`           | Kill the active background shell.                                  | `Ctrl+K`    |
-| `background.unfocus`        | Move focus from background shell to Gemini.                        | `Shift+Tab` |
-| `background.unfocusList`    | Move focus from background shell list to Gemini.                   | `Tab`       |
+| `background.unfocus`        | Move focus from background shell to A-Coder.                        | `Shift+Tab` |
+| `background.unfocusList`    | Move focus from background shell list to A-Coder.                   | `Tab`       |
 | `background.unfocusWarning` | Show warning when trying to move focus away from background shell. | `Tab`       |
 | `app.dumpFrame`             | Dump the current frame as a snapshot.                              | `F8`        |
 | `app.startRecording`        | Start recording the session.                                       | `F6`        |
@@ -145,8 +145,8 @@ available combinations.
 ## Customizing Keybindings
 
 You can add alternative keybindings or remove default keybindings by creating a
-`keybindings.json` file in your home gemini directory (typically
-`~/.gemini/keybindings.json`).
+`keybindings.json` file in your home a-coder-cli directory (typically
+`~/.a-coder-cli/keybindings.json`).
 
 ### Configuration Format
 
@@ -251,7 +251,7 @@ a `key` combination.
 
 ## Vi mode shortcuts
 
-When vim mode is enabled with `/vim` or `general.vimMode: true`, Gemini CLI
+When vim mode is enabled with `/vim` or `general.vimMode: true`, A-Coder CLI
 supports NORMAL and INSERT modes.
 
 ### Mode switching
@@ -354,7 +354,7 @@ commands such as `dfx`, `dtx`, `cFx`, and `cTx` are supported.
 - On [Windows Terminal](https://en.wikipedia.org/wiki/Windows_Terminal):
   - `shift+enter` is only supported in version 1.25 and higher.
   - `shift+tab`
-    [is not supported](https://github.com/google-gemini/gemini-cli/issues/20314)
+    [is not supported](https://github.com/google-a-coder-cli/a-coder-cli-cli/issues/20314)
     on Node 20 and earlier versions of Node 22.
 - On macOS's [Terminal](<https://en.wikipedia.org/wiki/Terminal_(macOS)>):
   - `shift+enter` is not supported.

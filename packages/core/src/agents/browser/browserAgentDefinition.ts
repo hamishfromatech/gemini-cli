@@ -19,8 +19,8 @@ import type { Config } from '../../config/config.js';
 import { z } from 'zod';
 import {
   isPreviewModel,
-  PREVIEW_GEMINI_FLASH_MODEL,
-  DEFAULT_GEMINI_FLASH_MODEL,
+  PREVIEW_A_CODER_FLASH_MODEL,
+  DEFAULT_A_CODER_FLASH_MODEL,
 } from '../../config/models.js';
 
 /** Canonical agent name — used for routing and configuration lookup. */
@@ -136,8 +136,8 @@ export const BrowserAgentDefinition = (
   // Use Preview Flash model if the main model is any of the preview models.
   // If the main model is not a preview model, use the default flash model.
   const model = isPreviewModel(config.getModel(), config)
-    ? PREVIEW_GEMINI_FLASH_MODEL
-    : DEFAULT_GEMINI_FLASH_MODEL;
+    ? PREVIEW_A_CODER_FLASH_MODEL
+    : DEFAULT_A_CODER_FLASH_MODEL;
 
   return {
     name: BROWSER_AGENT_NAME,

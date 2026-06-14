@@ -101,7 +101,7 @@ export class SandboxPolicyManager {
   constructor(customConfigPath?: string) {
     this.configPath =
       customConfigPath ??
-      path.join(os.homedir(), '.gemini', 'policies', 'sandbox.toml');
+      path.join(os.homedir(), '.a-coder', 'policies', 'sandbox.toml');
     this.config = this.loadConfig();
   }
 

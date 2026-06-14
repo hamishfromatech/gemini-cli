@@ -1,14 +1,14 @@
 # Extension reference
 
-This guide covers the `gemini extensions` commands and the structure of the
-`gemini-extension.json` configuration file.
+This guide covers the `a-coder-cli extensions` commands and the structure of the
+`a-coder-cli-extension.json` configuration file.
 
 ## Manage extensions
 
-Use the `gemini extensions` command group to manage your extensions from the
+Use the `a-coder-cli extensions` command group to manage your extensions from the
 terminal.
 
-Note that commands like `gemini extensions install` are not supported within the
+Note that commands like `a-coder-cli extensions install` are not supported within the
 CLI's interactive mode. However, you can use the `/extensions list` command to
 view installed extensions. All management operations, including updates to slash
 commands, take effect only after you restart the CLI session.
@@ -18,12 +18,12 @@ commands, take effect only after you restart the CLI session.
 Install an extension by providing its GitHub repository URL or a local file
 path.
 
-Gemini CLI creates a copy of the extension during installation. You must run
-`gemini extensions update` to pull changes from the source. To install from
+A-Coder CLI creates a copy of the extension during installation. You must run
+`a-coder-cli extensions update` to pull changes from the source. To install from
 GitHub, you must have `git` installed on your machine.
 
 ```bash
-gemini extensions install <source> [--ref <ref>] [--auto-update] [--pre-release] [--consent] [--skip-settings]
+a-coder-cli extensions install <source> [--ref <ref>] [--auto-update] [--pre-release] [--consent] [--skip-settings]
 ```
 
 - `<source>`: The GitHub URL or local path of the extension.
@@ -38,7 +38,7 @@ gemini extensions install <source> [--ref <ref>] [--auto-update] [--pre-release]
 To uninstall one or more extensions, use the `uninstall` command:
 
 ```bash
-gemini extensions uninstall <name...>
+a-coder-cli extensions uninstall <name...>
 ```
 
 ### Disable an extension
@@ -47,7 +47,7 @@ Extensions are enabled globally by default. You can disable an extension
 entirely or for a specific workspace.
 
 ```bash
-gemini extensions disable <name> [--scope <scope>]
+a-coder-cli extensions disable <name> [--scope <scope>]
 ```
 
 - `<name>`: The name of the extension to disable.
@@ -58,7 +58,7 @@ gemini extensions disable <name> [--scope <scope>]
 Re-enable a disabled extension using the `enable` command:
 
 ```bash
-gemini extensions enable <name> [--scope <scope>]
+a-coder-cli extensions enable <name> [--scope <scope>]
 ```
 
 - `<name>`: The name of the extension to enable.
@@ -66,17 +66,17 @@ gemini extensions enable <name> [--scope <scope>]
 
 ### Update an extension
 
-Update an extension to the version specified in its `gemini-extension.json`
+Update an extension to the version specified in its `a-coder-cli-extension.json`
 file.
 
 ```bash
-gemini extensions update <name>
+a-coder-cli extensions update <name>
 ```
 
 To update all installed extensions at once:
 
 ```bash
-gemini extensions update --all
+a-coder-cli extensions update --all
 ```
 
 ### Create an extension from a template
@@ -84,7 +84,7 @@ gemini extensions update --all
 Create a new extension directory using a built-in template.
 
 ```bash
-gemini extensions new <path> [template]
+a-coder-cli extensions new <path> [template]
 ```
 
 - `<path>`: The directory to create.
@@ -93,20 +93,20 @@ gemini extensions new <path> [template]
 
 ### Link a local extension
 
-Create a symbolic link between your development directory and Gemini CLI
+Create a symbolic link between your development directory and A-Coder CLI
 extensions directory. This lets you test changes immediately without
 reinstalling.
 
 ```bash
-gemini extensions link <path>
+a-coder-cli extensions link <path>
 ```
 
 ## Extension format
 
-Gemini CLI loads extensions from `<home>/.gemini/extensions`. Each extension
-must have a `gemini-extension.json` file in its root directory.
+A-Coder CLI loads extensions from `<home>/.a-coder-cli/extensions`. Each extension
+must have a `a-coder-cli-extension.json` file in its root directory.
 
-### `gemini-extension.json`
+### `a-coder-cli-extension.json`
 
 The manifest file defines the extension's behavior and configuration.
 
@@ -122,11 +122,11 @@ The manifest file defines the extension's behavior and configuration.
       "cwd": "${extensionPath}"
     }
   },
-  "contextFileName": "GEMINI.md",
+  "contextFileName": "A_CODER.md",
   "excludeTools": ["run_shell_command"],
   "migratedTo": "https://github.com/new-owner/new-extension-repo",
   "plan": {
-    "directory": ".gemini/plans"
+    "directory": ".a-coder-cli/plans"
   }
 }
 ```
@@ -139,7 +139,7 @@ The manifest file defines the extension's behavior and configuration.
   extension directory name.
 - `version`: The version of the extension.
 - `description`: A short description of the extension. This will be displayed on
-  [geminicli.com/extensions](https://geminicli.com/extensions).
+  [a-coder-cli.com/extensions](https://a-coder-cli.com/extensions).
 - `migratedTo`: The URL of the new repository source for the extension. If this
   is set, the CLI will automatically check this new source for updates and
   migrate the extension's installation to the new source if an update is found.
@@ -157,7 +157,7 @@ The manifest file defines the extension's behavior and configuration.
     instead of putting them both in `command`.
 - `contextFileName`: The name of the file that contains the context for the
   extension. This will be used to load the context from the extension directory.
-  If this property is not used but a `GEMINI.md` file is present in your
+  If this property is not used but a `A_CODER.md` file is present in your
   extension directory, then that file will be loaded.
 - `excludeTools`: An array of tool names to exclude from the model. You can also
   specify command-specific restrictions for tools that support it, like the
@@ -169,9 +169,9 @@ The manifest file defines the extension's behavior and configuration.
   - `directory`: The directory where planning artifacts are stored. This serves
     as a fallback if the user hasn't specified a plan directory in their
     settings. If not specified by either the extension or the user, the default
-    is `~/.gemini/tmp/<project>/<session-id>/plans/`.
+    is `~/.a-coder-cli/tmp/<project>/<session-id>/plans/`.
 
-When Gemini CLI starts, it loads all the extensions and merges their
+When A-Coder CLI starts, it loads all the extensions and merges their
 configurations. If there are any conflicts, the workspace configuration takes
 precedence.
 
@@ -207,7 +207,7 @@ To define settings, add a `settings` array to your manifest:
 To update an extension's settings:
 
 ```bash
-gemini extensions config <name> [setting] [--scope <scope>]
+a-coder-cli extensions config <name> [setting] [--scope <scope>]
 ```
 
 #### Environment variable sanitization
@@ -219,7 +219,7 @@ Extensions **will not** inherit the user's full shell environment variables.
 They will only have access to:
 
 1. Standard safe variables (e.g., `HOME`, `PATH`, `TMPDIR`).
-2. Variables explicitly declared and requested in the `gemini-extension.json`
+2. Variables explicitly declared and requested in the `a-coder-cli-extension.json`
    manifest via the `settings` array (using the `envVar` property).
 
 If your extension requires specific environment variables (like an API key,
@@ -229,7 +229,7 @@ so the CLI can allowlist them for use within the extension.
 ### Custom commands
 
 Provide [custom commands](../cli/custom-commands.md) by placing TOML files in a
-`commands/` subdirectory. Gemini CLI uses the directory structure to determine
+`commands/` subdirectory. A-Coder CLI uses the directory structure to determine
 the command name.
 
 For an extension named `gcp`:
@@ -241,7 +241,7 @@ For an extension named `gcp`:
 
 Intercept and customize CLI behavior using [hooks](../hooks/index.md). Define
 hooks in a `hooks/hooks.json` file within your extension directory. Note that
-hooks are not defined in the `gemini-extension.json` manifest.
+hooks are not defined in the `a-coder-cli-extension.json` manifest.
 
 ### Agent skills
 
@@ -260,12 +260,12 @@ agent definition files (`.md`) to an `agents/` directory in your extension root.
 
 ### <a id="policy-engine"></a>Policy Engine
 
-Extensions can contribute policy rules and safety checkers to Gemini CLI
+Extensions can contribute policy rules and safety checkers to A-Coder CLI
 [Policy Engine](../reference/policy-engine.md). These rules are defined in
 `.toml` files and take effect when the extension is activated.
 
 To add policies, create a `policies/` directory in your extension's root and
-place your `.toml` policy files inside it. Gemini CLI automatically loads all
+place your `.toml` policy files inside it. A-Coder CLI automatically loads all
 `.toml` files from this directory.
 
 Rules contributed by extensions run in their own tier (tier 2), alongside
@@ -274,7 +274,7 @@ but lower priority than user or admin policies.
 
 <!-- prettier-ignore -->
 > [!WARNING]
-> For security, Gemini CLI ignores any `allow` decisions or `yolo`
+> For security, A-Coder CLI ignores any `allow` decisions or `yolo`
 > mode configurations in extension policies. This ensures that an extension
 > cannot automatically approve tool calls or bypass security measures without
 > your confirmation.
@@ -301,7 +301,7 @@ required_context = ["environment"]
 ### Themes
 
 Extensions can provide custom themes to personalize the CLI UI. Themes are
-defined in the `themes` array in `gemini-extension.json`.
+defined in the `themes` array in `a-coder-cli-extension.json`.
 
 **Example**
 
@@ -351,7 +351,7 @@ the extension name (for example, `/gcp.deploy`) using a dot separator.
 
 ## Variables
 
-Gemini CLI supports variable substitution in `gemini-extension.json` and
+A-Coder CLI supports variable substitution in `a-coder-cli-extension.json` and
 `hooks/hooks.json`.
 
 | Variable           | Description                                     |

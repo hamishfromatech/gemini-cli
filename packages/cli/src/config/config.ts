@@ -19,7 +19,7 @@ import {
   resetGeminiMdFilename,
   DEFAULT_CONTEXT_FILENAME,
   ApprovalMode,
-  DEFAULT_GEMINI_EMBEDDING_MODEL,
+  DEFAULT_A_CODER_EMBEDDING_MODEL,
   DEFAULT_FILE_FILTERING_OPTIONS,
   FileDiscoveryService,
   resolveTelemetrySettings,
@@ -30,7 +30,7 @@ import {
   ASK_USER_TOOL_NAME,
   getVersion,
   coreEvents,
-  GEMINI_MODEL_ALIAS_AUTO,
+  A_CODER_MODEL_ALIAS_AUTO,
   getAdminErrorMessage,
   isHeadlessMode,
   Config,
@@ -46,7 +46,7 @@ import {
   type HookEventName,
   type OutputFormat,
   detectIdeFromEnv,
-} from '@google/gemini-cli-core';
+} from '@the-a-tech-corporation/core';
 import {
   type Settings,
   type MergedSettings,
@@ -68,7 +68,7 @@ import {
 } from './policy.js';
 import { ExtensionManager } from './extension-manager.js';
 import { McpServerEnablementManager } from './mcp/mcpServerEnablement.js';
-import type { ExtensionEvents } from '@google/gemini-cli-core/src/utils/extensionLoader.js';
+import type { ExtensionEvents } from '@the-a-tech-corporation/core/src/utils/extensionLoader.js';
 import { requestConsentNonInteractive } from './extensions/consent.js';
 import { promptForSetting } from './extensions/extensionSettings.js';
 import type { EventEmitter } from 'node:stream';
@@ -164,9 +164,9 @@ export async function parseArguments(
   const startupMessages: string[] = [];
   const yargsInstance = yargs(rawArgv)
     .locale('en')
-    .scriptName('gemini')
+    .scriptName('a-coder-cli')
     .usage(
-      'Usage: gemini [options] [command]\n\nGemini CLI - Defaults to interactive mode. Use -p/--prompt for non-interactive (headless) mode.',
+      'Usage: a-coder-cli [options] [command]\n\nA-Coder CLI - Defaults to interactive mode. Use -p/--prompt for non-interactive (headless) mode.',
     )
     .option('isCommand', {
       type: 'boolean',
@@ -278,7 +278,7 @@ export async function parseArguments(
   yargsInstance.command(gemmaCommand);
 
   yargsInstance
-    .command('$0 [query..]', 'Launch Gemini CLI', (yargsInstance) =>
+    .command('$0 [query..]', 'Launch A-Coder CLI', (yargsInstance) =>
       yargsInstance
         .positional('query', {
           description:
@@ -314,7 +314,7 @@ export async function parseArguments(
           type: 'string',
           skipValidation: true,
           description:
-            'Start Gemini in a new git worktree. If no name is provided, one is generated automatically.',
+            'Start A-Coder CLI in a new git worktree. If no name is provided, one is generated automatically.',
           coerce: (value: unknown): string => {
             const trimmed = typeof value === 'string' ? value.trim() : '';
             if (trimmed === '') {
@@ -380,7 +380,7 @@ export async function parseArguments(
           string: true,
           nargs: 1,
           description:
-            '[DEPRECATED: Use Policy Engine instead See https://geminicli.com/docs/core/policy-engine] Tools that are allowed to run without confirmation',
+            '[DEPRECATED: Use Policy Engine instead See https://a-coder-cli.com/docs/core/policy-engine] Tools that are allowed to run without confirmation',
           coerce: coerceCommaSeparated,
         })
         .option('extensions', {
@@ -406,8 +406,8 @@ export async function parseArguments(
           description:
             'Resume a previous session. Use "latest" for most recent or index number (e.g. --resume 5)',
           coerce: (value: string): string => {
-            // When --resume passed with a value (`gemini --resume 123`): value = "123" (string)
-            // When --resume passed without a value (`gemini --resume`): value = "" (string)
+            // When --resume passed with a value (`a-coder-cli --resume 123`): value = "123" (string)
+            // When --resume passed without a value (`a-coder-cli --resume`): value = "" (string)
             // When --resume not passed at all: this `coerce` function is not called at all, and
             //   `yargsInstance.argv.resume` is undefined.
             const trimmed = value.trim();
@@ -513,7 +513,7 @@ export async function parseArguments(
     }
     result = parsed;
     if (result['skip-trust']) {
-      process.env['GEMINI_CLI_TRUST_WORKSPACE'] = 'true';
+      process.env['A_CODER_CLI_TRUST_WORKSPACE'] = 'true';
     }
   } catch (e) {
     const msg = getErrorMessage(e);
@@ -597,7 +597,7 @@ export async function loadCliConfig(
     options.worktreeSettings ?? (await resolveWorktreeSettings(cwd));
 
   if (argv.sandbox) {
-    process.env['GEMINI_SANDBOX'] = 'true';
+    process.env['A_CODER_SANDBOX'] = 'true';
   }
 
   const includeDirectoryTree = settings.context?.includeDirectoryTree ?? true;
@@ -605,7 +605,7 @@ export async function loadCliConfig(
   const ideMode = settings.ide?.enabled ?? false;
 
   const folderTrust =
-    process.env['GEMINI_CLI_INTEGRATION_TEST'] === 'true' ||
+    process.env['A_CODER_CLI_INTEGRATION_TEST'] === 'true' ||
     process.env['VITEST'] === 'true'
       ? false
       : (settings.security?.folderTrust?.enabled ?? false);
@@ -641,7 +641,7 @@ export async function loadCliConfig(
   // When running inside VSCode with multiple workspace folders,
   // automatically add the other folders as include directories
   // so Gemini has context of all open folders, not just the cwd.
-  const ideWorkspacePath = process.env['GEMINI_CLI_IDE_WORKSPACE_PATH'];
+  const ideWorkspacePath = process.env['A_CODER_CLI_IDE_WORKSPACE_PATH'];
   if (ideWorkspacePath) {
     const realCwd = resolveToRealPath(cwd);
     const ideFolders = ideWorkspacePath.split(path.delimiter).filter((p) => {
@@ -679,7 +679,7 @@ export async function loadCliConfig(
     ?.find((ext) => ext.isActive && ext.plan?.directory)?.plan;
 
   let extensionRegistryURI =
-    process.env['GEMINI_CLI_EXTENSION_REGISTRY_URI'] ??
+    process.env['A_CODER_CLI_EXTENSION_REGISTRY_URI'] ??
     (trustedFolder ? settings.experimental?.extensionRegistryURI : undefined);
 
   if (extensionRegistryURI && !extensionRegistryURI.startsWith('http')) {
@@ -838,9 +838,9 @@ export async function loadCliConfig(
     interactive,
   );
 
-  const defaultModel = GEMINI_MODEL_ALIAS_AUTO;
+  const defaultModel = A_CODER_MODEL_ALIAS_AUTO;
   const rawModel =
-    argv.model || process.env['GEMINI_MODEL'] || settings.model?.name;
+    argv.model || process.env['A_CODER_MODEL'] || settings.model?.name;
 
   // Ensure specifiedModel is a string (e.g. if yargs parsed multiple --model as an array)
   const specifiedModel = Array.isArray(rawModel)
@@ -850,7 +850,7 @@ export async function loadCliConfig(
       : String(rawModel ?? '').trim() || '';
 
   const resolvedModel =
-    specifiedModel === GEMINI_MODEL_ALIAS_AUTO
+    specifiedModel === A_CODER_MODEL_ALIAS_AUTO
       ? defaultModel
       : specifiedModel || defaultModel;
   const sandboxConfig = await loadSandboxConfig(settings, argv);
@@ -960,7 +960,7 @@ export async function loadCliConfig(
     clientName,
     sessionId,
     clientVersion: await getVersion(),
-    embeddingModel: DEFAULT_GEMINI_EMBEDDING_MODEL,
+    embeddingModel: DEFAULT_A_CODER_EMBEDDING_MODEL,
     sandbox: sandboxConfig,
     toolSandboxing: settings.security?.toolSandboxing ?? false,
     targetDir: cwd,
@@ -1080,7 +1080,7 @@ export async function loadCliConfig(
     enableShellOutputEfficiency:
       settings.tools?.shell?.enableShellOutputEfficiency ?? true,
     // In ACP mode, always skip the next-speaker check. This check triggers
-    // recursive continuation turns inside GeminiClient.processTurn() that
+    // recursive continuation turns inside ACoderClient.processTurn() that
     // conflict with ACP's explicit turn management via session/prompt,
     // causing infinite agent_thought_chunk loops.
     skipNextSpeakerCheck: isAcpMode || settings.model?.skipNextSpeakerCheck,

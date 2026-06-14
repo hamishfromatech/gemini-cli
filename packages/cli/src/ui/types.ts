@@ -21,7 +21,7 @@ import {
   CoreToolCallStatus,
   checkExhaustive,
   type SubagentActivityItem,
-} from '@google/gemini-cli-core';
+} from '@the-a-tech-corporation/core';
 import type { PartListUnion } from '@google/genai';
 import { type ReactNode } from 'react';
 
@@ -54,7 +54,7 @@ export enum StreamingState {
 }
 
 // Copied from server/src/core/turn.ts for CLI usage
-export enum GeminiEventType {
+export enum ACoderEventType {
   Content = 'content',
   ToolCallRequest = 'tool_call_request',
   // Add other event types if the UI hook needs to handle them
@@ -545,7 +545,7 @@ export interface SubmitPromptResult {
 }
 
 /**
- * Defines the result of the slash command processor for its consumer (useGeminiStream).
+ * Defines the result of the slash command processor for its consumer (useACoderStream).
  */
 export type SlashCommandProcessorResult =
   | {

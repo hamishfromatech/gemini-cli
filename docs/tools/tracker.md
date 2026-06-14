@@ -4,7 +4,7 @@
 > [!NOTE]
 > This is an experimental feature currently under active development.
 
-The `tracker_*` tools allow the Gemini agent to maintain an internal, persistent
+The `tracker_*` tools allow the A-Coder agent to maintain an internal, persistent
 graph of tasks and dependencies for multi-step requests. This suite of tools
 provides a more robust and granular way to manage execution plans than the
 legacy `write_todos` tool.
@@ -13,7 +13,7 @@ legacy `write_todos` tool.
 
 The agent uses these tools to manage its execution plan, decompose complex goals
 into actionable sub-tasks, and provide real-time progress updates to the CLI
-interface. The task state is stored in the `.gemini/tmp/tracker/<session-id>`
+interface. The task state is stored in the `.a-coder-cli/tmp/tracker/<session-id>`
 directory, allowing the agent to manage its plan for the current session.
 
 ### Available Tools
@@ -36,13 +36,13 @@ directory, allowing the agent to manage its plan for the current session.
 - **Interface:** Updates the progress indicator and task tree above the CLI
   input prompt.
 - **Persistence:** Task state is saved automatically to the
-  `.gemini/tmp/tracker/<session-id>` directory. Task states are session-specific
+  `.a-coder-cli/tmp/tracker/<session-id>` directory. Task states are session-specific
   and do not persist across different sessions.
 - **Dependencies:** Tasks can depend on other tasks, forming a directed acyclic
   graph (DAG). The agent must resolve dependencies before starting blocked
   tasks.
 - **Interaction:** Users can view the current state of the tracker by asking the
-  agent to visualize it, or by running `gemini-cli` commands if implemented.
+  agent to visualize it, or by running `a-coder-cli-cli` commands if implemented.
 
 ## Use cases
 

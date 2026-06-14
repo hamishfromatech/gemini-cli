@@ -8,7 +8,7 @@ import {
   getPackageJson,
   type SandboxConfig,
   FatalSandboxError,
-} from '@google/gemini-cli-core';
+} from '@the-a-tech-corporation/core';
 import commandExists from 'command-exists';
 import * as os from 'node:os';
 import type { Settings } from './settings.js';
@@ -50,7 +50,7 @@ function getSandboxCommand(
 
   // note environment variable takes precedence over argument (from command line or settings)
   const environmentConfiguredSandbox =
-    process.env['GEMINI_SANDBOX']?.toLowerCase().trim() ?? '';
+    process.env['A_CODER_SANDBOX']?.toLowerCase().trim() ?? '';
   sandbox =
     environmentConfiguredSandbox?.length > 0
       ? environmentConfiguredSandbox
@@ -86,7 +86,7 @@ function getSandboxCommand(
     // confirm that specified command exists (unless it's built-in)
     if (sandbox !== 'windows-native' && !commandExists.sync(sandbox)) {
       throw new FatalSandboxError(
-        `Missing sandbox command '${sandbox}' (from GEMINI_SANDBOX)`,
+        `Missing sandbox command '${sandbox}' (from A_CODER_SANDBOX)`,
       );
     }
     // runsc uses Docker with --runtime=runsc; both must be available (prioritize runsc when explicitly chosen)
@@ -112,15 +112,15 @@ function getSandboxCommand(
   // throw an error if user requested sandbox but no command was found
   if (sandbox === true) {
     throw new FatalSandboxError(
-      'GEMINI_SANDBOX is true but failed to determine command for sandbox; ' +
-        'install docker or podman or specify command in GEMINI_SANDBOX',
+      'A_CODER_SANDBOX is true but failed to determine command for sandbox; ' +
+        'install docker or podman or specify command in A_CODER_SANDBOX',
     );
   }
 
   return '';
   // Note: 'lxc' is intentionally not auto-detected because it requires a
   // pre-existing, running container managed by the user. Use
-  // GEMINI_SANDBOX=lxc or sandbox: "lxc" in settings to enable it.
+  // A_CODER_SANDBOX=lxc or sandbox: "lxc" in settings to enable it.
 }
 
 export async function loadSandboxConfig(
@@ -152,8 +152,8 @@ export async function loadSandboxConfig(
 
   const packageJson = await getPackageJson(__dirname);
   const image =
-    process.env['GEMINI_SANDBOX_IMAGE'] ??
-    process.env['GEMINI_SANDBOX_IMAGE_DEFAULT'] ??
+    process.env['A_CODER_SANDBOX_IMAGE'] ??
+    process.env['A_CODER_SANDBOX_IMAGE_DEFAULT'] ??
     customImage ??
     packageJson?.config?.sandboxImageUri;
 

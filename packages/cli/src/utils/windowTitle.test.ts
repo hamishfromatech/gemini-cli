@@ -39,7 +39,7 @@ describe('computeTerminalTitle', () => {
         showThoughts: true,
         useDynamicTitle: false,
       } as TerminalTitleOptions,
-      expected: 'Gemini CLI (my-project)'.padEnd(80, ' '),
+      expected: 'A-Coder CLI (my-project)'.padEnd(80, ' '),
       exact: true,
     },
     {
@@ -54,7 +54,7 @@ describe('computeTerminalTitle', () => {
         showThoughts: false,
         useDynamicTitle: true,
       } as TerminalTitleOptions,
-      expected: '✦  Working… (my-project)',
+      expected: '▝▜▄ Working… (my-project)',
     },
     {
       description:
@@ -68,7 +68,7 @@ describe('computeTerminalTitle', () => {
         showThoughts: true,
         useDynamicTitle: true,
       } as TerminalTitleOptions,
-      expected: '✦  Short thought (my-project)',
+      expected: '▝▜▄ Short thought (my-project)',
     },
     {
       description:
@@ -82,7 +82,7 @@ describe('computeTerminalTitle', () => {
         showThoughts: true,
         useDynamicTitle: true,
       } as TerminalTitleOptions,
-      expected: '✦  Working… (my-project)'.padEnd(80, ' '),
+      expected: '▝▜▄ Working… (my-project)'.padEnd(80, ' '),
       exact: true,
     },
     {
@@ -132,7 +132,7 @@ describe('computeTerminalTitle', () => {
     });
 
     expect(title).not.toContain('(my-project)');
-    expect(title).toContain('✦  AAAAAAAAAAAAAAAA');
+    expect(title).toContain('▝▜▄ AAAAAAAAAAAAAAAA');
     expect(title.length).toBe(80);
   });
 
@@ -234,7 +234,7 @@ describe('computeTerminalTitle', () => {
     });
 
     expect(title.length).toBe(80);
-    expect(title).toContain('Gemini CLI (CCCCC');
+    expect(title).toContain('A-Coder CLI (CCCCC');
     expect(title).toContain('…)');
   });
 });

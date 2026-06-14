@@ -10,9 +10,9 @@ import type { RoutingContext } from '../routingStrategy.js';
 import type { Config } from '../../config/config.js';
 import type { BaseLlmClient } from '../../core/baseLlmClient.js';
 import {
-  DEFAULT_GEMINI_FLASH_MODEL,
-  DEFAULT_GEMINI_MODEL,
-  PREVIEW_GEMINI_MODEL_AUTO,
+  DEFAULT_A_CODER_FLASH_MODEL,
+  DEFAULT_A_CODER_MODEL,
+  PREVIEW_A_CODER_MODEL_AUTO,
 } from '../../config/models.js';
 import type { Content } from '@google/genai';
 import { debugLogger } from '../../utils/debugLogger.js';
@@ -37,7 +37,7 @@ describe('GemmaClassifierStrategy', () => {
         enabled: true,
         classifier: { model: 'gemma3-1b-gpu-custom' },
       }),
-      getModel: () => DEFAULT_GEMINI_MODEL,
+      getModel: () => DEFAULT_A_CODER_MODEL,
       getPreviewFeatures: () => false,
       getGemini31Launched: vi.fn().mockResolvedValue(false),
       getUseCustomToolModel: vi.fn().mockResolvedValue(false),
@@ -125,7 +125,7 @@ describe('GemmaClassifierStrategy', () => {
 
     expect(mockGenerateJson).toHaveBeenCalledOnce();
     expect(decision).toEqual({
-      model: DEFAULT_GEMINI_FLASH_MODEL,
+      model: DEFAULT_A_CODER_FLASH_MODEL,
       metadata: {
         source: 'GemmaClassifier',
         latencyMs: expect.any(Number),
@@ -151,7 +151,7 @@ describe('GemmaClassifierStrategy', () => {
 
     expect(mockGenerateJson).toHaveBeenCalledOnce();
     expect(decision).toEqual({
-      model: DEFAULT_GEMINI_MODEL,
+      model: DEFAULT_A_CODER_MODEL,
       metadata: {
         source: 'GemmaClassifier',
         latencyMs: expect.any(Number),
@@ -325,9 +325,9 @@ second message
     expect(lastTurn!.parts!.at(0)!.text).toEqual(expectedLastTurn);
   });
 
-  it('should route to DEFAULT_GEMINI_FLASH_MODEL when hasGemini35FlashGAAccess is true', async () => {
-    mockConfig.hasGemini35FlashGAAccess = vi.fn().mockReturnValue(true);
-    mockConfig.getModel = () => PREVIEW_GEMINI_MODEL_AUTO;
+  it('should route to DEFAULT_A_CODER_FLASH_MODEL when hasACoder35FlashGAAccess is true', async () => {
+    mockConfig.hasACoder35FlashGAAccess = vi.fn().mockReturnValue(true);
+    mockConfig.getModel = () => PREVIEW_A_CODER_MODEL_AUTO;
 
     const mockApiResponse = {
       reasoning: 'Simple task',
@@ -342,6 +342,6 @@ second message
       mockLocalLiteRtLmClient,
     );
 
-    expect(decision?.model).toBe(DEFAULT_GEMINI_FLASH_MODEL);
+    expect(decision?.model).toBe(DEFAULT_A_CODER_FLASH_MODEL);
   });
 });

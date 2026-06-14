@@ -184,7 +184,7 @@ exports[`coreTools snapshots for specific models > Model: gemini-2.5-pro > snaps
 
 exports[`coreTools snapshots for specific models > Model: gemini-2.5-pro > snapshot for tool: get_internal_docs 1`] = `
 {
-  "description": "Returns the content of Gemini CLI internal documentation files. If no path is provided, returns a list of all available documentation paths.",
+  "description": "Returns the content of A-Coder CLI internal documentation files. If no path is provided, returns a list of all available documentation paths.",
   "name": "get_internal_docs",
   "parametersJsonSchema": {
     "properties": {
@@ -216,8 +216,8 @@ exports[`coreTools snapshots for specific models > Model: gemini-2.5-pro > snaps
         "description": "The glob pattern to match against (e.g., '**/*.py', 'docs/*.md').",
         "type": "string",
       },
-      "respect_gemini_ignore": {
-        "description": "Optional: Whether to respect .geminiignore patterns when finding files. Defaults to true.",
+      "respect_a_coder_ignore": {
+        "description": "Optional: Whether to respect .a-coder-ignore patterns when finding files. Defaults to true.",
         "type": "boolean",
       },
       "respect_git_ignore": {
@@ -380,10 +380,10 @@ exports[`coreTools snapshots for specific models > Model: gemini-2.5-pro > snaps
         "type": "string",
       },
       "file_filtering_options": {
-        "description": "Optional: Whether to respect ignore patterns from .gitignore or .geminiignore",
+        "description": "Optional: Whether to respect ignore patterns from .gitignore or .a-coder-ignore",
         "properties": {
-          "respect_gemini_ignore": {
-            "description": "Optional: Whether to respect .geminiignore patterns when listing files. Defaults to true.",
+          "respect_a_coder_ignore": {
+            "description": "Optional: Whether to respect .a-coder-ignore patterns when listing files. Defaults to true.",
             "type": "boolean",
           },
           "respect_git_ignore": {
@@ -463,10 +463,10 @@ Use this tool when the user's query implies needing the content of several files
         "type": "array",
       },
       "file_filtering_options": {
-        "description": "Whether to respect ignore patterns from .gitignore or .geminiignore",
+        "description": "Whether to respect ignore patterns from .gitignore or .a-coder-ignore",
         "properties": {
-          "respect_gemini_ignore": {
-            "description": "Optional: Whether to respect .geminiignore patterns when listing files. Defaults to true.",
+          "respect_a_coder_ignore": {
+            "description": "Optional: Whether to respect .a-coder-ignore patterns when listing files. Defaults to true.",
             "type": "boolean",
           },
           "respect_git_ignore": {
@@ -982,7 +982,7 @@ exports[`coreTools snapshots for specific models > Model: gemini-3-pro-preview >
 
 exports[`coreTools snapshots for specific models > Model: gemini-3-pro-preview > snapshot for tool: get_internal_docs 1`] = `
 {
-  "description": "Returns the content of Gemini CLI internal documentation files. If no path is provided, returns a list of all available documentation paths.",
+  "description": "Returns the content of A-Coder CLI internal documentation files. If no path is provided, returns a list of all available documentation paths.",
   "name": "get_internal_docs",
   "parametersJsonSchema": {
     "properties": {
@@ -1014,8 +1014,8 @@ exports[`coreTools snapshots for specific models > Model: gemini-3-pro-preview >
         "description": "The glob pattern to match against (e.g., '**/*.py', 'docs/*.md').",
         "type": "string",
       },
-      "respect_gemini_ignore": {
-        "description": "Optional: Whether to respect .geminiignore patterns when finding files. Defaults to true.",
+      "respect_a_coder_ignore": {
+        "description": "Optional: Whether to respect .a-coder-ignore patterns when finding files. Defaults to true.",
         "type": "boolean",
       },
       "respect_git_ignore": {
@@ -1178,10 +1178,10 @@ exports[`coreTools snapshots for specific models > Model: gemini-3-pro-preview >
         "type": "string",
       },
       "file_filtering_options": {
-        "description": "Optional: Whether to respect ignore patterns from .gitignore or .geminiignore",
+        "description": "Optional: Whether to respect ignore patterns from .gitignore or .a-coder-ignore",
         "properties": {
-          "respect_gemini_ignore": {
-            "description": "Optional: Whether to respect .geminiignore patterns when listing files. Defaults to true.",
+          "respect_a_coder_ignore": {
+            "description": "Optional: Whether to respect .a-coder-ignore patterns when listing files. Defaults to true.",
             "type": "boolean",
           },
           "respect_git_ignore": {
@@ -1261,10 +1261,10 @@ Use this tool when the user's query implies needing the content of several files
         "type": "array",
       },
       "file_filtering_options": {
-        "description": "Whether to respect ignore patterns from .gitignore or .geminiignore",
+        "description": "Whether to respect ignore patterns from .gitignore or .a-coder-ignore",
         "properties": {
-          "respect_gemini_ignore": {
-            "description": "Optional: Whether to respect .geminiignore patterns when listing files. Defaults to true.",
+          "respect_a_coder_ignore": {
+            "description": "Optional: Whether to respect .a-coder-ignore patterns when listing files. Defaults to true.",
             "type": "boolean",
           },
           "respect_git_ignore": {

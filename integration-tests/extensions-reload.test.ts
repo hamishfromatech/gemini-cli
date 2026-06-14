@@ -9,7 +9,7 @@ import { TestRig } from './test-helper.js';
 import { TestMcpServer } from './test-mcp-server.js';
 import { writeFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { safeJsonStringify } from '@google/gemini-cli-core/src/utils/safeJsonStringify.js';
+import { safeJsonStringify } from '@the-a-tech-corporation/core/src/utils/safeJsonStringify.js';
 
 import stripAnsi from 'strip-ansi';
 
@@ -44,7 +44,7 @@ describe('extension reloading', () => {
         experimental: { extensionReloading: true },
       },
     });
-    const testServerPath = join(rig.testDir!, 'gemini-extension.json');
+    const testServerPath = join(rig.testDir!, 'a-coder-extension.json');
     writeFileSync(testServerPath, safeJsonStringify(extension, 2));
     // defensive cleanup from previous tests.
     try {

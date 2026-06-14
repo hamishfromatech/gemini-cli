@@ -19,7 +19,7 @@ import {
   type ConfigParameters,
   type SandboxConfig,
 } from './config.js';
-import { createMockSandboxConfig } from '@google/gemini-cli-test-utils';
+import { createMockSandboxConfig } from '@the-a-tech-corporation/test-utils';
 import { DEFAULT_MAX_ATTEMPTS } from '../utils/retry.js';
 import { ExperimentFlags } from '../code_assist/experiments/flagNames.js';
 import { debugLogger } from '../utils/debugLogger.js';
@@ -46,7 +46,7 @@ import {
   type ContentGeneratorConfig,
   type ContentGenerator,
 } from '../core/contentGenerator.js';
-import { GeminiClient } from '../core/client.js';
+import { ACoderClient } from '../core/a-coder-client.js';
 import { GitService } from '../services/gitService.js';
 import { ShellTool } from '../tools/shell.js';
 import { AgentTool } from '../agents/agent-tool.js';
@@ -64,12 +64,12 @@ import type { SkillDefinition } from '../skills/skillLoader.js';
 import type { McpClientManager } from '../tools/mcp-client-manager.js';
 import { DEFAULT_MODEL_CONFIGS } from './defaultModelConfigs.js';
 import {
-  DEFAULT_GEMINI_MODEL,
-  PREVIEW_GEMINI_3_1_MODEL,
-  DEFAULT_GEMINI_MODEL_AUTO,
-  PREVIEW_GEMINI_MODEL_AUTO,
-  PREVIEW_GEMINI_FLASH_MODEL,
-  DEFAULT_GEMINI_FLASH_MODEL,
+  DEFAULT_A_CODER_MODEL,
+  PREVIEW_A_CODER_3_1_MODEL,
+  DEFAULT_A_CODER_MODEL_AUTO,
+  PREVIEW_A_CODER_MODEL_AUTO,
+  PREVIEW_A_CODER_FLASH_MODEL,
+  DEFAULT_A_CODER_FLASH_MODEL,
 } from './models.js';
 import { Storage } from './storage.js';
 import type { AgentLoopContext } from './agent-loop-context.js';
@@ -148,14 +148,14 @@ vi.mock('../tools/memoryTool', async (importOriginal) => {
   return {
     ...actual,
     setGeminiMdFilename: vi.fn(),
-    getCurrentGeminiMdFilename: vi.fn(() => 'GEMINI.md'),
+    getCurrentACoderMdFilename: vi.fn(() => 'A_CODER.md'),
   };
 });
 
 vi.mock('../core/contentGenerator.js');
 
-vi.mock('../core/client.js', () => ({
-  GeminiClient: vi.fn().mockImplementation(() => ({
+vi.mock('../core/a-coder-client.js', () => ({
+  ACoderClient: vi.fn().mockImplementation(() => ({
     initialize: vi.fn().mockResolvedValue(undefined),
     stripThoughtsFromHistory: vi.fn(),
     isInitialized: vi.fn().mockReturnValue(false),
@@ -276,7 +276,7 @@ afterEach(() => {
 });
 
 describe('Server Config (config.ts)', () => {
-  const MODEL = DEFAULT_GEMINI_MODEL;
+  const MODEL = DEFAULT_A_CODER_MODEL;
   const SANDBOX: SandboxConfig = createMockSandboxConfig({
     command: 'docker',
     image: 'gemini-cli-sandbox',
@@ -682,7 +682,7 @@ describe('Server Config (config.ts)', () => {
       });
     });
 
-    describe('getGemini31LaunchedSync', () => {
+    describe('getACoder31LaunchedSync', () => {
       it.each([AuthType.USE_GEMINI, AuthType.USE_VERTEX_AI, AuthType.GATEWAY])(
         'should return true for %s',
         async (authType) => {
@@ -691,7 +691,7 @@ describe('Server Config (config.ts)', () => {
             authType,
           });
           await config.refreshAuth(authType);
-          expect(config.getGemini31LaunchedSync()).toBe(true);
+          expect(config.getACoder31LaunchedSync()).toBe(true);
         },
       );
 
@@ -699,8 +699,8 @@ describe('Server Config (config.ts)', () => {
         vi.mocked(getExperiments).mockResolvedValue({
           experimentIds: [],
           flags: {
-            [ExperimentFlags.GEMINI_3_1_PRO_LAUNCHED]: {
-              flagId: ExperimentFlags.GEMINI_3_1_PRO_LAUNCHED,
+            [ExperimentFlags.A_CODER_3_1_PRO_LAUNCHED]: {
+              flagId: ExperimentFlags.A_CODER_3_1_PRO_LAUNCHED,
               boolValue: true,
             },
           },
@@ -713,7 +713,7 @@ describe('Server Config (config.ts)', () => {
         });
 
         await config.refreshAuth(AuthType.LOGIN_WITH_GOOGLE);
-        expect(config.getGemini31LaunchedSync()).toBe(true);
+        expect(config.getACoder31LaunchedSync()).toBe(true);
       });
     });
 
@@ -847,7 +847,7 @@ describe('Server Config (config.ts)', () => {
       );
       // Verify that contentGeneratorConfig is updated
       expect(config.getContentGeneratorConfig()).toEqual(mockContentConfig);
-      expect(GeminiClient).toHaveBeenCalledWith(config);
+      expect(ACoderClient).toHaveBeenCalledWith(config);
     });
 
     it('should clear fallback overrides when refreshing auth', async () => {
@@ -917,7 +917,7 @@ describe('Server Config (config.ts)', () => {
 
       const loopContext: AgentLoopContext = config;
       expect(
-        loopContext.geminiClient.stripThoughtsFromHistory,
+        loopContext.aCoderClient.stripThoughtsFromHistory,
       ).toHaveBeenCalledWith();
     });
 
@@ -937,7 +937,7 @@ describe('Server Config (config.ts)', () => {
 
       const loopContext: AgentLoopContext = config;
       expect(
-        loopContext.geminiClient.stripThoughtsFromHistory,
+        loopContext.aCoderClient.stripThoughtsFromHistory,
       ).toHaveBeenCalledWith();
     });
 
@@ -957,7 +957,7 @@ describe('Server Config (config.ts)', () => {
 
       const loopContext: AgentLoopContext = config;
       expect(
-        loopContext.geminiClient.stripThoughtsFromHistory,
+        loopContext.aCoderClient.stripThoughtsFromHistory,
       ).not.toHaveBeenCalledWith();
     });
 
@@ -973,14 +973,14 @@ describe('Server Config (config.ts)', () => {
 
       const config = new Config({
         ...baseParams,
-        model: PREVIEW_GEMINI_MODEL_AUTO,
+        model: PREVIEW_A_CODER_MODEL_AUTO,
       });
 
       await config.refreshAuth(AuthType.LOGIN_WITH_GOOGLE);
       await config.getExperimentsAsync();
 
       await vi.waitFor(() => {
-        expect(config.getModel()).toBe(PREVIEW_GEMINI_FLASH_MODEL);
+        expect(config.getModel()).toBe(PREVIEW_A_CODER_FLASH_MODEL);
       });
     });
 
@@ -996,12 +996,12 @@ describe('Server Config (config.ts)', () => {
 
       const config = new Config({
         ...baseParams,
-        model: PREVIEW_GEMINI_MODEL_AUTO,
+        model: PREVIEW_A_CODER_MODEL_AUTO,
       });
 
       await config.refreshAuth(AuthType.LOGIN_WITH_GOOGLE);
 
-      expect(config.getModel()).toBe(PREVIEW_GEMINI_MODEL_AUTO);
+      expect(config.getModel()).toBe(PREVIEW_A_CODER_MODEL_AUTO);
     });
   });
 
@@ -1159,7 +1159,7 @@ describe('Server Config (config.ts)', () => {
       ...baseParams,
       fileFiltering: {
         respectGitIgnore: false,
-        respectGeminiIgnore: false,
+        respectACoderIgnore: false,
         customIgnoreFilePaths: ['.myignore'],
       },
     };
@@ -1171,7 +1171,7 @@ describe('Server Config (config.ts)', () => {
       path.resolve(TARGET_DIR),
       {
         respectGitIgnore: false,
-        respectGeminiIgnore: false,
+        respectACoderIgnore: false,
         customIgnoreFilePaths: ['.myignore'],
       },
     );
@@ -2038,7 +2038,7 @@ describe('Server Config (config.ts)', () => {
 });
 
 describe('GemmaModelRouterSettings', () => {
-  const MODEL = DEFAULT_GEMINI_MODEL;
+  const MODEL = DEFAULT_A_CODER_MODEL;
   const SANDBOX: SandboxConfig = createMockSandboxConfig({
     command: 'docker',
     image: 'gemini-cli-sandbox',
@@ -2776,9 +2776,9 @@ describe('Config getHooks', () => {
         onModelChange,
       });
 
-      config.setModel(DEFAULT_GEMINI_MODEL, false);
+      config.setModel(DEFAULT_A_CODER_MODEL, false);
 
-      expect(onModelChange).toHaveBeenCalledWith(DEFAULT_GEMINI_MODEL);
+      expect(onModelChange).toHaveBeenCalledWith(DEFAULT_A_CODER_MODEL);
     });
 
     it('should NOT call onModelChange when a new model is temporary', () => {
@@ -2788,7 +2788,7 @@ describe('Config getHooks', () => {
         onModelChange,
       });
 
-      config.setModel(DEFAULT_GEMINI_MODEL, true);
+      config.setModel(DEFAULT_A_CODER_MODEL, true);
 
       expect(onModelChange).not.toHaveBeenCalled();
     });
@@ -2802,12 +2802,12 @@ describe('Config getHooks', () => {
       });
 
       // Temporary selection
-      config.setModel(DEFAULT_GEMINI_MODEL, true);
+      config.setModel(DEFAULT_A_CODER_MODEL, true);
       expect(onModelChange).not.toHaveBeenCalled();
 
       // Persist selection of the same model
-      config.setModel(DEFAULT_GEMINI_MODEL, false);
-      expect(onModelChange).toHaveBeenCalledWith(DEFAULT_GEMINI_MODEL);
+      config.setModel(DEFAULT_A_CODER_MODEL, false);
+      expect(onModelChange).toHaveBeenCalledWith(DEFAULT_A_CODER_MODEL);
     });
   });
 });
@@ -3562,7 +3562,7 @@ describe('Config JIT Initialization', () => {
         .fn()
         .mockReturnValue('Environment Memory\n\nMCP Instructions'),
       getUserProjectMemory: vi.fn().mockReturnValue(''),
-      getLoadedPaths: vi.fn().mockReturnValue(new Set(['/path/to/GEMINI.md'])),
+      getLoadedPaths: vi.fn().mockReturnValue(new Set(['/path/to/A_CODER.md'])),
     } as unknown as MemoryContextManager;
     (MemoryContextManager as unknown as Mock).mockImplementation(
       () => mockMemoryContextManager,
@@ -3618,14 +3618,14 @@ describe('Config JIT Initialization', () => {
 
     // Verify state update (delegated to MemoryContextManager)
     expect(config.getGeminiMdFileCount()).toBe(1);
-    expect(config.getGeminiMdFilePaths()).toEqual(['/path/to/GEMINI.md']);
+    expect(config.getGeminiMdFilePaths()).toEqual(['/path/to/A_CODER.md']);
   });
 
   describe('memory path access', () => {
-    it('should NOT add the global ~/.gemini directory to the workspace', async () => {
-      // Memory does not broaden the workspace to include the global ~/.gemini/
+    it('should NOT add the global ~/.a-coder directory to the workspace', async () => {
+      // Memory does not broaden the workspace to include the global ~/.a-coder/
       // directory. Cross-project personal preferences are routed to
-      // ~/.gemini/GEMINI.md via the surgical isPathAllowed allowlist instead.
+      // ~/.a-coder/A_CODER.md via the surgical isPathAllowed allowlist instead.
       const params: ConfigParameters = {
         sessionId: 'test-session',
         targetDir: '/tmp/test',
@@ -3638,12 +3638,12 @@ describe('Config JIT Initialization', () => {
       await config.initialize();
 
       const directories = config.getWorkspaceContext().getDirectories();
-      expect(directories).not.toContain(Storage.getGlobalGeminiDir());
+      expect(directories).not.toContain(Storage.getGlobalACoderDir());
     });
 
-    it('should allow isPathAllowed to write the global ~/.gemini/GEMINI.md file', async () => {
+    it('should allow isPathAllowed to write the global ~/.a-coder/A_CODER.md file', async () => {
       // Surgical allowlist: the prompt routes cross-project personal
-      // preferences to ~/.gemini/GEMINI.md, so the agent must be able to edit
+      // preferences to ~/.a-coder/A_CODER.md, so the agent must be able to edit
       // that exact file via edit/write_file.
       const params: ConfigParameters = {
         sessionId: 'test-session',
@@ -3657,14 +3657,14 @@ describe('Config JIT Initialization', () => {
       await config.initialize();
 
       const globalGeminiMdPath = path.join(
-        Storage.getGlobalGeminiDir(),
-        'GEMINI.md',
+        Storage.getGlobalACoderDir(),
+        'A_CODER.md',
       );
       expect(config.isPathAllowed(globalGeminiMdPath)).toBe(true);
     });
 
-    it('should NOT allow isPathAllowed to write other files under ~/.gemini/ (least privilege)', async () => {
-      // The allowlist is surgical: only ~/.gemini/GEMINI.md is reachable.
+    it('should NOT allow isPathAllowed to write other files under ~/.a-coder/ (least privilege)', async () => {
+      // The allowlist is surgical: only ~/.a-coder/A_CODER.md is reachable.
       // settings.json, keybindings.json, credentials, etc. remain disallowed.
       const params: ConfigParameters = {
         sessionId: 'test-session',
@@ -3677,7 +3677,7 @@ describe('Config JIT Initialization', () => {
       config = new Config(params);
       await config.initialize();
 
-      const globalDir = Storage.getGlobalGeminiDir();
+      const globalDir = Storage.getGlobalACoderDir();
       expect(config.isPathAllowed(path.join(globalDir, 'settings.json'))).toBe(
         false,
       );
@@ -3866,7 +3866,7 @@ describe('Config JIT Initialization', () => {
       );
       const activeMemoryPath = path.join(fakeMemoryTempDir, 'MEMORY.md');
       const projectTempPath = path.join(fakeProjectTempDir, 'logs', 'run.log');
-      const workspaceMemoryPath = path.join('/tmp/test', 'GEMINI.md');
+      const workspaceMemoryPath = path.join('/tmp/test', 'A_CODER.md');
 
       expect(config.validatePathAccess(activeMemoryPath)).toBeNull();
 
@@ -4210,7 +4210,7 @@ describe('Model Persistence Bug Fix (#19864)', () => {
     cwd: '/tmp',
     targetDir: '/path/to/target',
     debugMode: false,
-    model: PREVIEW_GEMINI_3_1_MODEL, // User saved preview model
+    model: PREVIEW_A_CODER_3_1_MODEL, // User saved preview model
   };
 
   it('should NOT reset preview model for CodeAssist auth when refreshUserQuota is not called (no projectId)', async () => {
@@ -4231,14 +4231,14 @@ describe('Model Persistence Bug Fix (#19864)', () => {
     const config = new Config(baseParams);
 
     // Verify initial model is the preview model
-    expect(config.getModel()).toBe(PREVIEW_GEMINI_3_1_MODEL);
+    expect(config.getModel()).toBe(PREVIEW_A_CODER_3_1_MODEL);
 
     // Call refreshAuth to simulate restart (CodeAssist auth, no projectId)
     await config.refreshAuth(AuthType.LOGIN_WITH_GOOGLE);
 
     // Verify the model was NOT reset (bug fix)
-    expect(config.getModel()).toBe(PREVIEW_GEMINI_3_1_MODEL);
-    expect(config.getModel()).not.toBe(DEFAULT_GEMINI_MODEL_AUTO);
+    expect(config.getModel()).toBe(PREVIEW_A_CODER_3_1_MODEL);
+    expect(config.getModel()).not.toBe(DEFAULT_A_CODER_MODEL_AUTO);
   });
 
   it('should NOT reset preview model for USE_GEMINI (hasAccessToPreviewModel is set to true)', async () => {
@@ -4258,14 +4258,14 @@ describe('Model Persistence Bug Fix (#19864)', () => {
     const config = new Config(baseParams);
 
     // Verify initial model is the preview model
-    expect(config.getModel()).toBe(PREVIEW_GEMINI_3_1_MODEL);
+    expect(config.getModel()).toBe(PREVIEW_A_CODER_3_1_MODEL);
 
     // Call refreshAuth
     await config.refreshAuth(AuthType.USE_GEMINI);
 
     // For USE_GEMINI, hasAccessToPreviewModel should be set to true
     // So the model should NOT be reset
-    expect(config.getModel()).toBe(PREVIEW_GEMINI_3_1_MODEL);
+    expect(config.getModel()).toBe(PREVIEW_A_CODER_3_1_MODEL);
     expect(config.getHasAccessToPreviewModel()).toBe(true);
   });
 
@@ -4273,16 +4273,16 @@ describe('Model Persistence Bug Fix (#19864)', () => {
     const onModelChange = vi.fn();
     const config = new Config({
       ...baseParams,
-      model: DEFAULT_GEMINI_MODEL_AUTO, // Initial model
+      model: DEFAULT_A_CODER_MODEL_AUTO, // Initial model
       onModelChange,
     });
 
     // User selects preview model with persist mode enabled
-    config.setModel(PREVIEW_GEMINI_3_1_MODEL, false); // isTemporary = false
+    config.setModel(PREVIEW_A_CODER_3_1_MODEL, false); // isTemporary = false
 
     // Verify onModelChange was called to persist the model
-    expect(onModelChange).toHaveBeenCalledWith(PREVIEW_GEMINI_3_1_MODEL);
-    expect(config.getModel()).toBe(PREVIEW_GEMINI_3_1_MODEL);
+    expect(onModelChange).toHaveBeenCalledWith(PREVIEW_A_CODER_3_1_MODEL);
+    expect(config.getModel()).toBe(PREVIEW_A_CODER_3_1_MODEL);
   });
 });
 
@@ -4348,7 +4348,7 @@ describe('ADKSettings', () => {
   });
 });
 
-describe('hasGemini35FlashGAAccess model setting', () => {
+describe('hasACoder35FlashGAAccess model setting', () => {
   const baseParams: ConfigParameters = {
     sessionId: 'test',
     targetDir: '.',
@@ -4357,47 +4357,47 @@ describe('hasGemini35FlashGAAccess model setting', () => {
     cwd: '.',
   };
 
-  it('should set DEFAULT_GEMINI_FLASH_MODEL to gemini-3.5-flash and PREVIEW_GEMINI_FLASH_MODEL to gemini-3-flash-preview if hasGemini35FlashGAAccess returns true and authType is USE_GEMINI', () => {
+  it('should set DEFAULT_A_CODER_FLASH_MODEL to gemini-3.5-flash and PREVIEW_A_CODER_FLASH_MODEL to gemini-3-flash-preview if hasACoder35FlashGAAccess returns true and authType is USE_GEMINI', () => {
     const config = new Config(baseParams);
     config['contentGeneratorConfig'] = { authType: AuthType.USE_GEMINI };
 
-    // Set experiment to return true for GEMINI_3_5_FLASH_GA_LAUNCHED
+    // Set experiment to return true for A_CODER_3_5_FLASH_GA_LAUNCHED
     config.setExperiments({
       experimentIds: [],
       flags: {
-        [ExperimentFlags.GEMINI_3_5_FLASH_GA_LAUNCHED]: {
+        [ExperimentFlags.A_CODER_3_5_FLASH_GA_LAUNCHED]: {
           boolValue: true,
         },
       },
     });
 
     // Call the method
-    const result = config.hasGemini35FlashGAAccess();
+    const result = config.hasACoder35FlashGAAccess();
     expect(result).toBe(true);
 
-    expect(DEFAULT_GEMINI_FLASH_MODEL).toBe('gemini-3.5-flash');
-    expect(PREVIEW_GEMINI_FLASH_MODEL).toBe('gemini-3-flash-preview');
+    expect(DEFAULT_A_CODER_FLASH_MODEL).toBe('gemini-3.5-flash');
+    expect(PREVIEW_A_CODER_FLASH_MODEL).toBe('gemini-3-flash-preview');
   });
 
-  it('should set DEFAULT_GEMINI_FLASH_MODEL and PREVIEW_GEMINI_FLASH_MODEL to gemini-3.5-flash if hasGemini35FlashGAAccess returns true and authType is not USE_GEMINI', () => {
+  it('should set DEFAULT_A_CODER_FLASH_MODEL and PREVIEW_A_CODER_FLASH_MODEL to gemini-3.5-flash if hasACoder35FlashGAAccess returns true and authType is not USE_GEMINI', () => {
     const config = new Config(baseParams);
     config['contentGeneratorConfig'] = { authType: AuthType.LOGIN_WITH_GOOGLE };
 
-    // Set experiment to return true for GEMINI_3_5_FLASH_GA_LAUNCHED
+    // Set experiment to return true for A_CODER_3_5_FLASH_GA_LAUNCHED
     config.setExperiments({
       experimentIds: [],
       flags: {
-        [ExperimentFlags.GEMINI_3_5_FLASH_GA_LAUNCHED]: {
+        [ExperimentFlags.A_CODER_3_5_FLASH_GA_LAUNCHED]: {
           boolValue: true,
         },
       },
     });
 
     // Call the method
-    const result = config.hasGemini35FlashGAAccess();
+    const result = config.hasACoder35FlashGAAccess();
     expect(result).toBe(true);
 
-    expect(DEFAULT_GEMINI_FLASH_MODEL).toBe('gemini-3.5-flash');
-    expect(PREVIEW_GEMINI_FLASH_MODEL).toBe('gemini-3.5-flash');
+    expect(DEFAULT_A_CODER_FLASH_MODEL).toBe('gemini-3.5-flash');
+    expect(PREVIEW_A_CODER_FLASH_MODEL).toBe('gemini-3.5-flash');
   });
 });

@@ -10,16 +10,16 @@ import * as path from 'node:path';
 import {
   type MCPServerConfig,
   debugLogger,
-  GEMINI_DIR,
+  A_CODER_DIR,
   getErrorMessage,
   type TelemetrySettings,
   homedir,
   checkPathTrust,
   isHeadlessMode,
-} from '@google/gemini-cli-core';
+} from '@the-a-tech-corporation/core';
 import stripJsonComments from 'strip-json-comments';
 
-export const USER_SETTINGS_DIR = path.join(homedir(), GEMINI_DIR);
+export const USER_SETTINGS_DIR = path.join(homedir(), A_CODER_DIR);
 export const USER_SETTINGS_PATH = path.join(USER_SETTINGS_DIR, 'settings.json');
 
 // TODO: Ensure full compatibility with V2 nested settings structure (settings.schema.json).
@@ -46,7 +46,7 @@ export interface Settings {
   // Git-aware file filtering settings
   fileFiltering?: {
     respectGitIgnore?: boolean;
-    respectGeminiIgnore?: boolean;
+    respectACoderIgnore?: boolean;
     enableRecursiveFileSearch?: boolean;
     customIgnoreFilePaths?: string[];
   };
@@ -111,7 +111,7 @@ export function loadSettings(
 
   const workspaceSettingsPath = path.join(
     workspaceDir,
-    GEMINI_DIR,
+    A_CODER_DIR,
     'settings.json',
   );
 

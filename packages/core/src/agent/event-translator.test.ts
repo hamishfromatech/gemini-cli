@@ -16,8 +16,8 @@ import {
   mapUsage,
   type TranslationState,
 } from './event-translator.js';
-import { GeminiEventType } from '../core/turn.js';
-import type { ServerGeminiStreamEvent } from '../core/turn.js';
+import { ACoderEventType } from '../core/turn.js';
+import type { ServerACoderStreamEvent } from '../core/turn.js';
 import type { AgentEvent } from './types.js';
 
 describe('createTranslationState', () => {
@@ -45,8 +45,8 @@ describe('translateEvent', () => {
 
   describe('Content events', () => {
     it('emits agent_start + message for first content event', () => {
-      const event: ServerGeminiStreamEvent = {
-        type: GeminiEventType.Content,
+      const event: ServerACoderStreamEvent = {
+        type: ACoderEventType.Content,
         value: 'Hello world',
       };
       const result = translateEvent(event, state);
@@ -60,8 +60,8 @@ describe('translateEvent', () => {
 
     it('skips agent_start for subsequent content events', () => {
       state.streamStartEmitted = true;
-      const event: ServerGeminiStreamEvent = {
-        type: GeminiEventType.Content,
+      const event: ServerACoderStreamEvent = {
+        type: ACoderEventType.Content,
         value: 'more text',
       };
       const result = translateEvent(event, state);
@@ -73,8 +73,8 @@ describe('translateEvent', () => {
   describe('Thought events', () => {
     it('emits thought content with metadata', () => {
       state.streamStartEmitted = true;
-      const event: ServerGeminiStreamEvent = {
-        type: GeminiEventType.Thought,
+      const event: ServerACoderStreamEvent = {
+        type: ACoderEventType.Thought,
         value: { subject: 'Planning', description: 'I am thinking...' },
       };
       const result = translateEvent(event, state);
@@ -90,8 +90,8 @@ describe('translateEvent', () => {
   describe('ToolCallRequest events', () => {
     it('emits tool_request and tracks pending tool name', () => {
       state.streamStartEmitted = true;
-      const event: ServerGeminiStreamEvent = {
-        type: GeminiEventType.ToolCallRequest,
+      const event: ServerACoderStreamEvent = {
+        type: ACoderEventType.ToolCallRequest,
         value: {
           callId: 'call-1',
           name: 'read_file',
@@ -114,8 +114,8 @@ describe('translateEvent', () => {
     it('emits tool_response with content from responseParts', () => {
       state.streamStartEmitted = true;
       state.pendingToolNames.set('call-1', 'read_file');
-      const event: ServerGeminiStreamEvent = {
-        type: GeminiEventType.ToolCallResponse,
+      const event: ServerACoderStreamEvent = {
+        type: ACoderEventType.ToolCallResponse,
         value: {
           callId: 'call-1',
           responseParts: [{ text: 'file contents' }],
@@ -137,8 +137,8 @@ describe('translateEvent', () => {
     it('uses error.message for content when tool errored', () => {
       state.streamStartEmitted = true;
       state.pendingToolNames.set('call-2', 'write_file');
-      const event: ServerGeminiStreamEvent = {
-        type: GeminiEventType.ToolCallResponse,
+      const event: ServerACoderStreamEvent = {
+        type: ACoderEventType.ToolCallResponse,
         value: {
           callId: 'call-2',
           responseParts: [{ text: 'stale parts' }],
@@ -164,8 +164,8 @@ describe('translateEvent', () => {
 
     it('uses "unknown" name for untracked tool calls', () => {
       state.streamStartEmitted = true;
-      const event: ServerGeminiStreamEvent = {
-        type: GeminiEventType.ToolCallResponse,
+      const event: ServerACoderStreamEvent = {
+        type: ACoderEventType.ToolCallResponse,
         value: {
           callId: 'untracked',
           responseParts: [{ text: 'data' }],
@@ -189,8 +189,8 @@ describe('translateEvent', () => {
         originalContent: 'a',
         newContent: 'b',
       };
-      const event: ServerGeminiStreamEvent = {
-        type: GeminiEventType.ToolCallResponse,
+      const event: ServerACoderStreamEvent = {
+        type: ACoderEventType.ToolCallResponse,
         value: {
           callId: 'call-3',
           responseParts: [{ text: 'diff result' }],
@@ -212,8 +212,8 @@ describe('translateEvent', () => {
     it('passes through string resultDisplay as-is', () => {
       state.streamStartEmitted = true;
       state.pendingToolNames.set('call-4', 'shell');
-      const event: ServerGeminiStreamEvent = {
-        type: GeminiEventType.ToolCallResponse,
+      const event: ServerACoderStreamEvent = {
+        type: ACoderEventType.ToolCallResponse,
         value: {
           callId: 'call-4',
           responseParts: [{ text: 'output' }],
@@ -233,8 +233,8 @@ describe('translateEvent', () => {
     it('preserves outputFile and contentLength in data', () => {
       state.streamStartEmitted = true;
       state.pendingToolNames.set('call-5', 'write_file');
-      const event: ServerGeminiStreamEvent = {
-        type: GeminiEventType.ToolCallResponse,
+      const event: ServerACoderStreamEvent = {
+        type: ACoderEventType.ToolCallResponse,
         value: {
           callId: 'call-5',
           responseParts: [{ text: 'written' }],
@@ -254,8 +254,8 @@ describe('translateEvent', () => {
     it('handles multi-part responses (text + inlineData)', () => {
       state.streamStartEmitted = true;
       state.pendingToolNames.set('call-6', 'screenshot');
-      const event: ServerGeminiStreamEvent = {
-        type: GeminiEventType.ToolCallResponse,
+      const event: ServerACoderStreamEvent = {
+        type: ACoderEventType.ToolCallResponse,
         value: {
           callId: 'call-6',
           responseParts: [
@@ -280,8 +280,8 @@ describe('translateEvent', () => {
   describe('Error events', () => {
     it('emits error event for structured errors', () => {
       state.streamStartEmitted = true;
-      const event: ServerGeminiStreamEvent = {
-        type: GeminiEventType.Error,
+      const event: ServerACoderStreamEvent = {
+        type: ACoderEventType.Error,
         value: { error: { message: 'Rate limited', status: 429 } },
       };
       const result = translateEvent(event, state);
@@ -294,8 +294,8 @@ describe('translateEvent', () => {
 
     it('emits error event for Error instances', () => {
       state.streamStartEmitted = true;
-      const event: ServerGeminiStreamEvent = {
-        type: GeminiEventType.Error,
+      const event: ServerACoderStreamEvent = {
+        type: ACoderEventType.Error,
         value: { error: new Error('Something broke') },
       };
       const result = translateEvent(event, state);
@@ -307,8 +307,8 @@ describe('translateEvent', () => {
 
   describe('ModelInfo events', () => {
     it('emits agent_start and session_update when no stream started yet', () => {
-      const event: ServerGeminiStreamEvent = {
-        type: GeminiEventType.ModelInfo,
+      const event: ServerACoderStreamEvent = {
+        type: ACoderEventType.ModelInfo,
         value: 'gemini-2.5-pro',
       };
       const result = translateEvent(event, state);
@@ -323,8 +323,8 @@ describe('translateEvent', () => {
 
     it('emits session_update when stream already started', () => {
       state.streamStartEmitted = true;
-      const event: ServerGeminiStreamEvent = {
-        type: GeminiEventType.ModelInfo,
+      const event: ServerACoderStreamEvent = {
+        type: ACoderEventType.ModelInfo,
         value: 'gemini-2.5-flash',
       };
       const result = translateEvent(event, state);
@@ -336,8 +336,8 @@ describe('translateEvent', () => {
   describe('AgentExecutionStopped events', () => {
     it('emits agent_end with the final stop message in data.message', () => {
       state.streamStartEmitted = true;
-      const event: ServerGeminiStreamEvent = {
-        type: GeminiEventType.AgentExecutionStopped,
+      const event: ServerACoderStreamEvent = {
+        type: ACoderEventType.AgentExecutionStopped,
         value: {
           reason: 'before_model',
           systemMessage: 'Stopped by hook',
@@ -354,8 +354,8 @@ describe('translateEvent', () => {
 
     it('uses reason when systemMessage is not set', () => {
       state.streamStartEmitted = true;
-      const event: ServerGeminiStreamEvent = {
-        type: GeminiEventType.AgentExecutionStopped,
+      const event: ServerACoderStreamEvent = {
+        type: ACoderEventType.AgentExecutionStopped,
         value: { reason: 'hook' },
       };
       const result = translateEvent(event, state);
@@ -368,8 +368,8 @@ describe('translateEvent', () => {
   describe('AgentExecutionBlocked events', () => {
     it('emits non-fatal error event (non-terminal, stream continues)', () => {
       state.streamStartEmitted = true;
-      const event: ServerGeminiStreamEvent = {
-        type: GeminiEventType.AgentExecutionBlocked,
+      const event: ServerACoderStreamEvent = {
+        type: ACoderEventType.AgentExecutionBlocked,
         value: { reason: 'Policy violation' },
       };
       const result = translateEvent(event, state);
@@ -383,8 +383,8 @@ describe('translateEvent', () => {
 
     it('uses systemMessage in the final error message when available', () => {
       state.streamStartEmitted = true;
-      const event: ServerGeminiStreamEvent = {
-        type: GeminiEventType.AgentExecutionBlocked,
+      const event: ServerACoderStreamEvent = {
+        type: ACoderEventType.AgentExecutionBlocked,
         value: {
           reason: 'hook_blocked',
           systemMessage: 'Blocked by policy hook',
@@ -400,8 +400,8 @@ describe('translateEvent', () => {
   describe('LoopDetected events', () => {
     it('emits a non-fatal warning error event', () => {
       state.streamStartEmitted = true;
-      const event: ServerGeminiStreamEvent = {
-        type: GeminiEventType.LoopDetected,
+      const event: ServerACoderStreamEvent = {
+        type: ACoderEventType.LoopDetected,
       };
       const result = translateEvent(event, state);
       expect(result).toHaveLength(1);
@@ -416,8 +416,8 @@ describe('translateEvent', () => {
   describe('MaxSessionTurns events', () => {
     it('emits agent_end with max_turns', () => {
       state.streamStartEmitted = true;
-      const event: ServerGeminiStreamEvent = {
-        type: GeminiEventType.MaxSessionTurns,
+      const event: ServerACoderStreamEvent = {
+        type: ACoderEventType.MaxSessionTurns,
       };
       const result = translateEvent(event, state);
       expect(result).toHaveLength(1);
@@ -432,8 +432,8 @@ describe('translateEvent', () => {
     it('emits usage for STOP', () => {
       state.streamStartEmitted = true;
       state.model = 'gemini-2.5-pro';
-      const event: ServerGeminiStreamEvent = {
-        type: GeminiEventType.Finished,
+      const event: ServerACoderStreamEvent = {
+        type: ACoderEventType.Finished,
         value: {
           reason: FinishReason.STOP,
           usageMetadata: {
@@ -455,8 +455,8 @@ describe('translateEvent', () => {
 
     it('emits nothing when no usage metadata is present', () => {
       state.streamStartEmitted = true;
-      const event: ServerGeminiStreamEvent = {
-        type: GeminiEventType.Finished,
+      const event: ServerACoderStreamEvent = {
+        type: ACoderEventType.Finished,
         value: { reason: undefined, usageMetadata: undefined },
       };
       const result = translateEvent(event, state);
@@ -467,8 +467,8 @@ describe('translateEvent', () => {
   describe('Citation events', () => {
     it('emits message with citation meta', () => {
       state.streamStartEmitted = true;
-      const event: ServerGeminiStreamEvent = {
-        type: GeminiEventType.Citation,
+      const event: ServerACoderStreamEvent = {
+        type: ACoderEventType.Citation,
         value: 'Source: example.com',
       };
       const result = translateEvent(event, state);
@@ -484,8 +484,8 @@ describe('translateEvent', () => {
   describe('UserCancelled events', () => {
     it('emits agent_end with reason aborted', () => {
       state.streamStartEmitted = true;
-      const event: ServerGeminiStreamEvent = {
-        type: GeminiEventType.UserCancelled,
+      const event: ServerACoderStreamEvent = {
+        type: ACoderEventType.UserCancelled,
       };
       const result = translateEvent(event, state);
       expect(result).toHaveLength(1);
@@ -498,8 +498,8 @@ describe('translateEvent', () => {
   describe('ContextWindowWillOverflow events', () => {
     it('emits fatal error', () => {
       state.streamStartEmitted = true;
-      const event: ServerGeminiStreamEvent = {
-        type: GeminiEventType.ContextWindowWillOverflow,
+      const event: ServerACoderStreamEvent = {
+        type: ACoderEventType.ContextWindowWillOverflow,
         value: {
           estimatedRequestTokenCount: 150000,
           remainingTokenCount: 10000,
@@ -518,8 +518,8 @@ describe('translateEvent', () => {
   describe('InvalidStream events', () => {
     it('emits fatal error', () => {
       state.streamStartEmitted = true;
-      const event: ServerGeminiStreamEvent = {
-        type: GeminiEventType.InvalidStream,
+      const event: ServerACoderStreamEvent = {
+        type: ACoderEventType.InvalidStream,
       };
       const result = translateEvent(event, state);
       expect(result).toHaveLength(1);
@@ -532,13 +532,13 @@ describe('translateEvent', () => {
 
   describe('Events with no output', () => {
     it('returns empty for Retry', () => {
-      const result = translateEvent({ type: GeminiEventType.Retry }, state);
+      const result = translateEvent({ type: ACoderEventType.Retry }, state);
       expect(result).toEqual([]);
     });
 
     it('returns empty for ChatCompressed with null', () => {
       const result = translateEvent(
-        { type: GeminiEventType.ChatCompressed, value: null },
+        { type: ACoderEventType.ChatCompressed, value: null },
         state,
       );
       expect(result).toEqual([]);
@@ -548,7 +548,7 @@ describe('translateEvent', () => {
       // ToolCallConfirmation is skipped in non-interactive mode (elicitations
       // are deferred to the interactive runtime adaptation).
       const event = {
-        type: GeminiEventType.ToolCallConfirmation,
+        type: ACoderEventType.ToolCallConfirmation,
         value: {
           request: {
             callId: 'c1',
@@ -559,7 +559,7 @@ describe('translateEvent', () => {
           },
           details: { type: 'info', title: 'Confirm', prompt: 'Confirm?' },
         },
-      } as ServerGeminiStreamEvent;
+      } as ServerACoderStreamEvent;
       const result = translateEvent(event, state);
       expect(result).toEqual([]);
     });
@@ -569,11 +569,11 @@ describe('translateEvent', () => {
     it('generates sequential IDs', () => {
       state.streamStartEmitted = true;
       const e1 = translateEvent(
-        { type: GeminiEventType.Content, value: 'a' },
+        { type: ACoderEventType.Content, value: 'a' },
         state,
       );
       const e2 = translateEvent(
-        { type: GeminiEventType.Content, value: 'b' },
+        { type: ACoderEventType.Content, value: 'b' },
         state,
       );
       expect(e1[0]?.id).toBe('test-stream-0');
@@ -582,7 +582,7 @@ describe('translateEvent', () => {
 
     it('includes streamId in events', () => {
       const events = translateEvent(
-        { type: GeminiEventType.Content, value: 'hi' },
+        { type: ACoderEventType.Content, value: 'hi' },
         state,
       );
       for (const e of events) {

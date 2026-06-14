@@ -36,7 +36,7 @@ ${options.tools.map((t) => `  - ${t}`).join('\n')}
 ${options.body}
 `;
 
-  const path = `.gemini/agents/${options.name}.md`;
+  const path = `.a-coder/agents/${options.name}.md`;
 
   return {
     name: options.name,

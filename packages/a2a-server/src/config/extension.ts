@@ -7,22 +7,22 @@
 // Copied exactly from packages/cli/src/config/extension.ts, last PR #1026
 
 import {
-  GEMINI_DIR,
+  A_CODER_DIR,
   type MCPServerConfig,
   type ExtensionInstallMetadata,
   type GeminiCLIExtension,
   homedir,
-} from '@google/gemini-cli-core';
+} from '@the-a-tech-corporation/core';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 import { logger } from '../utils/logger.js';
 
-export const EXTENSIONS_DIRECTORY_NAME = path.join(GEMINI_DIR, 'extensions');
-export const EXTENSIONS_CONFIG_FILENAME = 'gemini-extension.json';
-export const INSTALL_METADATA_FILENAME = '.gemini-extension-install.json';
+export const EXTENSIONS_DIRECTORY_NAME = path.join(A_CODER_DIR, 'extensions');
+export const EXTENSIONS_CONFIG_FILENAME = 'a-coder-extension.json';
+export const INSTALL_METADATA_FILENAME = '.a-coder-extension-install.json';
 
 /**
- * Extension definition as written to disk in gemini-extension.json files.
+ * Extension definition as written to disk in a-coder-extension.json files.
  * This should *not* be referenced outside of the logic for reading files.
  * If information is required for manipulating extensions (load, unload, update)
  * outside of the loading process that data needs to be stored on the
@@ -129,7 +129,7 @@ function loadExtension(extensionDir: string): GeminiCLIExtension | null {
 
 function getContextFileNames(config: ExtensionConfig): string[] {
   if (!config.contextFileName) {
-    return ['GEMINI.md'];
+    return ['A_CODER.md'];
   } else if (!Array.isArray(config.contextFileName)) {
     return [config.contextFileName];
   }

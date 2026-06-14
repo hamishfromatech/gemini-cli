@@ -12,7 +12,7 @@ import {
   startupProfiler,
   convertSessionToClientHistory,
   createPolicyUpdater,
-} from '@google/gemini-cli-core';
+} from '@the-a-tech-corporation/core';
 import * as acp from '@agentclientprotocol/sdk';
 import { randomUUID } from 'node:crypto';
 import { loadSettings, type LoadedSettings } from '../config/settings.js';
@@ -70,7 +70,7 @@ export class AcpSessionManager {
 
     const authType =
       loadedSettings.merged.security.auth.selectedType ||
-      (authDetails.baseUrl || process.env['GOOGLE_GEMINI_BASE_URL']
+      (authDetails.baseUrl || process.env['A_CODER_BASE_URL']
         ? AuthType.GATEWAY
         : AuthType.USE_GEMINI);
 
@@ -124,9 +124,9 @@ export class AcpSessionManager {
     startupProfiler.flush(config);
     startAutoMemoryIfEnabled(config);
 
-    const geminiClient = config.getGeminiClient();
+    const aCoderClient = config.getACoderClient();
 
-    const chat = await geminiClient.startChat();
+    const chat = await aCoderClient.startChat();
 
     const session = new Session(
       sessionId,
@@ -179,16 +179,16 @@ export class AcpSessionManager {
 
     const clientHistory = convertSessionToClientHistory(sessionData.messages);
 
-    const geminiClient = config.getGeminiClient();
-    await geminiClient.initialize();
-    await geminiClient.resumeChat(clientHistory, {
+    const aCoderClient = config.getACoderClient();
+    await aCoderClient.initialize();
+    await aCoderClient.resumeChat(clientHistory, {
       conversation: sessionData,
       filePath: sessionPath,
     });
 
     const session = new Session(
       sessionId,
-      geminiClient.getChat(),
+      aCoderClient.getChat(),
       config,
       this.connection,
       this.settings,
@@ -236,7 +236,7 @@ export class AcpSessionManager {
   ): Promise<Config> {
     const selectedAuthType =
       this.settings.merged.security.auth.selectedType ||
-      (authDetails.baseUrl || process.env['GOOGLE_GEMINI_BASE_URL']
+      (authDetails.baseUrl || process.env['A_CODER_BASE_URL']
         ? AuthType.GATEWAY
         : undefined);
 

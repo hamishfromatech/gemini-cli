@@ -1,11 +1,11 @@
 {
-  "name": "@google/gemini-cli-sdk",
-  "version": "0.48.0-nightly.20260609.g3a13b8eeb",
-  "description": "Gemini CLI SDK",
+  "name": "@the-a-tech-corporation/sdk",
+  "version": "0.1.0",
+  "description": "A-Coder CLI SDK",
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/google-gemini/gemini-cli.git"
+    "url": "git+https://github.com/hamishfromatech/a-coder-cli.git"
   },
   "type": "module",
   "main": "dist/index.js",
@@ -22,7 +22,7 @@
     "dist"
   ],
   "dependencies": {
-    "@google/gemini-cli-core": "file:../core",
+    "@the-a-tech-corporation/core": "file:../core",
     "zod": "^3.23.8",
     "zod-to-json-schema": "^3.23.1"
   },

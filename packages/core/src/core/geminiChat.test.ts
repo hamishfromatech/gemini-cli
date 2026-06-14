@@ -13,8 +13,8 @@ import {
 } from '@google/genai';
 import type { ContentGenerator } from '../core/contentGenerator.js';
 import {
-  GeminiChat,
-  InvalidStreamError,
+  ACoderChat,
+  InvalidACoderStreamError,
   StreamEventType,
   SYNTHETIC_THOUGHT_SIGNATURE,
   type StreamEvent,
@@ -120,9 +120,9 @@ vi.mock('../telemetry/uiTelemetry.js', () => ({
   },
 }));
 
-describe('GeminiChat', () => {
+describe('ACoderChat', () => {
   let mockContentGenerator: ContentGenerator;
-  let chat: GeminiChat;
+  let chat: ACoderChat;
   let mockConfig: Config;
 
   beforeEach(() => {
@@ -159,7 +159,7 @@ describe('GeminiChat', () => {
       getTelemetryLogPromptsEnabled: () => true,
       getTelemetryTracesEnabled: () => false,
       getUsageStatisticsEnabled: () => true,
-      hasGemini35FlashGAAccess: vi.fn().mockReturnValue(false),
+      hasACoder35FlashGAAccess: vi.fn().mockReturnValue(false),
       getDebugMode: () => false,
       getContentGeneratorConfig: vi.fn().mockImplementation(() => ({
         authType: 'oauth-personal',
@@ -226,7 +226,7 @@ describe('GeminiChat', () => {
     // Disable 429 simulation for tests
     setSimulate429(false);
     // Reset history for each test by creating a new instance
-    chat = new GeminiChat(mockConfig);
+    chat = new ACoderChat(mockConfig);
     mockConfig.getHookSystem = vi.fn().mockReturnValue(undefined);
   });
 
@@ -241,7 +241,7 @@ describe('GeminiChat', () => {
         { id: '1', content: { role: 'user', parts: [{ text: 'Hello' }] } },
         { id: '2', content: { role: 'model', parts: [{ text: 'Hi there' }] } },
       ];
-      const chatWithHistory = new GeminiChat(mockConfig, '', [], history);
+      const chatWithHistory = new ACoderChat(mockConfig, '', [], history);
       // 'Hello': 5 chars * 0.25 = 1.25
       // 'Hi there': 8 chars * 0.25 = 2.0
       // Total: 3.25 -> floor(3.25) = 3
@@ -249,7 +249,7 @@ describe('GeminiChat', () => {
     });
 
     it('should initialize lastPromptTokenCount for empty history', () => {
-      const chatEmpty = new GeminiChat(mockConfig);
+      const chatEmpty = new ACoderChat(mockConfig);
       expect(chatEmpty.getLastPromptTokenCount()).toBe(0);
     });
 
@@ -293,7 +293,7 @@ describe('GeminiChat', () => {
       ];
 
       // 3. Instantiate the chat, providing both.
-      const chat = new GeminiChat(
+      const chat = new ACoderChat(
         mockConfig,
         '',
         [],
@@ -313,7 +313,7 @@ describe('GeminiChat', () => {
       const initialHistory: HistoryTurn[] = [
         { id: '1', content: { role: 'user', parts: [{ text: 'Hello' }] } },
       ];
-      const chatWithHistory = new GeminiChat(
+      const chatWithHistory = new ACoderChat(
         mockConfig,
         '',
         [],
@@ -442,7 +442,7 @@ describe('GeminiChat', () => {
             /* consume stream */
           }
         })(),
-      ).rejects.toThrow(InvalidStreamError);
+      ).rejects.toThrow(InvalidACoderStreamError);
     });
 
     it('should succeed if the stream ends with an invalid part but has a finishReason and contained a valid part', async () => {
@@ -826,14 +826,14 @@ describe('GeminiChat', () => {
         LlmRole.MAIN,
       );
 
-      // 4. Assert: The stream processing should throw an InvalidStreamError.
+      // 4. Assert: The stream processing should throw an InvalidACoderStreamError.
       await expect(
         (async () => {
           for await (const _ of stream) {
             // This loop consumes the stream to trigger the internal logic.
           }
         })(),
-      ).rejects.toThrow(InvalidStreamError);
+      ).rejects.toThrow(InvalidACoderStreamError);
     });
 
     it('should succeed when there is a tool call without finish reason', async () => {
@@ -881,7 +881,7 @@ describe('GeminiChat', () => {
       ).resolves.not.toThrow();
     });
 
-    it('should throw InvalidStreamError when no tool call and no finish reason', async () => {
+    it('should throw InvalidACoderStreamError when no tool call and no finish reason', async () => {
       // Setup: Stream with text but no finish reason and no tool call
       const streamWithoutFinishReason = (async function* () {
         yield {
@@ -915,10 +915,10 @@ describe('GeminiChat', () => {
             // consume stream
           }
         })(),
-      ).rejects.toThrow(InvalidStreamError);
+      ).rejects.toThrow(InvalidACoderStreamError);
     });
 
-    it('should throw InvalidStreamError without retrying when no tool call and empty response text', async () => {
+    it('should throw InvalidACoderStreamError without retrying when no tool call and empty response text', async () => {
       vi.mocked(mockContentGenerator.generateContentStream)
         .mockImplementationOnce(async () =>
           // First attempt: finish reason is present, but the stream has no
@@ -968,7 +968,7 @@ describe('GeminiChat', () => {
             // consume stream
           }
         })(),
-      ).rejects.toThrow(InvalidStreamError);
+      ).rejects.toThrow(InvalidACoderStreamError);
       expect(mockContentGenerator.generateContentStream).toHaveBeenCalledTimes(
         1,
       );
@@ -1014,7 +1014,7 @@ describe('GeminiChat', () => {
       ).resolves.not.toThrow();
     });
 
-    it('should throw InvalidStreamError when finishReason is MALFORMED_FUNCTION_CALL', async () => {
+    it('should throw InvalidACoderStreamError when finishReason is MALFORMED_FUNCTION_CALL', async () => {
       // Setup: Stream with MALFORMED_FUNCTION_CALL finish reason and empty response
       const streamWithMalformedFunctionCall = (async function* () {
         yield {
@@ -1049,7 +1049,7 @@ describe('GeminiChat', () => {
             // consume stream
           }
         })(),
-      ).rejects.toThrow(InvalidStreamError);
+      ).rejects.toThrow(InvalidACoderStreamError);
     });
 
     it('should retry when finishReason is MALFORMED_FUNCTION_CALL', async () => {
@@ -1570,7 +1570,7 @@ describe('GeminiChat', () => {
         for await (const _ of stream) {
           // Must loop to trigger the internal logic that throws.
         }
-      }).rejects.toThrow(InvalidStreamError);
+      }).rejects.toThrow(InvalidACoderStreamError);
 
       // Should be called 4 times (initial + 3 retries)
       expect(mockContentGenerator.generateContentStream).toHaveBeenCalledTimes(
@@ -2255,7 +2255,7 @@ describe('GeminiChat', () => {
 
   describe('ensureActiveLoopHasThoughtSignatures', () => {
     it('should add thoughtSignature to the first functionCall in each model turn of the active loop', () => {
-      const chat = new GeminiChat(mockConfig, '', [], []);
+      const chat = new ACoderChat(mockConfig, '', [], []);
       const history: Content[] = [
         { role: 'user', parts: [{ text: 'Old message' }] },
         {
@@ -2312,7 +2312,7 @@ describe('GeminiChat', () => {
     });
 
     it('should not modify contents if there is no user text message', () => {
-      const chat = new GeminiChat(mockConfig, '', [], []);
+      const chat = new ACoderChat(mockConfig, '', [], []);
       const history: Content[] = [
         {
           role: 'user',
@@ -2329,14 +2329,14 @@ describe('GeminiChat', () => {
     });
 
     it('should handle an empty history', () => {
-      const chat = new GeminiChat(mockConfig, '', []);
+      const chat = new ACoderChat(mockConfig, '', []);
       const history: Content[] = [];
       const newContents = chat.ensureActiveLoopHasThoughtSignatures(history);
       expect(newContents).toEqual([]);
     });
 
     it('should handle history with only a user message', () => {
-      const chat = new GeminiChat(mockConfig, '', []);
+      const chat = new ACoderChat(mockConfig, '', []);
       const history: Content[] = [{ role: 'user', parts: [{ text: 'Hello' }] }];
       const newContents = chat.ensureActiveLoopHasThoughtSignatures(history);
       expect(newContents).toEqual(history);

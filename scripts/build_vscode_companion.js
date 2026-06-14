@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2025 Google LLC
+ * Copyright 2026 The A-Tech Corporation
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -24,7 +24,7 @@ import { fileURLToPath } from 'node:url';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const root = join(__dirname, '..');
 
-execSync('npm --workspace=gemini-cli-vscode-ide-companion run package', {
+execSync('npm --workspace=a-coder-ide-companion run package', {
   stdio: 'inherit',
   cwd: root,
 });

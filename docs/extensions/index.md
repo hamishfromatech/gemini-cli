@@ -1,13 +1,13 @@
-# Gemini CLI extensions
+# A-Coder CLI extensions
 
-Gemini CLI extensions package prompts, MCP servers, custom commands, themes,
+A-Coder CLI extensions package prompts, MCP servers, custom commands, themes,
 hooks, sub-agents, and agent skills into a familiar and user-friendly format.
-With extensions, you can expand the capabilities of Gemini CLI and share those
+With extensions, you can expand the capabilities of A-Coder CLI and share those
 capabilities with others. They are designed to be easily installable and
 shareable.
 
 To see what's possible, browse the
-[Gemini CLI extension gallery](https://geminicli.com/extensions/browse/).
+[A-Coder CLI extension gallery](https://a-coder-cli.com/extensions/browse/).
 
 ## Choose your path
 
@@ -15,7 +15,7 @@ Choose the guide that best fits your needs.
 
 ### I want to use extensions
 
-Learn how to discover, install, and manage extensions to enhance your Gemini CLI
+Learn how to discover, install, and manage extensions to enhance your A-Coder CLI
 experience.
 
 - **[Manage extensions](#manage-extensions):** List and verify your installed
@@ -42,11 +42,11 @@ and their status:
 /extensions list
 ```
 
-You can also manage extensions from your terminal using the `gemini extensions`
+You can also manage extensions from your terminal using the `a-coder-cli extensions`
 command group:
 
 ```bash
-gemini extensions list
+a-coder-cli extensions list
 ```
 
 ## Installation
@@ -54,7 +54,7 @@ gemini extensions list
 Install an extension by providing its GitHub repository URL. For example:
 
 ```bash
-gemini extensions install https://github.com/gemini-cli-extensions/workspace
+a-coder-cli extensions install https://github.com/a-coder-cli-cli-extensions/workspace
 ```
 
 For more advanced installation options, see the

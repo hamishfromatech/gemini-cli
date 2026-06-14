@@ -25,21 +25,21 @@ import {
   getErrorMessage,
   type FilterFilesOptions,
   isTextPart,
-  GeminiEventType,
+  ACoderEventType,
   type ToolCallRequestInfo,
-  type GeminiChat,
+  type ACoderChat,
   type ToolResult,
   isWithinRoot,
   processSingleFileContent,
   isNodeError,
   REFERENCE_CONTENT_START,
-  InvalidStreamError,
+  InvalidACoderStreamError,
   MessageBusType,
   PolicyDecision,
   type ToolConfirmationRequest,
   resolveAtCommandPath,
   type ResolvedAtCommandPath,
-} from '@google/gemini-cli-core';
+} from '@the-a-tech-corporation/core';
 import * as acp from '@agentclientprotocol/sdk';
 import type { Part, FunctionCall } from '@google/genai';
 import type { LoadedSettings } from '../config/settings.js';
@@ -74,7 +74,7 @@ export class Session {
 
   constructor(
     private readonly id: string,
-    private readonly chat: GeminiChat,
+    private readonly chat: ACoderChat,
     private readonly context: AgentLoopContext,
     private readonly connection: acp.AgentSideConnection,
     private readonly settings: LoadedSettings,
@@ -403,7 +403,7 @@ export class Session {
       let turnOutputTokens = 0;
 
       try {
-        const responseStream = this.context.geminiClient.sendMessageStream(
+        const responseStream = this.context.aCoderClient.sendMessageStream(
           currentParts,
           pendingSend.signal,
           promptId,
@@ -415,7 +415,7 @@ export class Session {
           }
 
           switch (event.type) {
-            case GeminiEventType.Content: {
+            case ACoderEventType.Content: {
               const content: acp.ContentBlock = {
                 type: 'text',
                 text: event.value,
@@ -428,7 +428,7 @@ export class Session {
               break;
             }
 
-            case GeminiEventType.Thought: {
+            case ACoderEventType.Thought: {
               const thoughtText = `**${event.value.subject}**\n${event.value.description}`;
               await this.sendUpdate({
                 sessionUpdate: 'agent_thought_chunk',
@@ -437,11 +437,11 @@ export class Session {
               break;
             }
 
-            case GeminiEventType.ToolCallRequest:
+            case ACoderEventType.ToolCallRequest:
               toolCallRequests.push(event.value);
               break;
 
-            case GeminiEventType.Finished: {
+            case ACoderEventType.Finished: {
               const usage = event.value.usageMetadata;
               if (usage) {
                 turnInputTokens = usage.promptTokenCount ?? turnInputTokens;
@@ -451,23 +451,23 @@ export class Session {
               break;
             }
 
-            case GeminiEventType.ModelInfo:
+            case ACoderEventType.ModelInfo:
               turnModelId = event.value;
               break;
 
-            case GeminiEventType.MaxSessionTurns:
+            case ACoderEventType.MaxSessionTurns:
               stopReason = 'max_turn_requests';
               break;
 
-            case GeminiEventType.LoopDetected:
+            case ACoderEventType.LoopDetected:
               stopReason = 'max_turn_requests';
               break;
 
-            case GeminiEventType.ContextWindowWillOverflow:
+            case ACoderEventType.ContextWindowWillOverflow:
               stopReason = 'max_tokens';
               break;
 
-            case GeminiEventType.Error: {
+            case ACoderEventType.Error: {
               const parseResult = StructuredErrorSchema.safeParse(
                 event.value.error,
               );
@@ -503,7 +503,7 @@ export class Session {
         }
 
         if (
-          error instanceof InvalidStreamError ||
+          error instanceof InvalidACoderStreamError ||
           (error &&
             typeof error === 'object' &&
             'type' in error &&

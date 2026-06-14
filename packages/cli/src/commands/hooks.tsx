@@ -6,12 +6,12 @@
 
 import type { CommandModule } from 'yargs';
 import { migrateCommand } from './hooks/migrate.js';
-import { initializeOutputListenersAndFlush } from '../gemini.js';
+import { initializeOutputListenersAndFlush } from '../a-coder.js';
 
 export const hooksCommand: CommandModule = {
   command: 'hooks <command>',
   aliases: ['hook'],
-  describe: 'Manage Gemini CLI hooks.',
+  describe: 'Manage A-Coder CLI hooks.',
   builder: (yargs) =>
     yargs
       .middleware((argv) => {

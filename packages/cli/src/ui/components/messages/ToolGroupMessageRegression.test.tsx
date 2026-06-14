@@ -14,7 +14,7 @@ import {
   WRITE_FILE_DISPLAY_NAME,
   Kind,
   SubagentState,
-} from '@google/gemini-cli-core';
+} from '@the-a-tech-corporation/core';
 import os from 'node:os';
 import { createMockSettings } from '../../../test-utils/settings.js';
 import type { IndividualToolCallDisplay } from '../../types.js';

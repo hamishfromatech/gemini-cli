@@ -25,16 +25,16 @@ import {
   type LoadedTrustedFolders,
 } from '../../config/trustedFolders.js';
 import * as trustedFolders from '../../config/trustedFolders.js';
-import { coreEvents, ExitCodes, isHeadlessMode } from '@google/gemini-cli-core';
+import { coreEvents, ExitCodes, isHeadlessMode } from '@the-a-tech-corporation/core';
 import { MessageType } from '../types.js';
 
 const mockedCwd = vi.hoisted(() => vi.fn().mockReturnValue('/mock/cwd'));
 const mockedExit = vi.hoisted(() => vi.fn());
 
-vi.mock('@google/gemini-cli-core', async () => {
+vi.mock('@the-a-tech-corporation/core', async () => {
   const actual = await vi.importActual<
-    typeof import('@google/gemini-cli-core')
-  >('@google/gemini-cli-core');
+    typeof import('@the-a-tech-corporation/core')
+  >('@the-a-tech-corporation/core');
   return {
     ...actual,
     isHeadlessMode: vi.fn().mockReturnValue(false),
@@ -158,7 +158,7 @@ describe('useFolderTrust', () => {
     );
     expect(addItem).toHaveBeenCalledWith(
       {
-        text: 'This folder is untrusted, project settings, hooks, MCPs, and GEMINI.md files will not be applied for this folder.\nUse the `/permissions` command to change the trust level.',
+        text: 'This folder is untrusted, project settings, hooks, MCPs, and A_CODER.md files will not be applied for this folder.\nUse the `/permissions` command to change the trust level.',
         type: 'info',
       },
       expect.any(Number),
@@ -360,7 +360,7 @@ describe('useFolderTrust', () => {
 
     expect(emitFeedbackSpy).toHaveBeenCalledWith(
       'error',
-      'Failed to save trust settings. Exiting Gemini CLI.',
+      'Failed to save trust settings. Exiting A-Coder CLI.',
     );
     expect(mockedExit).toHaveBeenCalledWith(ExitCodes.FATAL_CONFIG_ERROR);
   });

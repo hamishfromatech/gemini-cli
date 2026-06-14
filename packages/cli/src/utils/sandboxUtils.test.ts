@@ -19,12 +19,12 @@ import {
 vi.mock('node:os');
 vi.mock('node:fs');
 vi.mock('node:fs/promises');
-vi.mock('@google/gemini-cli-core', () => ({
+vi.mock('@the-a-tech-corporation/core', () => ({
   debugLogger: {
     log: vi.fn(),
     warn: vi.fn(),
   },
-  GEMINI_DIR: '.gemini',
+  A_CODER_DIR: '.a-coder',
 }));
 
 describe('sandboxUtils', () => {
@@ -109,7 +109,7 @@ describe('sandboxUtils', () => {
     it('should source sandbox.bashrc if exists', () => {
       vi.mocked(fs.existsSync).mockReturnValue(true);
       const args = entrypoint('/work', ['node', 'gemini', 'arg1']);
-      expect(args[2]).toContain('source .gemini/sandbox.bashrc');
+      expect(args[2]).toContain('source .a-coder/sandbox.bashrc');
     });
 
     it('should include socat commands for ports', () => {
@@ -183,7 +183,7 @@ describe('sandboxUtils', () => {
         homedir: '/home/test',
       });
 
-      const { debugLogger } = await import('@google/gemini-cli-core');
+      const { debugLogger } = await import('@the-a-tech-corporation/core');
       expect(await shouldUseCurrentUserInSandbox()).toBe(false);
       expect(debugLogger.warn).toHaveBeenCalledWith(
         expect.stringContaining(
@@ -213,7 +213,7 @@ describe('sandboxUtils', () => {
         homedir: '/root',
       });
 
-      const { debugLogger } = await import('@google/gemini-cli-core');
+      const { debugLogger } = await import('@the-a-tech-corporation/core');
       expect(await shouldUseCurrentUserInSandbox()).toBe(false);
       expect(debugLogger.warn).not.toHaveBeenCalledWith(
         expect.stringContaining('Host UID mismatch detected'),
@@ -225,7 +225,7 @@ describe('sandboxUtils', () => {
       vi.mocked(os.platform).mockReturnValue('linux');
       vi.mocked(readFile).mockRejectedValue(new Error('EACCES'));
 
-      const { debugLogger } = await import('@google/gemini-cli-core');
+      const { debugLogger } = await import('@the-a-tech-corporation/core');
       expect(await shouldUseCurrentUserInSandbox()).toBe(false);
       expect(debugLogger.warn).toHaveBeenCalledWith(
         expect.stringContaining('Could not read /etc/os-release'),

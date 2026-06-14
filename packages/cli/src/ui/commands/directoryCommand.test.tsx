@@ -18,7 +18,7 @@ import {
   expandHomeDir,
   getDirectorySuggestions,
 } from '../utils/directoryUtils.js';
-import type { Config, WorkspaceContext } from '@google/gemini-cli-core';
+import type { Config, WorkspaceContext } from '@the-a-tech-corporation/core';
 import type { MultiFolderTrustDialogProps } from '../components/MultiFolderTrustDialog.js';
 import type { CommandContext, OpenCustomDialogActionReturn } from './types.js';
 import { MessageType } from '../types.js';
@@ -72,7 +72,7 @@ describe('directoryCommand', () => {
     mockConfig = {
       getWorkspaceContext: () => mockWorkspaceContext,
       isRestrictiveSandbox: vi.fn().mockReturnValue(false),
-      getGeminiClient: vi.fn().mockReturnValue({
+      getACoderClient: vi.fn().mockReturnValue({
         addDirectoryContext: vi.fn(),
         getChatRecordingService: vi.fn().mockReturnValue({
           recordDirectories: vi.fn(),

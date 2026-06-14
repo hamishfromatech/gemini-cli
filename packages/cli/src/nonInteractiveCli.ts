@@ -9,12 +9,12 @@ import type {
   ToolCallRequestInfo,
   ResumedSessionData,
   UserFeedbackPayload,
-} from '@google/gemini-cli-core';
+} from '@the-a-tech-corporation/core';
 import { isSlashCommand } from './ui/utils/commandUtils.js';
 import type { LoadedSettings } from './config/settings.js';
 import {
   convertSessionToClientHistory,
-  GeminiEventType,
+  ACoderEventType,
   FatalInputError,
   promptIdContext,
   OutputFormat,
@@ -30,7 +30,7 @@ import {
   ToolErrorType,
   Scheduler,
   ROOT_SCHEDULER_ID,
-} from '@google/gemini-cli-core';
+} from '@the-a-tech-corporation/core';
 
 import type { Content, Part } from '@google/genai';
 import readline from 'node:readline';
@@ -86,7 +86,7 @@ export async function runNonInteractive(
       },
     });
 
-    if (process.env['GEMINI_CLI_ACTIVITY_LOG_TARGET']) {
+    if (process.env['A_CODER_CLI_ACTIVITY_LOG_TARGET']) {
       const { setupInitialActivityLogger } = await import(
         './utils/devtoolsService.js'
       );
@@ -225,7 +225,7 @@ export async function runNonInteractive(
         }
       });
 
-      const geminiClient = config.getGeminiClient();
+      const aCoderClient = config.getACoderClient();
       scheduler = new Scheduler({
         context: config,
         messageBus: config.getMessageBus(),
@@ -235,7 +235,7 @@ export async function runNonInteractive(
 
       // Initialize chat.  Resume if resume data is passed.
       if (resumedSessionData) {
-        await geminiClient.resumeChat(
+        await aCoderClient.resumeChat(
           convertSessionToClientHistory(
             resumedSessionData.conversation.messages,
           ),
@@ -317,7 +317,7 @@ export async function runNonInteractive(
         }
         const toolCallRequests: ToolCallRequestInfo[] = [];
 
-        const responseStream = geminiClient.sendMessageStream(
+        const responseStream = aCoderClient.sendMessageStream(
           currentMessages[0]?.parts || [],
           abortController.signal,
           prompt_id,
@@ -331,7 +331,7 @@ export async function runNonInteractive(
             handleCancellationError(config);
           }
 
-          if (event.type === GeminiEventType.Content) {
+          if (event.type === ACoderEventType.Content) {
             const isRaw =
               config.getRawOutput() || config.getAcceptRawOutputRisk();
             const output = isRaw ? event.value : stripAnsi(event.value);
@@ -350,7 +350,7 @@ export async function runNonInteractive(
                 textOutput.write(output);
               }
             }
-          } else if (event.type === GeminiEventType.ToolCallRequest) {
+          } else if (event.type === ACoderEventType.ToolCallRequest) {
             if (streamFormatter) {
               streamFormatter.emitEvent({
                 type: JsonStreamEventType.TOOL_USE,
@@ -361,7 +361,7 @@ export async function runNonInteractive(
               });
             }
             toolCallRequests.push(event.value);
-          } else if (event.type === GeminiEventType.LoopDetected) {
+          } else if (event.type === ACoderEventType.LoopDetected) {
             const message = 'Loop detected, stopping execution';
             if (streamFormatter) {
               streamFormatter.emitEvent({
@@ -372,7 +372,7 @@ export async function runNonInteractive(
               });
             }
             warnings.push(message);
-          } else if (event.type === GeminiEventType.MaxSessionTurns) {
+          } else if (event.type === ACoderEventType.MaxSessionTurns) {
             const message = 'Maximum session turns exceeded';
             if (streamFormatter) {
               streamFormatter.emitEvent({
@@ -383,9 +383,9 @@ export async function runNonInteractive(
               });
             }
             warnings.push(message);
-          } else if (event.type === GeminiEventType.Error) {
+          } else if (event.type === ACoderEventType.Error) {
             throw event.value.error;
-          } else if (event.type === GeminiEventType.AgentExecutionStopped) {
+          } else if (event.type === ACoderEventType.AgentExecutionStopped) {
             const stopMessage = `Agent execution stopped: ${event.value.systemMessage?.trim() || event.value.reason}`;
             if (config.getOutputFormat() === OutputFormat.TEXT) {
               process.stderr.write(`${stopMessage}\n`);
@@ -419,7 +419,7 @@ export async function runNonInteractive(
               textOutput.ensureTrailingNewline(); // Ensure a final newline
             }
             return;
-          } else if (event.type === GeminiEventType.AgentExecutionBlocked) {
+          } else if (event.type === ACoderEventType.AgentExecutionBlocked) {
             const blockMessage = `Agent execution blocked: ${event.value.systemMessage?.trim() || event.value.reason}`;
             if (config.getOutputFormat() === OutputFormat.TEXT) {
               process.stderr.write(`[WARNING] ${blockMessage}\n`);
@@ -432,7 +432,7 @@ export async function runNonInteractive(
               });
             }
             warnings.push(blockMessage);
-          } else if (event.type === GeminiEventType.InvalidStream) {
+          } else if (event.type === ACoderEventType.InvalidStream) {
             invalidStreamError =
               'Invalid stream: The model returned an empty response or malformed tool call.';
             if (streamFormatter) {
@@ -502,8 +502,8 @@ export async function runNonInteractive(
           // Record tool calls with full metadata before sending responses to Gemini
           try {
             const currentModel =
-              geminiClient.getCurrentSequenceModel() ?? config.getModel();
-            geminiClient
+              aCoderClient.getCurrentSequenceModel() ?? config.getModel();
+            aCoderClient
               .getChat()
               .recordCompletedToolCalls(currentModel, completedToolCalls);
 

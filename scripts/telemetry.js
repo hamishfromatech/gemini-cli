@@ -2,23 +2,23 @@
 
 /**
  * @license
- * Copyright 2025 Google LLC
+ * Copyright 2026 The A-Tech Corporation
  * SPDX-License-Identifier: Apache-2.0
  */
 
 import { execFileSync } from 'node:child_process';
 import { join } from 'node:path';
 import { existsSync, readFileSync } from 'node:fs';
-import { GEMINI_DIR } from '@google/gemini-cli-core';
+import { A_CODER_DIR } from '@the-a-tech-corporation/core';
 
 const projectRoot = join(import.meta.dirname, '..');
 
 const USER_SETTINGS_DIR = join(
   process.env.HOME || process.env.USERPROFILE || process.env.HOMEPATH || '',
-  GEMINI_DIR,
+  A_CODER_DIR,
 );
 const USER_SETTINGS_PATH = join(USER_SETTINGS_DIR, 'settings.json');
-const WORKSPACE_SETTINGS_PATH = join(projectRoot, GEMINI_DIR, 'settings.json');
+const WORKSPACE_SETTINGS_PATH = join(projectRoot, A_CODER_DIR, 'settings.json');
 
 let telemetrySettings = undefined;
 

@@ -1,6 +1,6 @@
 # Policy engine
 
-Gemini CLI includes a powerful policy engine that provides fine-grained control
+A-Coder CLI includes a powerful policy engine that provides fine-grained control
 over tool execution. It allows users and administrators to define rules that
 determine whether a tool call should be allowed, denied, or require user
 confirmation.
@@ -14,17 +14,17 @@ To create your first policy:
     **macOS/Linux**
 
     ```bash
-    mkdir -p ~/.gemini/policies
+    mkdir -p ~/.a-coder-cli/policies
     ```
 
     **Windows (PowerShell)**
 
     ```powershell
-    New-Item -ItemType Directory -Force -Path "$env:USERPROFILE\.gemini\policies"
+    New-Item -ItemType Directory -Force -Path "$env:USERPROFILE\.a-coder-cli\policies"
     ```
 
 2.  **Create a new policy file** (for example,
-    `~/.gemini/policies/my-rules.toml`). You can use any filename ending in
+    `~/.a-coder-cli/policies/my-rules.toml`). You can use any filename ending in
     `.toml`; all such files in this directory will be loaded and combined:
     ```toml
     [[rule]]
@@ -33,7 +33,7 @@ To create your first policy:
     decision = "deny"
     priority = 100
     ```
-3.  **Run a command** that triggers the policy (for example, ask Gemini CLI to
+3.  **Run a command** that triggers the policy (for example, ask A-Coder CLI to
     `rm -rf /`). The tool will now be blocked automatically.
 
 ## Core concepts
@@ -125,9 +125,9 @@ There are three possible decisions a rule can enforce:
 ### Priority system and tiers
 
 > [!WARNING] The **Workspace** tier (project-level policies) is currently
-> non-functional. Defining policies in a workspace's `.gemini/policies`
+> non-functional. Defining policies in a workspace's `.a-coder-cli/policies`
 > directory will not have any effect. See
-> [issue #18186](https://github.com/google-gemini/gemini-cli/issues/18186). Use
+> [issue #18186](https://github.com/google-a-coder-cli/a-coder-cli-cli/issues/18186). Use
 > User or Admin policies instead.
 
 The policy engine uses a sophisticated priority system to resolve conflicts when
@@ -139,7 +139,7 @@ has a designated number that forms the base of the final priority calculation.
 
 | Tier      | Base | Description                                                                                   |
 | :-------- | :--- | :-------------------------------------------------------------------------------------------- |
-| Default   | 1    | Built-in policies that ship with Gemini CLI.                                                  |
+| Default   | 1    | Built-in policies that ship with A-Coder CLI.                                                  |
 | Extension | 2    | Policies defined in extensions.                                                               |
 | Workspace | 3    | **(Currently disabled)** Policies defined in the current workspace's configuration directory. |
 | User      | 4    | Custom policies defined by the user.                                                          |
@@ -226,8 +226,8 @@ User, and (if configured) Admin directories.
 
 | Tier          | Type   | Location                                                 |
 | :------------ | :----- | :------------------------------------------------------- |
-| **User**      | Custom | `~/.gemini/policies/*.toml`                              |
-| **Workspace** | Custom | **(Disabled)** `$WORKSPACE_ROOT/.gemini/policies/*.toml` |
+| **User**      | Custom | `~/.a-coder-cli/policies/*.toml`                              |
+| **Workspace** | Custom | **(Disabled)** `$WORKSPACE_ROOT/.a-coder-cli/policies/*.toml` |
 | **Admin**     | System | _See below (OS specific)_                                |
 
 #### System-wide policies (Admin)
@@ -242,9 +242,9 @@ These are the default paths the CLI searches for admin policies:
 
 | OS          | Policy Directory Path                             |
 | :---------- | :------------------------------------------------ |
-| **Linux**   | `/etc/gemini-cli/policies`                        |
-| **macOS**   | `/Library/Application Support/GeminiCli/policies` |
-| **Windows** | `C:\ProgramData\gemini-cli\policies`              |
+| **Linux**   | `/etc/a-coder-cli-cli/policies`                        |
+| **macOS**   | `/Library/Application Support/A-CoderCli/policies` |
+| **Windows** | `C:\ProgramData\a-coder-cli-cli\policies`              |
 
 ##### Supplemental Admin Policies
 
@@ -485,7 +485,7 @@ deny_message = "Deep codebase analysis is restricted for this session."
 
 ## Default policies
 
-Gemini CLI ships with a set of default policies to provide a safe out-of-the-box
+A-Coder CLI ships with a set of default policies to provide a safe out-of-the-box
 experience.
 
 - **Read-only tools** (like `read_file`, `glob`) are generally **allowed**.

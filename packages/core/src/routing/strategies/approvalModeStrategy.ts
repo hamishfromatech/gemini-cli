@@ -8,8 +8,8 @@ import type { Config } from '../../config/config.js';
 import {
   isAutoModel,
   resolveClassifierModel,
-  GEMINI_MODEL_ALIAS_FLASH,
-  GEMINI_MODEL_ALIAS_PRO,
+  A_CODER_MODEL_ALIAS_FLASH,
+  A_CODER_MODEL_ALIAS_PRO,
 } from '../../config/models.js';
 import type { BaseLlmClient } from '../../core/baseLlmClient.js';
 import { ApprovalMode } from '../../policy/types.js';
@@ -54,18 +54,18 @@ export class ApprovalModeStrategy implements RoutingStrategy {
         config.getUseCustomToolModel(),
         config.getHasAccessToPreviewModel(),
       ]);
-    const useGemini3_5Flash = config.hasGemini35FlashGAAccess?.() ?? false;
+    const useACoder3_5Flash = config.hasACoder35FlashGAAccess?.() ?? false;
 
     // 1. Planning Phase: If ApprovalMode === PLAN, explicitly route to the Pro model.
     if (approvalMode === ApprovalMode.PLAN) {
       const proModel = resolveClassifierModel(
         model,
-        GEMINI_MODEL_ALIAS_PRO,
+        A_CODER_MODEL_ALIAS_PRO,
         useGemini3_1,
         useCustomToolModel,
         hasAccessToPreview,
         config,
-        useGemini3_5Flash,
+        useACoder3_5Flash,
       );
       return {
         model: proModel,
@@ -79,12 +79,12 @@ export class ApprovalModeStrategy implements RoutingStrategy {
       // 2. Implementation Phase: If ApprovalMode !== PLAN AND an approved plan path is set, prefer the Flash model.
       const flashModel = resolveClassifierModel(
         model,
-        GEMINI_MODEL_ALIAS_FLASH,
+        A_CODER_MODEL_ALIAS_FLASH,
         useGemini3_1,
         useCustomToolModel,
         hasAccessToPreview,
         config,
-        useGemini3_5Flash,
+        useACoder3_5Flash,
       );
       return {
         model: flashModel,

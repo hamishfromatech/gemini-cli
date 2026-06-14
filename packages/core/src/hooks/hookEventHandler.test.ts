@@ -65,11 +65,11 @@ describe('HookEventHandler', () => {
   beforeEach(() => {
     vi.resetAllMocks();
 
-    const mockGeminiClient = {
+    const mockACoderClient = {
       getChatRecordingService: vi.fn().mockReturnValue({
         getConversationFilePath: vi
           .fn()
-          .mockReturnValue('/test/project/.gemini/tmp/chats/session.json'),
+          .mockReturnValue('/test/project/.a-coder/tmp/chats/session.json'),
       }),
     };
 
@@ -77,8 +77,8 @@ describe('HookEventHandler', () => {
       get config() {
         return this;
       },
-      geminiClient: mockGeminiClient,
-      getGeminiClient: vi.fn().mockReturnValue(mockGeminiClient),
+      aCoderClient: mockACoderClient,
+      getACoderClient: vi.fn().mockReturnValue(mockACoderClient),
       getSessionId: vi.fn().mockReturnValue('test-session'),
       getWorkingDir: vi.fn().mockReturnValue('/test/project'),
     } as unknown as Config;
@@ -882,7 +882,7 @@ describe('HookEventHandler', () => {
         HookEventName.BeforeTool,
         expect.objectContaining({
           session_id: 'test-session',
-          transcript_path: '/test/project/.gemini/tmp/chats/session.json',
+          transcript_path: '/test/project/.a-coder/tmp/chats/session.json',
           cwd: '/test/project',
           hook_event_name: 'BeforeTool',
           timestamp: expect.any(String),

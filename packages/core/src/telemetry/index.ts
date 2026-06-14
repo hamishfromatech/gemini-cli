@@ -1,7 +1,9 @@
 /**
  * @license
- * Copyright 2025 Google LLC
+ * Copyright 2026 Google LLC
  * SPDX-License-Identifier: Apache-2.0
+ *
+ * @license
  */
 
 export enum TelemetryTarget {
@@ -13,22 +15,62 @@ const DEFAULT_TELEMETRY_TARGET = TelemetryTarget.LOCAL;
 const DEFAULT_OTLP_ENDPOINT = 'http://localhost:4317';
 
 export { DEFAULT_TELEMETRY_TARGET, DEFAULT_OTLP_ENDPOINT };
-export {
-  initializeTelemetry,
-  shutdownTelemetry,
-  flushTelemetry,
-  isTelemetrySdkInitialized,
-} from './sdk.js';
-export {
-  resolveTelemetrySettings,
-  parseBooleanEnvFlag,
-  parseTelemetryTargetValue,
-} from './config.js';
-export {
-  GcpTraceExporter,
-  GcpMetricExporter,
-  GcpLogExporter,
-} from './gcp-exporters.js';
+
+export function initializeTelemetry(_config?: unknown): void {
+  // No-op: A-Coder CLI does not ship with external telemetry.
+}
+
+export function shutdownTelemetry(): Promise<void> {
+  return Promise.resolve();
+}
+
+export function flushTelemetry(): Promise<void> {
+  return Promise.resolve();
+}
+
+export function isTelemetrySdkInitialized(): boolean {
+  return false;
+}
+
+export interface ResolvedTelemetrySettings {
+  enabled: boolean;
+  traces: boolean;
+  target: TelemetryTarget;
+  otlpEndpoint?: string;
+  otlpProtocol?: 'grpc' | 'http';
+  logPrompts: boolean;
+  outfile?: string;
+  useCollector: boolean;
+  useCliAuth: boolean;
+}
+
+export function resolveTelemetrySettings(_opts: {
+  env: Record<string, string | undefined>;
+  settings?: Partial<ResolvedTelemetrySettings>;
+}): ResolvedTelemetrySettings {
+  return {
+    enabled: false,
+    traces: false,
+    target: TelemetryTarget.LOCAL,
+    otlpEndpoint: undefined,
+    otlpProtocol: 'http',
+    logPrompts: false,
+    outfile: undefined,
+    useCollector: false,
+    useCliAuth: false,
+  };
+}
+
+export function parseBooleanEnvFlag(_value: string | undefined): boolean {
+  return false;
+}
+
+export function parseTelemetryTargetValue(
+  _value: string | undefined,
+): TelemetryTarget {
+  return TelemetryTarget.LOCAL;
+}
+
 export {
   logCliConfiguration,
   logUserPrompt,
@@ -51,10 +93,7 @@ export {
   logOnboardingStart,
   logOnboardingSuccess,
 } from './loggers.js';
-export {
-  logConsecaPolicyGeneration,
-  logConsecaVerdict,
-} from './conseca-logger.js';
+
 export type { SlashCommandEvent, ChatCompressionEvent } from './types.js';
 export {
   SlashCommandStatus,
@@ -77,45 +116,16 @@ export {
   ConsecaPolicyGenerationEvent,
   ConsecaVerdictEvent,
 } from './types.js';
+
 export { LlmRole } from './llmRole.js';
 export { makeSlashCommandEvent, makeChatCompressionEvent } from './types.js';
 export type { TelemetryEvent } from './types.js';
-export { SpanStatusCode, ValueType } from '@opentelemetry/api';
-export { SemanticAttributes } from '@opentelemetry/semantic-conventions';
+
+export { SpanStatusCode, ValueType } from './metrics.js';
+export { SemanticAttributes } from './types.js';
 export * from './uiTelemetry.js';
 export * from './billingEvents.js';
-export {
-  MemoryMonitor,
-  initializeMemoryMonitor,
-  getMemoryMonitor,
-  recordCurrentMemoryUsage,
-  startGlobalMemoryMonitoring,
-  stopGlobalMemoryMonitoring,
-} from './memory-monitor.js';
-export { captureHeapSnapshot } from './heap-snapshot.js';
-export type { MemorySnapshot, ProcessMetrics } from './memory-monitor.js';
-export {
-  EventLoopMonitor,
-  startGlobalEventLoopMonitoring,
-  stopGlobalEventLoopMonitoring,
-  getEventLoopMonitor,
-} from './event-loop-monitor.js';
-export { HighWaterMarkTracker } from './high-water-mark-tracker.js';
-export { RateLimiter } from './rate-limiter.js';
-export { ActivityType } from './activity-types.js';
-export {
-  ActivityDetector,
-  getActivityDetector,
-  recordUserActivity,
-  isUserActive,
-} from './activity-detector.js';
-export {
-  ActivityMonitor,
-  initializeActivityMonitor,
-  getActivityMonitor,
-  startGlobalActivityMonitoring,
-  stopGlobalActivityMonitoring,
-} from './activity-monitor.js';
+
 export {
   // Core metrics functions
   recordToolCallMetrics,
@@ -132,7 +142,7 @@ export {
   recordCustomTokenUsageMetrics,
   recordCustomApiResponseMetrics,
   recordExitFail,
-  // OpenTelemetry GenAI semantic convention for token usage and operation duration
+  // GenAI semantic convention for token usage and operation duration
   recordGenAiClientTokenUsage,
   recordGenAiClientOperationDuration,
   getConventionAttributes,
@@ -157,7 +167,7 @@ export {
   ToolExecutionPhase,
   ApiRequestPhase,
   FileOperation,
-  // OpenTelemetry Semantic Convention types
+  // GenAI semantic convention types
   GenAiOperationName,
   GenAiProviderName,
   GenAiTokenType,
@@ -165,6 +175,16 @@ export {
   recordOverageOptionSelected,
   recordCreditPurchaseClick,
 } from './metrics.js';
+
 export { runInDevTraceSpan, type SpanMetadata } from './trace.js';
-export { startupProfiler, StartupProfiler } from './startupProfiler.js';
 export * from './constants.js';
+
+export function logConsecaPolicyGeneration(
+  _config: unknown,
+  ..._args: unknown[]
+): void {}
+
+export function logConsecaVerdict(
+  _config: unknown,
+  ..._args: unknown[]
+): void {}

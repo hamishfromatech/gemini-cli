@@ -9,7 +9,7 @@ import {
   refreshMemory,
   showMemory,
   type Config,
-} from '@google/gemini-cli-core';
+} from '@the-a-tech-corporation/core';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import {
   ListMemoryCommand,
@@ -20,9 +20,9 @@ import {
 import type { CommandContext } from './types.js';
 
 // Mock the core functions
-vi.mock('@google/gemini-cli-core', async (importOriginal) => {
+vi.mock('@the-a-tech-corporation/core', async (importOriginal) => {
   const actual =
-    await importOriginal<typeof import('@google/gemini-cli-core')>();
+    await importOriginal<typeof import('@the-a-tech-corporation/core')>();
   return {
     ...actual,
     showMemory: vi.fn(),

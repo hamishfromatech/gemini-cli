@@ -9,7 +9,7 @@ import { Config } from './config.js';
 import { NoopSandboxManager } from '../services/sandboxManager.js';
 
 // Minimal mocks for Config dependencies to allow instantiation
-vi.mock('../core/client.js');
+vi.mock('../core/a-coder-client.js');
 vi.mock('../core/contentGenerator.js');
 vi.mock('../telemetry/index.js');
 vi.mock('../core/tokenLimits.js');

@@ -32,7 +32,7 @@ import {
   GitService,
   checkPathTrust,
   isHeadlessMode,
-} from '@google/gemini-cli-core';
+} from '@the-a-tech-corporation/core';
 import type { Command, CommandArgument } from '../commands/types.js';
 
 type CommandResponse = {
@@ -43,13 +43,13 @@ type CommandResponse = {
 };
 
 const coderAgentCard: AgentCard = {
-  name: 'Gemini SDLC Agent',
+  name: 'A-Coder SDLC Agent',
   description:
     'An agent that generates code based on natural language instructions and streams file outputs.',
   url: 'http://localhost:41242/',
   provider: {
-    organization: 'Google',
-    url: 'https://google.com',
+    organization: 'The A-Tech Corporation',
+    url: 'https://github.com/hamishfromatech/a-coder-cli',
   },
   protocolVersion: '0.3.0',
   version: '0.0.2', // Incremented version

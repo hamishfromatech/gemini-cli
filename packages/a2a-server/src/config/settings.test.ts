@@ -9,7 +9,7 @@ import * as fs from 'node:fs';
 import * as path from 'node:path';
 import * as os from 'node:os';
 import { loadSettings, USER_SETTINGS_PATH } from './settings.js';
-import { debugLogger, checkPathTrust } from '@google/gemini-cli-core';
+import { debugLogger, checkPathTrust } from '@the-a-tech-corporation/core';
 
 const mocks = vi.hoisted(() => {
   const suffix = Math.random().toString(36).slice(2);
@@ -27,14 +27,14 @@ vi.mock('node:os', async (importOriginal) => {
   };
 });
 
-vi.mock('@google/gemini-cli-core', async (importOriginal) => {
+vi.mock('@the-a-tech-corporation/core', async (importOriginal) => {
   const actual =
-    await importOriginal<typeof import('@google/gemini-cli-core')>();
+    await importOriginal<typeof import('@the-a-tech-corporation/core')>();
   const path = await import('node:path');
   const os = await import('node:os');
   return {
     ...actual,
-    GEMINI_DIR: '.gemini',
+    A_CODER_DIR: '.a-coder',
     debugLogger: {
       error: vi.fn(),
     },
@@ -51,8 +51,8 @@ describe('loadSettings', () => {
     os.tmpdir(),
     `gemini-workspace-${mocks.suffix}`,
   );
-  const mockGeminiHomeDir = path.join(mockHomeDir, '.gemini');
-  const mockGeminiWorkspaceDir = path.join(mockWorkspaceDir, '.gemini');
+  const mockGeminiHomeDir = path.join(mockHomeDir, '.a-coder');
+  const mockGeminiWorkspaceDir = path.join(mockWorkspaceDir, '.a-coder');
 
   beforeEach(() => {
     vi.clearAllMocks();

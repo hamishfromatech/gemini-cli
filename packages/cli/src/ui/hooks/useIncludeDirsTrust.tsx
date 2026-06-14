@@ -5,10 +5,10 @@
  */
 
 import { useEffect } from 'react';
-import { type Config } from '@google/gemini-cli-core';
+import { type Config } from '@the-a-tech-corporation/core';
 import { loadTrustedFolders } from '../../config/trustedFolders.js';
 import { expandHomeDir, batchAddDirectories } from '../utils/directoryUtils.js';
-import { debugLogger } from '@google/gemini-cli-core';
+import { debugLogger } from '@the-a-tech-corporation/core';
 import { MultiFolderTrustDialog } from '../components/MultiFolderTrustDialog.js';
 import type { UseHistoryManagerReturn } from './useHistoryManager.js';
 import { MessageType, type HistoryItem } from '../types.js';
@@ -40,7 +40,7 @@ async function finishAddingDirectories(
   }
 
   if (added.length > 0) {
-    const gemini = config.getGeminiClient();
+    const gemini = config.getACoderClient();
     if (gemini) {
       await gemini.addDirectoryContext();
     }

@@ -9,7 +9,7 @@ import { TestRig } from './test-helper.js';
 import * as path from 'node:path';
 import * as fs from 'node:fs';
 import { FinishReason, GenerateContentResponse } from '@google/genai';
-import type { FakeResponse, HistoryTurn } from '@google/gemini-cli-core';
+import type { FakeResponse, HistoryTurn } from '@the-a-tech-corporation/core';
 
 describe('Context Management Fidelity E2E', () => {
   let rig: TestRig;
@@ -108,15 +108,15 @@ describe('Context Management Fidelity E2E', () => {
 
       // Ignore trace and response files to keep environment context clean and stable
       fs.writeFileSync(
-        path.join(rig.testDir!, '.geminiignore'),
+        path.join(rig.testDir!, '.a-coder-ignore'),
         'traces/\nresp*.json\ndebug.log\n',
       );
 
       const commonEnv = {
-        GEMINI_API_KEY: 'mock-key',
-        GEMINI_CONTEXT_TRACE_DIR: traceDir,
+        OPENAI_API_KEY: 'mock-key',
+        A_CODER_CONTEXT_TRACE_DIR: traceDir,
         GEMINI_CONTEXT_TRACE_ENABLED: 'true',
-        GEMINI_DEBUG_LOG_FILE: path.join(rig.testDir!, 'debug.log'),
+        A_CODER_DEBUG_LOG_FILE: path.join(rig.testDir!, 'debug.log'),
       };
 
       const runMocks: FakeResponse[] = [

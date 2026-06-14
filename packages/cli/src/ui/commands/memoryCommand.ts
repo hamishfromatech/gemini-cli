@@ -10,7 +10,7 @@ import {
   listMemoryFiles,
   refreshMemory,
   showMemory,
-} from '@google/gemini-cli-core';
+} from '@the-a-tech-corporation/core';
 import { MessageType } from '../types.js';
 import {
   CommandKind,
@@ -83,7 +83,7 @@ const reloadSubCommand: SlashCommand = {
 
 const listSubCommand: SlashCommand = {
   name: 'list',
-  description: 'Lists the paths of the GEMINI.md files in use',
+  description: 'Lists the paths of the A_CODER.md files in use',
   kind: CommandKind.BUILT_IN,
   autoExecute: true,
   action: async (context) => {

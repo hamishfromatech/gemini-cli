@@ -26,14 +26,14 @@ import {
   StandardFileSystemService,
   ToolRegistry,
   COMMON_IGNORE_PATTERNS,
-  GEMINI_IGNORE_FILE_NAME,
+  A_CODER_IGNORE_FILE_NAME,
   ApprovalMode,
   // DEFAULT_FILE_EXCLUDES,
   CoreToolCallStatus,
   type Config,
   type DiscoveredMCPResource,
-} from '@google/gemini-cli-core';
-import * as core from '@google/gemini-cli-core';
+} from '@the-a-tech-corporation/core';
+import * as core from '@the-a-tech-corporation/core';
 import * as os from 'node:os';
 import type { UseHistoryManagerReturn } from './useHistoryManager.js';
 import * as fs from 'node:fs';
@@ -90,10 +90,10 @@ describe('handleAtCommand', () => {
       getExcludeTools: vi.fn(),
       getFileService: () => new FileDiscoveryService(testRootDir),
       getFileFilteringRespectGitIgnore: () => true,
-      getFileFilteringRespectGeminiIgnore: () => true,
+      getFileFilteringRespectACoderIgnore: () => true,
       getFileFilteringOptions: () => ({
         respectGitIgnore: true,
-        respectGeminiIgnore: true,
+        respectACoderIgnore: true,
       }),
       getFileSystemService: () => new StandardFileSystemService(),
       getEnableRecursiveFileSearch: vi.fn(() => true),
@@ -718,7 +718,7 @@ describe('handleAtCommand', () => {
   describe('gemini-ignore filtering', () => {
     it('should skip gemini-ignored files in @ commands', async () => {
       await createTestFile(
-        path.join(testRootDir, GEMINI_IGNORE_FILE_NAME),
+        path.join(testRootDir, A_CODER_IGNORE_FILE_NAME),
         'build/output.js',
       );
       const geminiIgnoredFile = await createTestFile(
@@ -747,9 +747,9 @@ describe('handleAtCommand', () => {
       );
     });
   });
-  it('should process non-ignored files when .geminiignore is present', async () => {
+  it('should process non-ignored files when .a-coder-ignore is present', async () => {
     await createTestFile(
-      path.join(testRootDir, GEMINI_IGNORE_FILE_NAME),
+      path.join(testRootDir, A_CODER_IGNORE_FILE_NAME),
       'build/output.js',
     );
     const validFile = await createTestFile(
@@ -780,7 +780,7 @@ describe('handleAtCommand', () => {
 
   it('should handle mixed gemini-ignored and valid files', async () => {
     await createTestFile(
-      path.join(testRootDir, GEMINI_IGNORE_FILE_NAME),
+      path.join(testRootDir, A_CODER_IGNORE_FILE_NAME),
       'dist/bundle.js',
     );
     const validFile = await createTestFile(

@@ -13,12 +13,12 @@ import {
   useTextBuffer,
   type TextBuffer,
 } from '../components/shared/text-buffer.js';
-import { clearApiKey } from '@google/gemini-cli-core';
+import { clearApiKey } from '@the-a-tech-corporation/core';
 
 // Mocks
-vi.mock('@google/gemini-cli-core', async (importOriginal) => {
+vi.mock('@the-a-tech-corporation/core', async (importOriginal) => {
   const actual =
-    await importOriginal<typeof import('@google/gemini-cli-core')>();
+    await importOriginal<typeof import('@the-a-tech-corporation/core')>();
   return {
     ...actual,
     clearApiKey: vi.fn().mockResolvedValue(undefined),
@@ -61,7 +61,7 @@ describe('ApiAuthDialog', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-    vi.stubEnv('GEMINI_API_KEY', '');
+    vi.stubEnv('OPENAI_API_KEY', '');
     mockBuffer = {
       text: '',
       lines: [''],

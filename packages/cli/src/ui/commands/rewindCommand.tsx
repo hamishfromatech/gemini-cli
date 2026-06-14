@@ -21,9 +21,9 @@ import {
   logRewind,
   RewindEvent,
   type ChatRecordingService,
-  type GeminiClient,
+  type ACoderClient,
   convertSessionToClientHistory,
-} from '@google/gemini-cli-core';
+} from '@the-a-tech-corporation/core';
 
 /**
  * Helper function to handle the core logic of rewinding a conversation.
@@ -38,7 +38,7 @@ import {
  */
 async function rewindConversation(
   context: CommandContext,
-  client: GeminiClient,
+  client: ACoderClient,
   recordingService: ChatRecordingService,
   messageId: string,
   newText: string,
@@ -104,7 +104,7 @@ export const rewindCommand: SlashCommand = {
         content: 'Config not found',
       };
 
-    const client = agentContext.geminiClient;
+    const client = agentContext.aCoderClient;
     if (!client)
       return {
         type: 'message',

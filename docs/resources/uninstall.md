@@ -6,7 +6,7 @@ for either npx or a global npm installation.
 ## Method 1: Using npx
 
 npx runs packages from a temporary cache without a permanent installation. To
-"uninstall" the CLI, you must clear this cache, which will remove gemini-cli and
+"uninstall" the CLI, you must clear this cache, which will remove a-coder-cli-cli and
 any other packages previously executed with npx.
 
 The npx cache is a directory named `_npx` inside your main npm cache folder. You
@@ -29,11 +29,11 @@ Remove-Item -Path (Join-Path $env:LocalAppData "npm-cache\_npx") -Recurse -Force
 ## Method 2: Using npm (global install)
 
 If you installed the CLI globally (for example,
-`npm install -g @google/gemini-cli`), use the `npm uninstall` command with the
+`npm install -g @the-a-tech-corporation/a-coder-cli`), use the `npm uninstall` command with the
 `-g` flag to remove it.
 
 ```bash
-npm uninstall -g @google/gemini-cli
+npm uninstall -g @the-a-tech-corporation/a-coder-cli
 ```
 
 This command completely removes the package from your system.
@@ -41,17 +41,17 @@ This command completely removes the package from your system.
 ## Method 3: Homebrew
 
 If you installed the CLI globally using Homebrew (for example,
-`brew install gemini-cli`), use the `brew uninstall` command to remove it.
+`brew install a-coder-cli-cli`), use the `brew uninstall` command to remove it.
 
 ```bash
-brew uninstall gemini-cli
+brew uninstall a-coder-cli-cli
 ```
 
 ## Method 4: MacPorts
 
 If you installed the CLI globally using MacPorts (for example,
-`sudo port install gemini-cli`), use the `port uninstall` command to remove it.
+`sudo port install a-coder-cli-cli`), use the `port uninstall` command to remove it.
 
 ```bash
-sudo port uninstall gemini-cli
+sudo port uninstall a-coder-cli-cli
 ```

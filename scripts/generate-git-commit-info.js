@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2025 Google LLC
+ * Copyright 2026 The A-Tech Corporation
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -63,7 +63,7 @@ try {
 
 const fileContent = `/**
  * @license
- * Copyright ${new Date().getUTCFullYear()} Google LLC
+ * Copyright ${new Date().getUTCFullYear()} The A-Tech Corporation
  * SPDX-License-Identifier: Apache-2.0
  */
 

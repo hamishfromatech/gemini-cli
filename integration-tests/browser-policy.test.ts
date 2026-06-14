@@ -14,8 +14,8 @@ import { env } from 'node:process';
 import stripAnsi from 'strip-ansi';
 
 // Browser agent Chrome DevTools MCP connection is flaky in Docker sandbox.
-// See: https://github.com/google-gemini/gemini-cli/issues/24382
-const isDockerSandbox = env['GEMINI_SANDBOX'] === 'docker';
+// See: https://github.com/hamishfromatech/a-coder-cli/issues/24382
+const isDockerSandbox = env['A_CODER_SANDBOX'] === 'docker';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -86,7 +86,7 @@ describe.skipIf(!chromeAvailable)('browser-policy', () => {
       });
 
       // Manually trust the folder to avoid the dialog and enable option 3
-      const geminiDir = join(rig.homeDir!, '.gemini');
+      const geminiDir = join(rig.homeDir!, '.a-coder');
       mkdirSync(geminiDir, { recursive: true });
 
       // Write to trustedFolders.json
@@ -121,7 +121,7 @@ priority = 200
 
       // Update settings.json in both project and home directories to point to the policy file
       for (const baseDir of [rig.testDir!, rig.homeDir!]) {
-        const settingsPath = join(baseDir, '.gemini', 'settings.json');
+        const settingsPath = join(baseDir, '.a-coder', 'settings.json');
         if (existsSync(settingsPath)) {
           const settings = JSON.parse(readFileSync(settingsPath, 'utf-8'));
           settings.policyPaths = [policyFile];
@@ -136,7 +136,7 @@ priority = 200
       const run = await rig.runInteractive({
         approvalMode: 'default',
         env: {
-          GEMINI_CLI_INTEGRATION_TEST: 'true',
+          A_CODER_CLI_INTEGRATION_TEST: 'true',
         },
       });
 
@@ -229,8 +229,8 @@ priority = 200
 
     const stdout = await rig.runCommand(['Open https://example.com'], {
       env: {
-        GEMINI_API_KEY: 'fake-key',
-        GEMINI_TELEMETRY_DISABLED: 'true',
+        OPENAI_API_KEY: 'fake-key',
+        A_CODER_TELEMETRY_DISABLED: 'true',
         DEV: 'true',
       },
     });

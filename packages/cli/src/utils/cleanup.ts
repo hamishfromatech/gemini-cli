@@ -12,8 +12,8 @@ import {
   isTelemetrySdkInitialized,
   ExitCodes,
   resetBrowserSession,
-} from '@google/gemini-cli-core';
-import type { Config } from '@google/gemini-cli-core';
+} from '@the-a-tech-corporation/core';
+import type { Config } from '@the-a-tech-corporation/core';
 
 const cleanupFunctions: Array<(() => void) | (() => Promise<void>)> = [];
 const syncCleanupFunctions: Array<() => void> = [];
@@ -74,7 +74,7 @@ export function registerTelemetryConfig(config: Config) {
 
 export async function runExitCleanup() {
   // drain stdin to prevent printing garbage on exit
-  // https://github.com/google-gemini/gemini-cli/issues/16801
+  // https://github.com/hamishfromatech/a-coder-cli/issues/16801
   await drainStdin();
 
   runSyncCleanup();
@@ -106,7 +106,7 @@ export async function runExitCleanup() {
   // This ensures SessionEnd hooks and other telemetry are properly flushed
   if (configForTelemetry && isTelemetrySdkInitialized()) {
     try {
-      await shutdownTelemetry(configForTelemetry);
+      await shutdownTelemetry();
     } catch {
       // Ignore errors during telemetry shutdown
     }
@@ -130,7 +130,7 @@ async function drainStdin() {
  * Guards against concurrent shutdown from signals (SIGHUP, SIGTERM, SIGINT)
  * and TTY loss detection racing each other.
  *
- * @see https://github.com/google-gemini/gemini-cli/issues/15874
+ * @see https://github.com/hamishfromatech/a-coder-cli/issues/15874
  */
 async function gracefulShutdown(_reason: string) {
   if (isShuttingDown) {

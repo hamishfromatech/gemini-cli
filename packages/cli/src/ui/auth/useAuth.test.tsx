@@ -12,7 +12,7 @@ import {
   AuthType,
   type Config,
   ProjectIdRequiredError,
-} from '@google/gemini-cli-core';
+} from '@the-a-tech-corporation/core';
 import { AuthState } from '../types.js';
 import type { LoadedSettings } from '../../config/settings.js';
 
@@ -20,9 +20,9 @@ import type { LoadedSettings } from '../../config/settings.js';
 const mockLoadApiKey = vi.fn();
 const mockValidateAuthMethod = vi.fn();
 
-vi.mock('@google/gemini-cli-core', async (importOriginal) => {
+vi.mock('@the-a-tech-corporation/core', async (importOriginal) => {
   const actual =
-    await importOriginal<typeof import('@google/gemini-cli-core')>();
+    await importOriginal<typeof import('@the-a-tech-corporation/core')>();
   return {
     ...actual,
     loadApiKey: () => mockLoadApiKey(),
@@ -36,8 +36,8 @@ vi.mock('../../config/auth.js', () => ({
 describe('useAuth', () => {
   beforeEach(() => {
     vi.resetAllMocks();
-    delete process.env['GEMINI_API_KEY'];
-    delete process.env['GEMINI_DEFAULT_AUTH_TYPE'];
+    delete process.env['OPENAI_API_KEY'];
+    delete process.env['A_CODER_DEFAULT_AUTH_TYPE'];
   });
 
   afterEach(() => {
@@ -175,13 +175,13 @@ describe('useAuth', () => {
     });
 
     it('should set error if no auth type is selected but env key exists', async () => {
-      process.env['GEMINI_API_KEY'] = 'env-key';
+      process.env['OPENAI_API_KEY'] = 'env-key';
       const { result } = await renderHook(() =>
         useAuthCommand(createSettings(undefined), mockConfig),
       );
 
       expect(result.current.authError).toContain(
-        'Existing API key detected (GEMINI_API_KEY)',
+        'Existing API key detected (OPENAI_API_KEY)',
       );
       expect(result.current.authState).toBe(AuthState.Updating);
     });
@@ -233,7 +233,7 @@ describe('useAuth', () => {
     });
 
     it('should authenticate if USE_GEMINI and env key is found', async () => {
-      process.env['GEMINI_API_KEY'] = 'env-key';
+      process.env['OPENAI_API_KEY'] = 'env-key';
 
       const { result } = await renderHook(() =>
         useAuthCommand(createSettings(AuthType.USE_GEMINI), mockConfig),
@@ -249,7 +249,7 @@ describe('useAuth', () => {
     });
 
     it('should prioritize env key over stored key when both are present', async () => {
-      process.env['GEMINI_API_KEY'] = 'env-key';
+      process.env['OPENAI_API_KEY'] = 'env-key';
 
       const { result } = await renderHook(() =>
         useAuthCommand(createSettings(AuthType.USE_GEMINI), mockConfig),
@@ -274,14 +274,14 @@ describe('useAuth', () => {
       expect(result.current.authState).toBe(AuthState.Updating);
     });
 
-    it('should set error if GEMINI_DEFAULT_AUTH_TYPE is invalid', async () => {
-      process.env['GEMINI_DEFAULT_AUTH_TYPE'] = 'INVALID_TYPE';
+    it('should set error if A_CODER_DEFAULT_AUTH_TYPE is invalid', async () => {
+      process.env['A_CODER_DEFAULT_AUTH_TYPE'] = 'INVALID_TYPE';
       const { result } = await renderHook(() =>
         useAuthCommand(createSettings(AuthType.LOGIN_WITH_GOOGLE), mockConfig),
       );
 
       expect(result.current.authError).toContain(
-        'Invalid value for GEMINI_DEFAULT_AUTH_TYPE',
+        'Invalid value for A_CODER_DEFAULT_AUTH_TYPE',
       );
       expect(result.current.authState).toBe(AuthState.Updating);
     });

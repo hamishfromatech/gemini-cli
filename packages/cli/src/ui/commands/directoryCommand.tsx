@@ -15,7 +15,7 @@ import {
   type CommandContext,
 } from './types.js';
 import { MessageType, type HistoryItem } from '../types.js';
-import { type Config } from '@google/gemini-cli-core';
+import { type Config } from '@the-a-tech-corporation/core';
 import {
   expandHomeDir,
   getDirectorySuggestions,
@@ -48,7 +48,7 @@ async function finishAddingDirectories(
       }
       addItem({
         type: MessageType.INFO,
-        text: `Successfully added GEMINI.md files from the following directories if there are:\n- ${added.join('\n- ')}`,
+        text: `Successfully added A_CODER.md files from the following directories if there are:\n- ${added.join('\n- ')}`,
       });
     } catch (error) {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion
@@ -57,7 +57,7 @@ async function finishAddingDirectories(
   }
 
   if (added.length > 0) {
-    const gemini = config.geminiClient;
+    const gemini = config.aCoderClient;
     if (gemini) {
       await gemini.addDirectoryContext();
 

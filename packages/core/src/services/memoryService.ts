@@ -793,12 +793,12 @@ async function buildExistingSkillsSummary(
 
       if (globalSkills.length > 0) {
         sections.push(
-          `## Global Skills (~/.gemini/skills — do NOT duplicate)\n${globalSkills.join('\n')}`,
+          `## Global Skills (~/.a-coder/skills — do NOT duplicate)\n${globalSkills.join('\n')}`,
         );
       }
       if (workspaceSkills.length > 0) {
         sections.push(
-          `## Workspace Skills (.gemini/skills — do NOT duplicate)\n${workspaceSkills.join('\n')}`,
+          `## Workspace Skills (.a-coder/skills — do NOT duplicate)\n${workspaceSkills.join('\n')}`,
         );
       }
       if (extensionSkills.length > 0) {
@@ -843,7 +843,7 @@ function buildAgentLoopContext(config: Config): AgentLoopContext {
     promptRegistry: new PromptRegistry(),
     resourceRegistry: new ResourceRegistry(),
     messageBus: autoApproveBus,
-    geminiClient: config.getGeminiClient(),
+    aCoderClient: config.getACoderClient(),
     sandboxManager: config.sandboxManager,
   };
 }

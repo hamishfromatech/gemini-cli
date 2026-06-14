@@ -9,7 +9,7 @@ import { TestRig } from './test-helper.js';
 import * as path from 'node:path';
 import * as fs from 'node:fs';
 import { FinishReason, GenerateContentResponse } from '@google/genai';
-import type { FakeResponse } from '@google/gemini-cli-core';
+import type { FakeResponse } from '@the-a-tech-corporation/core';
 
 describe('Context Management Resume E2E', () => {
   let rig: TestRig;
@@ -93,9 +93,9 @@ describe('Context Management Resume E2E', () => {
     const traceLog = path.join(traceDir, 'trace.log');
 
     const commonEnv = {
-      GEMINI_API_KEY: 'mock-key',
-      GEMINI_DEBUG_LOG_FILE: logFile,
-      GEMINI_CONTEXT_TRACE_DIR: traceDir,
+      OPENAI_API_KEY: 'mock-key',
+      A_CODER_DEBUG_LOG_FILE: logFile,
+      A_CODER_CONTEXT_TRACE_DIR: traceDir,
     };
 
     // Provide a massive pool of responses to prevent exhaustion

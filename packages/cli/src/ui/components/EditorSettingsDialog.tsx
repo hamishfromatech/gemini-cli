@@ -23,7 +23,7 @@ import {
   isEditorAvailable,
   EDITOR_DISPLAY_NAMES,
   coreEvents,
-} from '@google/gemini-cli-core';
+} from '@the-a-tech-corporation/core';
 import { useKeypress } from '../hooks/useKeypress.js';
 
 interface EditorDialogProps {

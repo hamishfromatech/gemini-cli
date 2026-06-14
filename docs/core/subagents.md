@@ -1,13 +1,13 @@
 # Subagents
 
-Subagents are specialized agents that operate within your main Gemini CLI
+Subagents are specialized agents that operate within your main A-Coder CLI
 session. They are designed to handle specific, complex tasks—like deep codebase
 analysis, documentation lookup, or domain-specific reasoning—without cluttering
 the main agent's context or toolset.
 
 ## What are subagents?
 
-Subagents are "specialists" that the main Gemini agent can hire for a specific
+Subagents are "specialists" that the main A-Coder agent can hire for a specific
 job.
 
 - **Focused context:** Each subagent has its own system prompt and persona.
@@ -28,7 +28,7 @@ in your prompt.
 
 ### Automatic delegation
 
-Gemini CLI's main agent is instructed to use specialized subagents when a task
+A-Coder CLI's main agent is instructed to use specialized subagents when a task
 matches their expertise. For example, if you ask "How does the auth system
 work?", the main agent may decide to call the `codebase_investigator` subagent
 to perform the research.
@@ -51,7 +51,7 @@ primary model to use that specific subagent tool immediately.
 
 ## Built-in subagents
 
-Gemini CLI comes with the following built-in subagents:
+A-Coder CLI comes with the following built-in subagents:
 
 ### Codebase Investigator
 
@@ -68,7 +68,7 @@ Gemini CLI comes with the following built-in subagents:
     "agents": {
       "overrides": {
         "codebase_investigator": {
-          "modelConfig": { "model": "gemini-3-flash-preview" },
+          "modelConfig": { "model": "a-coder-cli-3-flash-preview" },
           "runConfig": { "maxTurns": 50 }
         }
       }
@@ -79,7 +79,7 @@ Gemini CLI comes with the following built-in subagents:
 ### CLI Help Agent
 
 - **Name:** `cli_help`
-- **Purpose:** Get expert knowledge about Gemini CLI itself, its commands,
+- **Purpose:** Get expert knowledge about A-Coder CLI itself, its commands,
   configuration, and documentation.
 - **When to use:** "How do I configure a proxy?", "What does the `/rewind`
   command do?"
@@ -123,7 +123,7 @@ The browser agent requires:
 
 The underlying
 [`chrome-devtools-mcp`](https://www.npmjs.com/package/chrome-devtools-mcp)
-server is bundled with Gemini CLI and launched automatically — no separate
+server is bundled with A-Coder CLI and launched automatically — no separate
 installation is needed.
 
 #### Enabling the browser agent
@@ -166,13 +166,13 @@ The available modes are:
 
 | Mode         | Description                                                                                                                                                                                 |
 | :----------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `persistent` | **(Default)** Launches Chrome with a persistent profile stored at `~/.gemini/cli-browser-profile/`. Cookies, history, and settings are preserved between sessions.                          |
+| `persistent` | **(Default)** Launches Chrome with a persistent profile stored at `~/.a-coder-cli/cli-browser-profile/`. Cookies, history, and settings are preserved between sessions.                          |
 | `isolated`   | Launches Chrome with a temporary profile that is deleted after each session. Use this for clean-state automation.                                                                           |
 | `existing`   | Attaches to an already-running Chrome instance. You must enable remote debugging first by navigating to `chrome://inspect/#remote-debugging` in Chrome. No new browser process is launched. |
 
 #### First-run consent
 
-The first time the browser agent is invoked, Gemini CLI displays a consent
+The first time the browser agent is invoked, A-Coder CLI displays a consent
 dialog. You must accept before the browser session starts. This dialog only
 appears once.
 
@@ -239,7 +239,7 @@ can enable the visual agent by setting a `visualModel`:
       }
     },
     "browser": {
-      "visualModel": "gemini-2.5-computer-use-preview-10-2025"
+      "visualModel": "a-coder-cli-2.5-computer-use-preview-10-2025"
     }
   }
 }
@@ -288,7 +288,7 @@ To use the browser agent in a Docker sandbox:
    ```
 
 2. Configure `sessionMode` and allowed domains in your project's
-   `.gemini/settings.json`:
+   `.a-coder-cli/settings.json`:
 
    ```json
    {
@@ -307,7 +307,7 @@ To use the browser agent in a Docker sandbox:
 3. Launch the CLI with port forwarding:
 
    ```bash
-   GEMINI_SANDBOX=docker SANDBOX_PORTS=9222 gemini
+   A_CODER_SANDBOX=docker SANDBOX_PORTS=9222 a-coder-cli
    ```
 
 ## Creating custom subagents
@@ -320,15 +320,15 @@ specific personas.
 Custom agents are defined as Markdown files (`.md`) with YAML frontmatter. You
 can place them in:
 
-1.  **Project-level:** `.gemini/agents/*.md` (Shared with your team)
-2.  **User-level:** `~/.gemini/agents/*.md` (Personal agents)
+1.  **Project-level:** `.a-coder-cli/agents/*.md` (Shared with your team)
+2.  **User-level:** `~/.a-coder-cli/agents/*.md` (Personal agents)
 
 ### File format
 
 The file **MUST** start with YAML frontmatter enclosed in triple-dashes `---`.
 The body of the markdown file becomes the agent's **System Prompt**.
 
-**Example: `.gemini/agents/security-auditor.md`**
+**Example: `.a-coder-cli/agents/security-auditor.md`**
 
 ```markdown
 ---
@@ -338,7 +338,7 @@ kind: local
 tools:
   - read_file
   - grep_search
-model: gemini-3-flash-preview
+model: a-coder-cli-3-flash-preview
 temperature: 0.2
 max_turns: 10
 ---
@@ -366,7 +366,7 @@ it yourself; just report it.
 | `kind`         | string | No       | `local` (default) or `remote`.                                                                                                                                                                                |
 | `tools`        | array  | No       | List of tool names this agent can use. Supports wildcards: `*` (all tools), `mcp_*` (all MCP tools), `mcp_server_*` (all tools from a server). **If omitted, it inherits all tools from the parent session.** |
 | `mcpServers`   | object | No       | Configuration for inline Model Context Protocol (MCP) servers isolated to this specific agent.                                                                                                                |
-| `model`        | string | No       | Specific model to use (for example, `gemini-3-preview`). Defaults to `inherit` (uses the main session model).                                                                                                 |
+| `model`        | string | No       | Specific model to use (for example, `a-coder-cli-3-preview`). Defaults to `inherit` (uses the main session model).                                                                                                 |
 | `temperature`  | number | No       | Model temperature (0.0 - 2.0). Defaults to `1`.                                                                                                                                                               |
 | `max_turns`    | number | No       | Maximum number of conversation turns allowed for this agent before it must return. Defaults to `30`.                                                                                                          |
 | `timeout_mins` | number | No       | Maximum execution time in minutes. Defaults to `10`.                                                                                                                                                          |
@@ -395,7 +395,7 @@ Each subagent runs in its own isolated context loop. This means:
 
 ## Subagent tool isolation
 
-Subagent tool isolation moves Gemini CLI away from a single global tool
+Subagent tool isolation moves A-Coder CLI away from a single global tool
 registry. By providing isolated execution environments, you can ensure that
 subagents only interact with the parts of the system they are designed for. This
 prevents unintended side effects, improves reliability by avoiding state
@@ -535,7 +535,7 @@ You can restrict access to specific subagents using the CLI's **Policy Engine**.
 Subagents are treated as virtual tool names for policy matching purposes.
 
 To govern access to a subagent, create a `.toml` file in your policy directory
-(e.g., `~/.gemini/policies/`):
+(e.g., `~/.a-coder-cli/policies/`):
 
 ```toml
 [[rule]]
@@ -574,7 +574,7 @@ that your subagent was called with a specific prompt and the given description.
 
 ## Remote subagents (Agent2Agent)
 
-Gemini CLI can also delegate tasks to remote subagents using the Agent-to-Agent
+A-Coder CLI can also delegate tasks to remote subagents using the Agent-to-Agent
 (A2A) protocol.
 
 See the [Remote Subagents documentation](remote-agents) for detailed

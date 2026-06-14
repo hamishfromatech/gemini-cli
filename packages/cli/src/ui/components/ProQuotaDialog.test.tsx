@@ -11,10 +11,10 @@ import { ProQuotaDialog } from './ProQuotaDialog.js';
 import { RadioButtonSelect } from './shared/RadioButtonSelect.js';
 
 import {
-  PREVIEW_GEMINI_MODEL,
-  DEFAULT_GEMINI_FLASH_MODEL,
+  PREVIEW_A_CODER_MODEL,
+  DEFAULT_A_CODER_FLASH_MODEL,
   AuthType,
-} from '@google/gemini-cli-core';
+} from '@the-a-tech-corporation/core';
 
 // Mock the child component to make it easier to test the parent
 vi.mock('./shared/RadioButtonSelect.js', () => ({
@@ -32,8 +32,8 @@ describe('ProQuotaDialog', () => {
     it('should render "Keep trying" and "Stop" options', async () => {
       const { unmount } = await render(
         <ProQuotaDialog
-          failedModel={DEFAULT_GEMINI_FLASH_MODEL}
-          fallbackModel={DEFAULT_GEMINI_FLASH_MODEL}
+          failedModel={DEFAULT_A_CODER_FLASH_MODEL}
+          fallbackModel={DEFAULT_A_CODER_FLASH_MODEL}
           message="flash error"
           isTerminalQuotaError={true} // should not matter
           onChoice={mockOnChoice}
@@ -137,8 +137,8 @@ describe('ProQuotaDialog', () => {
       it('should render "Keep trying" and "Stop" options when failed model and fallback model are the same', async () => {
         const { unmount } = await render(
           <ProQuotaDialog
-            failedModel={PREVIEW_GEMINI_MODEL}
-            fallbackModel={PREVIEW_GEMINI_MODEL}
+            failedModel={PREVIEW_A_CODER_MODEL}
+            fallbackModel={PREVIEW_A_CODER_MODEL}
             message="flash error"
             isTerminalQuotaError={true}
             onChoice={mockOnChoice}

@@ -23,7 +23,7 @@ import {
   type GeminiCLIExtension,
   type ExtensionInstallMetadata,
   IntegrityDataStatus,
-} from '@google/gemini-cli-core';
+} from '@the-a-tech-corporation/core';
 
 vi.mock('./storage.js', () => ({
   ExtensionStorage: {

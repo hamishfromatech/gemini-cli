@@ -8,7 +8,7 @@ import type { GenerateContentConfig } from '@google/genai';
 import type { ModelPolicy } from '../availability/modelPolicy.js';
 import {
   getDisplayString,
-  PREVIEW_GEMINI_3_1_MODEL,
+  PREVIEW_A_CODER_3_1_MODEL,
   isProModel,
   getAutoModelDescription,
 } from '../config/models.js';
@@ -97,7 +97,7 @@ export interface ModelResolution {
 export interface ResolutionContext {
   useGemini3_1?: boolean;
   useGemini3_1FlashLite?: boolean;
-  useGemini3_5Flash?: boolean;
+  useACoder3_5Flash?: boolean;
   useCustomTools?: boolean;
   hasAccessToPreview?: boolean;
   hasAccessToProModel?: boolean;
@@ -108,7 +108,7 @@ export interface ResolutionContext {
 export interface ResolutionCondition {
   useGemini3_1?: boolean;
   useGemini3_1FlashLite?: boolean;
-  useGemini3_5Flash?: boolean;
+  useACoder3_5Flash?: boolean;
   useCustomTools?: boolean;
   hasAccessToPreview?: boolean;
   /** Matches if the current model is in this list. */
@@ -156,8 +156,8 @@ export class ModelConfigService {
   }> {
     const definitions = this.config.modelDefinitions ?? {};
     const shouldShowPreviewModels = context.hasAccessToPreview ?? false;
-    const useGemini31 = context.useGemini3_1 ?? false;
-    const useGemini3_5Flash = context.useGemini3_5Flash ?? false;
+    const useACoder31 = context.useGemini3_1 ?? false;
+    const useACoder3_5Flash = context.useACoder3_5Flash ?? false;
 
     const mainOptions = Object.entries(definitions)
       .filter(([_, m]) => {
@@ -171,10 +171,10 @@ export class ModelConfigService {
         if (id === 'auto') {
           description = getAutoModelDescription(
             shouldShowPreviewModels,
-            useGemini31,
-            useGemini3_5Flash,
+            useACoder31,
+            useACoder3_5Flash,
           );
-        } else if (id === 'auto-gemini-3' && useGemini31) {
+        } else if (id === 'auto-gemini-3' && useACoder31) {
           description = description.replace('gemini-3-pro', 'gemini-3.1-pro');
         }
 
@@ -193,13 +193,13 @@ export class ModelConfigService {
         if (m.tier === 'auto') return false;
         if (context.hasAccessToProModel === false && isProModel(id))
           return false;
-        if (id === PREVIEW_GEMINI_3_1_MODEL && !useGemini31) return false;
+        if (id === PREVIEW_A_CODER_3_1_MODEL && !useACoder31) return false;
         return true;
       })
       .map(([id, m]) => {
         const resolvedId = this.resolveModelId(id, context);
         const titleId = this.resolveModelId(id, {
-          useGemini3_1: useGemini31,
+          useGemini3_1: useACoder31,
         });
         return {
           modelId: resolvedId,
@@ -254,8 +254,8 @@ export class ModelConfigService {
           return value === context.useGemini3_1;
         case 'useGemini3_1FlashLite':
           return value === context.useGemini3_1FlashLite;
-        case 'useGemini3_5Flash':
-          return value === context.useGemini3_5Flash;
+        case 'useACoder3_5Flash':
+          return value === context.useACoder3_5Flash;
         case 'useCustomTools':
           return value === context.useCustomTools;
         case 'hasAccessToPreview':

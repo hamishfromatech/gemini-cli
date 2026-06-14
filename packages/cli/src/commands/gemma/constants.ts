@@ -5,7 +5,7 @@
  */
 
 import path from 'node:path';
-import { Storage } from '@google/gemini-cli-core';
+import { Storage } from '@the-a-tech-corporation/core';
 
 export const LITERT_RELEASE_VERSION = 'v0.9.0-alpha03';
 export const LITERT_RELEASE_BASE_URL =
@@ -33,7 +33,7 @@ export const PLATFORM_BINARY_SHA256: Record<string, string> = {
 };
 
 export function getLiteRtBinDir(): string {
-  return path.join(Storage.getGlobalGeminiDir(), 'bin', 'litert');
+  return path.join(Storage.getGlobalACoderDir(), 'bin', 'litert');
 }
 
 export function getPidFilePath(): string {

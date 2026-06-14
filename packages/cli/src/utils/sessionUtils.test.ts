@@ -17,7 +17,7 @@ import {
   type Storage,
   type MessageRecord,
   CoreToolCallStatus,
-} from '@google/gemini-cli-core';
+} from '@the-a-tech-corporation/core';
 import * as fs from 'node:fs/promises';
 import path from 'node:path';
 import { randomUUID } from 'node:crypto';
@@ -1050,7 +1050,7 @@ describe('convertSessionToHistoryFormats', () => {
         timestamp: new Date().toISOString(),
         type: 'user',
         content:
-          '<session_context>\nThis is the Gemini CLI\n</session_context>',
+          '<session_context>\nThis is the A-Coder CLI\n</session_context>',
       },
       {
         id: '2',

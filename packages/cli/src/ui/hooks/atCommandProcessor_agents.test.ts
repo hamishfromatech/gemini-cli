@@ -10,7 +10,7 @@ import type {
   Config,
   AgentDefinition,
   MessageBus,
-} from '@google/gemini-cli-core';
+} from '@the-a-tech-corporation/core';
 import {
   FileDiscoveryService,
   GlobTool,
@@ -19,7 +19,7 @@ import {
   ToolRegistry,
   COMMON_IGNORE_PATTERNS,
   ApprovalMode,
-} from '@google/gemini-cli-core';
+} from '@the-a-tech-corporation/core';
 import * as os from 'node:os';
 import type { UseHistoryManagerReturn } from './useHistoryManager.js';
 import * as fsPromises from 'node:fs/promises';
@@ -70,10 +70,10 @@ describe('handleAtCommand with Agents', () => {
       getExcludeTools: vi.fn(),
       getFileService: () => new FileDiscoveryService(testRootDir),
       getFileFilteringRespectGitIgnore: () => true,
-      getFileFilteringRespectGeminiIgnore: () => true,
+      getFileFilteringRespectACoderIgnore: () => true,
       getFileFilteringOptions: () => ({
         respectGitIgnore: true,
-        respectGeminiIgnore: true,
+        respectACoderIgnore: true,
       }),
       getFileSystemService: () => new StandardFileSystemService(),
       getEnableRecursiveFileSearch: vi.fn(() => true),

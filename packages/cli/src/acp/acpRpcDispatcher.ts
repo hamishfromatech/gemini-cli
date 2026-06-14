@@ -9,7 +9,7 @@ import {
   AuthType,
   clearCachedCredentialFile,
   getVersion,
-} from '@google/gemini-cli-core';
+} from '@the-a-tech-corporation/core';
 import * as acp from '@agentclientprotocol/sdk';
 import { z } from 'zod';
 import { SettingScope, type LoadedSettings } from '../config/settings.js';
@@ -85,7 +85,7 @@ export class GeminiAgent {
       authMethods,
       agentInfo: {
         name: 'gemini-cli',
-        title: 'Gemini CLI',
+        title: 'A-Coder CLI',
         version,
       },
       agentCapabilities: {

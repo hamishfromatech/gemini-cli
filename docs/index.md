@@ -1,30 +1,30 @@
-# Gemini CLI documentation
+# A-Coder CLI documentation
 
-Gemini CLI brings the power of Gemini models directly into your terminal. Use it
+A-Coder CLI brings the power of A-Coder models directly into your terminal. Use it
 to understand code, automate tasks, and build workflows with your local project
 context.
 
 ## Install
 
 ```bash
-npm install -g @google/gemini-cli
+npm install -g @the-a-tech-corporation/a-coder-cli
 ```
 
 ## Get started
 
-Jump in to Gemini CLI.
+Jump in to A-Coder CLI.
 
-- **[Quickstart](./get-started/index.md):** Your first session with Gemini CLI.
-- **[Installation](./get-started/installation.mdx):** How to install Gemini CLI
+- **[Quickstart](./get-started/index.md):** Your first session with A-Coder CLI.
+- **[Installation](./get-started/installation.mdx):** How to install A-Coder CLI
   on your system.
 - **[Authentication](./get-started/authentication.mdx):** Setup instructions for
   personal and enterprise accounts.
 - **[CLI cheatsheet](./cli/cli-reference.md):** A quick reference for common
   commands and options.
-- **[Gemini 3 on Gemini CLI](./get-started/gemini-3.md):** Learn about Gemini 3
-  support in Gemini CLI.
+- **[A-Coder 3 on A-Coder CLI](./get-started/a-coder-cli-3.md):** Learn about A-Coder 3
+  support in A-Coder CLI.
 
-## Use Gemini CLI
+## Use A-Coder CLI
 
 User-focused guides and tutorials for daily development workflows.
 
@@ -48,16 +48,16 @@ User-focused guides and tutorials for daily development workflows.
 
 ## Features
 
-Technical documentation for each capability of Gemini CLI.
+Technical documentation for each capability of A-Coder CLI.
 
-- **[Extensions](./extensions/index.md):** Extend Gemini CLI with new tools and
+- **[Extensions](./extensions/index.md):** Extend A-Coder CLI with new tools and
   capabilities.
 - **[Agent Skills](./cli/skills.md):** Use specialized agents for specific
   tasks.
 - **[Checkpointing](./cli/checkpointing.md):** Automatic session snapshots.
 - **[Headless mode](./cli/headless.md):** Programmatic and scripting interface.
-- **[Hooks](./hooks/index.md):** Customize Gemini CLI behavior with scripts.
-- **[IDE integration](./ide-integration/index.md):** Integrate Gemini CLI with
+- **[Hooks](./hooks/index.md):** Customize A-Coder CLI behavior with scripts.
+- **[IDE integration](./ide-integration/index.md):** Integrate A-Coder CLI with
   your favorite IDE.
 - **[MCP servers](./tools/mcp-server.md):** Connect to and use remote agents.
 - **[Model routing](./cli/model-routing.md):** Automatic fallback resilience.
@@ -76,16 +76,16 @@ Technical documentation for each capability of Gemini CLI.
 
 ## Configuration
 
-Settings and customization options for Gemini CLI.
+Settings and customization options for A-Coder CLI.
 
 - **[Custom commands](./cli/custom-commands.md):** Personalized shortcuts.
 - **[Enterprise configuration](./cli/enterprise.md):** Professional environment
   controls.
-- **[Ignore files (.geminiignore)](./cli/gemini-ignore.md):** Exclusion pattern
+- **[Ignore files (.a-coder-ignore)](./cli/a-coder-cli-ignore.md):** Exclusion pattern
   reference.
 - **[Model configuration](./cli/generation-settings.md):** Fine-tune generation
   parameters like temperature and thinking budget.
-- **[Project context (GEMINI.md)](./cli/gemini-md.md):** Technical hierarchy of
+- **[Project context (A_CODER.md)](./cli/a-coder-cli-md.md):** Technical hierarchy of
   context files.
 - **[System prompt override](./cli/system-prompt.md):** Instruction replacement
   logic.
@@ -102,7 +102,7 @@ Deep technical documentation and API specifications.
   environment variables.
 - **[Keyboard shortcuts](./reference/keyboard-shortcuts.md):** Productivity
   tips.
-- **[Memory import processor](./reference/memport.md):** How Gemini CLI
+- **[Memory import processor](./reference/memport.md):** How A-Coder CLI
   processes memory from various sources.
 - **[Policy engine](./reference/policy-engine.md):** Fine-grained execution
   control.
@@ -120,11 +120,11 @@ Support, release history, and legal information.
   terms.
 - **[Troubleshooting](./resources/troubleshooting.md):** Common issues and
   solutions.
-- **[Uninstall](./resources/uninstall.md):** How to uninstall Gemini CLI.
+- **[Uninstall](./resources/uninstall.md):** How to uninstall A-Coder CLI.
 
 ## Development
 
-- **[Contribution guide](/docs/contributing):** How to contribute to Gemini CLI.
+- **[Contribution guide](/docs/contributing):** How to contribute to A-Coder CLI.
 - **[Integration testing](./integration-tests.md):** Running integration tests.
 - **[Issue and PR automation](./issue-and-pr-automation.md):** Automation for
   issues and pull requests.

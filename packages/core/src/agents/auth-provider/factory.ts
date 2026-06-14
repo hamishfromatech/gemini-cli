@@ -2,6 +2,8 @@
  * @license
  * Copyright 2026 Google LLC
  * SPDX-License-Identifier: Apache-2.0
+ *
+ * @license
  */
 
 import type { AgentCard, SecurityScheme } from '@a2a-js/sdk';
@@ -15,20 +17,13 @@ import { HttpAuthProvider } from './http-provider.js';
 import { GoogleCredentialsAuthProvider } from './google-credentials-provider.js';
 
 export interface CreateAuthProviderOptions {
-  /** Required for OAuth/OIDC token storage. */
   agentName?: string;
   authConfig?: A2AAuthConfig;
   agentCard?: AgentCard;
-  /** Required by some providers (like google-credentials) to determine token audience. */
   targetUrl?: string;
-  /** URL to fetch the agent card from, used for OAuth2 URL discovery. */
   agentCardUrl?: string;
 }
 
-/**
- * Factory for creating A2A authentication providers.
- * @see https://a2a-protocol.org/latest/specification/#451-securityscheme
- */
 export class A2AAuthProviderFactory {
   static async create(
     options: CreateAuthProviderOptions,
@@ -40,7 +35,7 @@ export class A2AAuthProviderFactory {
         agentCard?.securitySchemes &&
         Object.keys(agentCard.securitySchemes).length > 0
       ) {
-        return undefined; // Caller should prompt user to configure auth
+        return undefined;
       }
       return undefined;
     }
@@ -68,9 +63,6 @@ export class A2AAuthProviderFactory {
       }
 
       case 'oauth2': {
-        // Dynamic import to avoid pulling MCPOAuthTokenStorage into the
-        // factory's static module graph, which causes initialization
-        // conflicts with code_assist/oauth-credential-storage.ts.
         const { OAuth2AuthProvider } = await import('./oauth2-provider.js');
         const provider = new OAuth2AuthProvider(
           authConfig,
@@ -83,7 +75,6 @@ export class A2AAuthProviderFactory {
       }
 
       case 'openIdConnect':
-        // TODO: Implement
         throw new Error('openIdConnect auth provider not yet implemented');
 
       default: {
@@ -95,7 +86,6 @@ export class A2AAuthProviderFactory {
     }
   }
 
-  /** Create provider directly from config, bypassing AgentCard validation. */
   static async createFromConfig(
     authConfig: A2AAuthConfig,
     agentName?: string,
@@ -104,14 +94,9 @@ export class A2AAuthProviderFactory {
       authConfig,
       agentName,
     });
-
-    // create() returns undefined only when authConfig is missing.
-    // Since authConfig is required here, provider will always be defined
-    // (or create() throws for unimplemented types).
     return provider!;
   }
 
-  /** Validate auth config against AgentCard's security requirements. */
   static validateAuthConfig(
     authConfig: A2AAuthConfig | undefined,
     securitySchemes: Record<string, SecurityScheme> | undefined,
@@ -152,7 +137,6 @@ export class A2AAuthProviderFactory {
     };
   }
 
-  // Security schemes have OR semantics per A2A spec - matching any single scheme is sufficient
   private static findMatchingScheme(
     authConfig: A2AAuthConfig,
     securitySchemes: Record<string, SecurityScheme>,
@@ -228,7 +212,6 @@ export class A2AAuthProviderFactory {
     return { matched: false, missingConfig };
   }
 
-  /** Get human-readable description of required auth for error messages. */
   static describeRequiredAuth(
     securitySchemes: Record<string, SecurityScheme>,
   ): string {
@@ -255,7 +238,6 @@ export class A2AAuthProviderFactory {
           break;
         default: {
           const _exhaustive: never = scheme;
-          // This ensures TypeScript errors if a new SecurityScheme type is added
           descriptions.push(
             `Unknown (${name}): ${(_exhaustive as SecurityScheme).type}`,
           );

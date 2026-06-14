@@ -10,20 +10,20 @@ import {
   type ToolCallConfirmationDetails,
   Kind,
   ApprovalMode,
-  GEMINI_MODEL_ALIAS_AUTO,
-  DEFAULT_GEMINI_MODEL,
-  DEFAULT_GEMINI_FLASH_MODEL,
-  DEFAULT_GEMINI_FLASH_LITE_MODEL,
-  PREVIEW_GEMINI_3_1_MODEL,
-  PREVIEW_GEMINI_MODEL,
-  PREVIEW_GEMINI_3_1_CUSTOM_TOOLS_MODEL,
-  PREVIEW_GEMINI_FLASH_MODEL,
-  PREVIEW_GEMINI_FLASH_LITE_MODEL,
+  A_CODER_MODEL_ALIAS_AUTO,
+  DEFAULT_A_CODER_MODEL,
+  DEFAULT_A_CODER_FLASH_MODEL,
+  DEFAULT_A_CODER_FLASH_LITE_MODEL,
+  PREVIEW_A_CODER_3_1_MODEL,
+  PREVIEW_A_CODER_MODEL,
+  PREVIEW_A_CODER_3_1_CUSTOM_TOOLS_MODEL,
+  PREVIEW_A_CODER_FLASH_MODEL,
+  PREVIEW_A_CODER_FLASH_LITE_MODEL,
   getDisplayString,
   AuthType,
   ToolConfirmationOutcome,
   getAutoModelDescription,
-} from '@google/gemini-cli-core';
+} from '@the-a-tech-corporation/core';
 import type * as acp from '@agentclientprotocol/sdk';
 import { z } from 'zod';
 import type { LoadedSettings } from '../config/settings.js';
@@ -262,13 +262,13 @@ export function buildAvailableModels(
   }>;
   currentModelId: string;
 } {
-  const preferredModel = config.getModel() || GEMINI_MODEL_ALIAS_AUTO;
+  const preferredModel = config.getModel() || A_CODER_MODEL_ALIAS_AUTO;
   const shouldShowPreviewModels = config.getHasAccessToPreviewModel();
-  const useGemini31 = config.getGemini31LaunchedSync?.() ?? false;
-  const useGemini3_5Flash = config.hasGemini35FlashGAAccess?.() ?? false;
+  const useACoder31 = config.getACoder31LaunchedSync?.() ?? false;
+  const useACoder3_5Flash = config.hasACoder35FlashGAAccess?.() ?? false;
   const selectedAuthType = settings.merged.security.auth.selectedType;
   const useCustomToolModel =
-    useGemini31 && selectedAuthType === AuthType.USE_GEMINI;
+    useACoder31 && selectedAuthType === AuthType.USE_GEMINI;
 
   // --- DYNAMIC PATH ---
   if (
@@ -276,8 +276,8 @@ export function buildAvailableModels(
     config.getModelConfigService
   ) {
     const options = config.getModelConfigService().getAvailableModelOptions({
-      useGemini3_1: useGemini31,
-      useGemini3_5Flash,
+      useGemini3_1: useACoder31,
+      useACoder3_5Flash,
       useCustomTools: useCustomToolModel,
       hasAccessToPreview: shouldShowPreviewModels,
     });
@@ -291,38 +291,38 @@ export function buildAvailableModels(
   // --- LEGACY PATH ---
   const mainOptions = [
     {
-      value: GEMINI_MODEL_ALIAS_AUTO,
-      title: getDisplayString(GEMINI_MODEL_ALIAS_AUTO),
+      value: A_CODER_MODEL_ALIAS_AUTO,
+      title: getDisplayString(A_CODER_MODEL_ALIAS_AUTO),
       description: getAutoModelDescription(
         shouldShowPreviewModels,
-        useGemini31,
-        useGemini3_5Flash,
+        useACoder31,
+        useACoder3_5Flash,
       ),
     },
   ];
 
   const manualOptions = [
     {
-      value: DEFAULT_GEMINI_MODEL,
-      title: getDisplayString(DEFAULT_GEMINI_MODEL),
+      value: DEFAULT_A_CODER_MODEL,
+      title: getDisplayString(DEFAULT_A_CODER_MODEL),
     },
     {
-      value: DEFAULT_GEMINI_FLASH_MODEL,
-      title: getDisplayString(DEFAULT_GEMINI_FLASH_MODEL),
+      value: DEFAULT_A_CODER_FLASH_MODEL,
+      title: getDisplayString(DEFAULT_A_CODER_FLASH_MODEL),
     },
     {
-      value: DEFAULT_GEMINI_FLASH_LITE_MODEL,
-      title: getDisplayString(DEFAULT_GEMINI_FLASH_LITE_MODEL),
+      value: DEFAULT_A_CODER_FLASH_LITE_MODEL,
+      title: getDisplayString(DEFAULT_A_CODER_FLASH_LITE_MODEL),
     },
   ];
 
   if (shouldShowPreviewModels) {
-    const previewProModel = useGemini31
-      ? PREVIEW_GEMINI_3_1_MODEL
-      : PREVIEW_GEMINI_MODEL;
+    const previewProModel = useACoder31
+      ? PREVIEW_A_CODER_3_1_MODEL
+      : PREVIEW_A_CODER_MODEL;
 
     const previewProValue = useCustomToolModel
-      ? PREVIEW_GEMINI_3_1_CUSTOM_TOOLS_MODEL
+      ? PREVIEW_A_CODER_3_1_CUSTOM_TOOLS_MODEL
       : previewProModel;
 
     const previewOptions = [
@@ -331,15 +331,15 @@ export function buildAvailableModels(
         title: getDisplayString(previewProModel),
       },
       {
-        value: PREVIEW_GEMINI_FLASH_MODEL,
-        title: getDisplayString(PREVIEW_GEMINI_FLASH_MODEL),
+        value: PREVIEW_A_CODER_FLASH_MODEL,
+        title: getDisplayString(PREVIEW_A_CODER_FLASH_MODEL),
       },
     ];
 
-    if (PREVIEW_GEMINI_FLASH_LITE_MODEL !== 'none') {
+    if (PREVIEW_A_CODER_FLASH_LITE_MODEL !== 'none') {
       previewOptions.push({
-        value: PREVIEW_GEMINI_FLASH_LITE_MODEL,
-        title: getDisplayString(PREVIEW_GEMINI_FLASH_LITE_MODEL),
+        value: PREVIEW_A_CODER_FLASH_LITE_MODEL,
+        title: getDisplayString(PREVIEW_A_CODER_FLASH_LITE_MODEL),
       });
     }
 

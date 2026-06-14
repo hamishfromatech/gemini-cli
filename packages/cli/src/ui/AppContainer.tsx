@@ -91,7 +91,7 @@ import {
   ApiKeyUpdatedEvent,
   LegacyAgentProtocol,
   type InjectionSource,
-} from '@google/gemini-cli-core';
+} from '@the-a-tech-corporation/core';
 import { validateAuthMethod } from '../config/auth.js';
 import process from 'node:process';
 import { useHistory } from './hooks/useHistoryManager.js';
@@ -118,7 +118,7 @@ import { basename } from 'node:path';
 import { computeTerminalTitle } from '../utils/windowTitle.js';
 import { useTextBuffer } from './components/shared/text-buffer.js';
 import { useLogger } from './hooks/useLogger.js';
-import { useGeminiStream } from './hooks/useGeminiStream.js';
+import { useACoderStream } from './hooks/useACoderStream.js';
 import { useAgentStream } from './hooks/useAgentStream.js';
 import { type BackgroundTask } from './hooks/useExecutionLifecycle.js';
 import { useVim } from './hooks/vim.js';
@@ -233,7 +233,7 @@ export const AppContainer = (props: AppContainerProps) => {
     useContext(InkAppContext);
   const recordingFilenameRef = useRef<string | null>(null);
   const historyManager = useHistory({
-    chatRecordingService: config.getGeminiClient()?.getChatRecordingService(),
+    chatRecordingService: config.getACoderClient()?.getChatRecordingService(),
   });
 
   useMemoryMonitor(historyManager);
@@ -496,9 +496,9 @@ export const AppContainer = (props: AppContainerProps) => {
 
       if (result) {
         const additionalContext = result.getAdditionalContext();
-        const geminiClient = config.getGeminiClient();
-        if (additionalContext && geminiClient) {
-          await geminiClient.addHistory({
+        const aCoderClient = config.getACoderClient();
+        if (additionalContext && aCoderClient) {
+          await aCoderClient.addHistory({
             role: 'user',
             parts: [
               { text: `<hook_context>${additionalContext}</hook_context>` },
@@ -770,13 +770,13 @@ export const AppContainer = (props: AppContainerProps) => {
     settings.merged.security.auth.selectedType !== AuthType.USE_GEMINI;
 
   // Session browser and resume functionality
-  const isGeminiClientInitialized = config.getGeminiClient()?.isInitialized();
+  const isACoderClientInitialized = config.getACoderClient()?.isInitialized();
 
   const { loadHistoryForResume, isResuming } = useSessionResume({
     config,
     historyManager,
     refreshStatic,
-    isGeminiClientInitialized,
+    isACoderClientInitialized,
     setQuittingMessages,
     resumedSessionData,
     isAuthenticating,
@@ -840,7 +840,7 @@ export const AppContainer = (props: AppContainerProps) => {
         ) {
           writeToStdout(`
 ----------------------------------------------------------------
-Logging in with Google... Restarting Gemini CLI to continue.
+Logging in with Google... Restarting A-Coder CLI to continue.
 ----------------------------------------------------------------
           `);
           await relaunchApp();
@@ -1067,7 +1067,7 @@ Logging in with Google... Restarting Gemini CLI to continue.
     historyManager.addItem(
       {
         type: MessageType.INFO,
-        text: 'Refreshing hierarchical memory (GEMINI.md or other context files)...',
+        text: 'Refreshing hierarchical memory (A_CODER.md or other context files)...',
       },
       Date.now(),
     );
@@ -1188,8 +1188,8 @@ Logging in with Google... Restarting Gemini CLI to continue.
         logger,
       })
     : // eslint-disable-next-line react-hooks/rules-of-hooks
-      useGeminiStream(
-        config.getGeminiClient(),
+      useACoderStream(
+        config.getACoderClient(),
         historyManager.history,
         historyManager.addItem,
         config,
@@ -1583,7 +1583,7 @@ Logging in with Google... Restarting Gemini CLI to continue.
   // Initial prompt handling
   const initialPrompt = useMemo(() => config.getQuestion(), [config]);
   const initialPromptSubmitted = useRef(false);
-  const geminiClient = config.getGeminiClient();
+  const aCoderClient = config.getACoderClient();
 
   useEffect(() => {
     if (
@@ -1595,7 +1595,7 @@ Logging in with Google... Restarting Gemini CLI to continue.
       !isThemeDialogOpen &&
       !isEditorDialogOpen &&
       !showPrivacyNotice &&
-      geminiClient?.isInitialized?.()
+      aCoderClient?.isInitialized?.()
     ) {
       void handleFinalSubmit(initialPrompt);
       initialPromptSubmitted.current = true;
@@ -1609,7 +1609,7 @@ Logging in with Google... Restarting Gemini CLI to continue.
     isThemeDialogOpen,
     isEditorDialogOpen,
     showPrivacyNotice,
-    geminiClient,
+    aCoderClient,
   ]);
 
   const [idePromptAnswered, setIdePromptAnswered] = useState(false);
@@ -2093,7 +2093,7 @@ Logging in with Google... Restarting Gemini CLI to continue.
       lastTitleRef.current = paddedTitle;
       stdout.write(`\x1b]0;${paddedTitle}\x07`);
     }
-    // Note: We don't need to reset the window title on exit because Gemini CLI is already doing that elsewhere
+    // Note: We don't need to reset the window title on exit because A-Coder CLI is already doing that elsewhere
   }, [
     streamingState,
     thought,

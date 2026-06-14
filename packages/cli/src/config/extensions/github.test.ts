@@ -28,17 +28,17 @@ import { EventEmitter } from 'node:events';
 import type {
   GeminiCLIExtension,
   ExtensionInstallMetadata,
-} from '@google/gemini-cli-core';
+} from '@the-a-tech-corporation/core';
 import type { ExtensionConfig } from '../extension.js';
 
-vi.mock('@google/gemini-cli-core', async (importOriginal) => {
+vi.mock('@the-a-tech-corporation/core', async (importOriginal) => {
   const actual =
-    await importOriginal<typeof import('@google/gemini-cli-core')>();
+    await importOriginal<typeof import('@the-a-tech-corporation/core')>();
   return {
     ...actual,
     Storage: {
       getGlobalSettingsPath: vi.fn().mockReturnValue('/mock/settings.json'),
-      getGlobalGeminiDir: vi.fn().mockReturnValue('/mock/.gemini'),
+      getGlobalACoderDir: vi.fn().mockReturnValue('/mock/.a-coder'),
     },
     debugLogger: {
       error: vi.fn(),

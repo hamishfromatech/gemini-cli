@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2025 Google LLC
+ * Copyright 2026 The A-Tech Corporation
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -38,8 +38,8 @@ if (process.env.CI) {
   execSync('npm run build --workspaces', { stdio: 'inherit', cwd: root });
 } else {
   // Build core first because everyone depends on it
-  console.log('Building @google/gemini-cli-core...');
-  execSync('npm run build -w @google/gemini-cli-core', {
+  console.log('Building @the-a-tech-corporation/core...');
+  execSync('npm run build -w @the-a-tech-corporation/core', {
     stdio: 'inherit',
     cwd: root,
   });
@@ -51,7 +51,7 @@ if (process.env.CI) {
   );
   const parallelWorkspaces = workspaceInfo
     .map((w) => w.name)
-    .filter((name) => name !== '@google/gemini-cli-core');
+    .filter((name) => name !== '@the-a-tech-corporation/core');
 
   execSync(
     `npx npm-run-all --parallel ${parallelWorkspaces.map((w) => `"build -w ${w}"`).join(' ')}`,

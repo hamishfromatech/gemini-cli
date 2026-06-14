@@ -20,8 +20,8 @@ import {
   MCPDiscoveryState,
   makeFakeConfig,
   coreEvents,
-  type GeminiClient,
-} from '@google/gemini-cli-core';
+  type ACoderClient,
+} from '@the-a-tech-corporation/core';
 
 const {
   logSlashCommand,
@@ -46,9 +46,9 @@ vi.mock('./useAlternateBuffer.js', () => ({
   useAlternateBuffer: mockUseAlternateBuffer,
 }));
 
-vi.mock('@google/gemini-cli-core', async (importOriginal) => {
+vi.mock('@the-a-tech-corporation/core', async (importOriginal) => {
   const original =
-    await importOriginal<typeof import('@google/gemini-cli-core')>();
+    await importOriginal<typeof import('@the-a-tech-corporation/core')>();
 
   return {
     ...original,
@@ -579,8 +579,8 @@ describe('useSlashCommandProcessor', () => {
       const mockClient = {
         setHistory: vi.fn(),
         stripThoughtsFromHistory: vi.fn(),
-      } as unknown as GeminiClient;
-      vi.spyOn(mockConfig, 'getGeminiClient').mockReturnValue(mockClient);
+      } as unknown as ACoderClient;
+      vi.spyOn(mockConfig, 'getACoderClient').mockReturnValue(mockClient);
 
       const command = createTestCommand({
         name: 'load',
@@ -656,8 +656,8 @@ describe('useSlashCommandProcessor', () => {
         getChatRecordingService: vi.fn().mockReturnValue({
           deleteCurrentSessionAsync: mockDeleteCurrentSessionAsync,
         }),
-      } as unknown as GeminiClient;
-      vi.spyOn(mockConfig, 'getGeminiClient').mockReturnValue(mockClient);
+      } as unknown as ACoderClient;
+      vi.spyOn(mockConfig, 'getACoderClient').mockReturnValue(mockClient);
 
       const quitAction = vi.fn().mockResolvedValue({
         type: 'quit',
@@ -690,8 +690,8 @@ describe('useSlashCommandProcessor', () => {
         getChatRecordingService: vi.fn().mockReturnValue({
           deleteCurrentSessionAsync: mockDeleteCurrentSessionAsync,
         }),
-      } as unknown as GeminiClient;
-      vi.spyOn(mockConfig, 'getGeminiClient').mockReturnValue(mockClient);
+      } as unknown as ACoderClient;
+      vi.spyOn(mockConfig, 'getACoderClient').mockReturnValue(mockClient);
 
       const quitAction = vi.fn().mockResolvedValue({
         type: 'quit',
@@ -722,8 +722,8 @@ describe('useSlashCommandProcessor', () => {
             .fn()
             .mockRejectedValue(new Error('Deletion failed')),
         }),
-      } as unknown as GeminiClient;
-      vi.spyOn(mockConfig, 'getGeminiClient').mockReturnValue(mockClient);
+      } as unknown as ACoderClient;
+      vi.spyOn(mockConfig, 'getACoderClient').mockReturnValue(mockClient);
 
       const quitAction = vi.fn().mockResolvedValue({
         type: 'quit',

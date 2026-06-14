@@ -1,7 +1,9 @@
 /**
  * @license
- * Copyright 2025 Google LLC
+ * Copyright 2026 Google LLC
  * SPDX-License-Identifier: Apache-2.0
+ *
+ * @license
  */
 
 // Export config
@@ -21,7 +23,6 @@ export * from './policy/config.js';
 export * from './policy/integrity.js';
 export * from './config/extensions/integrity.js';
 export * from './config/extensions/integrityTypes.js';
-export * from './billing/index.js';
 export * from './confirmation-bus/types.js';
 export * from './confirmation-bus/message-bus.js';
 
@@ -34,7 +35,7 @@ export * from './commands/types.js';
 
 // Export Core Logic
 export * from './core/baseLlmClient.js';
-export * from './core/client.js';
+export * from './core/a-coder-client.js';
 export * from './core/contentGenerator.js';
 export * from './core/fakeContentGenerator.js';
 export * from './core/loggingContentGenerator.js';
@@ -49,6 +50,7 @@ export * from './scheduler/types.js';
 export * from './scheduler/tool-executor.js';
 export * from './scheduler/policy.js';
 export * from './core/recordingContentGenerator.js';
+export * from './core/openaiContentGenerator.js';
 
 // Export Routing
 export * from './routing/routingStrategy.js';
@@ -57,14 +59,6 @@ export * from './routing/modelRouterService.js';
 export * from './fallback/types.js';
 export * from './fallback/handler.js';
 
-export * from './code_assist/codeAssist.js';
-export * from './code_assist/oauth2.js';
-export * from './code_assist/server.js';
-export * from './code_assist/setup.js';
-export * from './code_assist/types.js';
-export * from './code_assist/telemetry.js';
-export * from './code_assist/admin/admin_controls.js';
-export * from './code_assist/admin/mcpUtils.js';
 export * from './core/apiKeyCredentialStorage.js';
 
 // Export utilities
@@ -83,11 +77,7 @@ export * from './utils/getPty.js';
 export * from './utils/gitIgnoreParser.js';
 export * from './utils/gitUtils.js';
 export * from './utils/editor.js';
-export * from './utils/quotaErrorDetection.js';
-export * from './utils/userAccountManager.js';
 export * from './utils/authConsent.js';
-export * from './utils/googleQuotaErrors.js';
-export * from './utils/googleErrors.js';
 export * from './utils/fileUtils.js';
 export * from './utils/sessionOperations.js';
 export * from './utils/planUtils.js';
@@ -124,7 +114,6 @@ export * from './utils/extensionLoader.js';
 export * from './utils/package.js';
 export * from './utils/version.js';
 export * from './utils/checkpointUtils.js';
-export * from './utils/secure-browser-launcher.js';
 export * from './utils/apiConversionUtils.js';
 export * from './utils/channel.js';
 export * from './utils/constants.js';
@@ -268,7 +257,63 @@ export * from './telemetry/index.js';
 export * from './telemetry/billingEvents.js';
 export { logBillingEvent } from './telemetry/loggers.js';
 export * from './telemetry/constants.js';
+
+// Export code assist types and experiments
+export * from './code_assist/types.js';
+export * from './code_assist/experiments/flagNames.js';
+export * from './code_assist/admin/admin_controls.js';
+export { getCodeAssistServer } from './code_assist/codeAssist.js';
+export { CodeAssistServer } from './code_assist/server.js';
+export {
+  getOauthClient,
+  clearCachedCredentialFile,
+} from './code_assist/oauth2.js';
+export {
+  ProjectIdRequiredError,
+  ValidationCancelledError,
+} from './code_assist/setup.js';
+export { recordToolCallInteractions } from './code_assist/telemetry.js';
+export {
+  applyAdminAllowlist,
+  applyRequiredServers,
+} from './code_assist/admin/mcpUtils.js';
+
+// Export billing helpers and account manager
+export * from './billing/billing.js';
+export { UserAccountManager } from './utils/userAccountManager.js';
+export {
+  TerminalQuotaError,
+  ValidationRequiredError,
+  RetryableQuotaError,
+} from './utils/googleQuotaErrors.js';
+export type { GoogleApiError } from './utils/googleErrors.js';
+export { KeychainTokenStorage } from './mcp/token-storage/keychain-token-storage.js';
+
+// Export telemetry event classes and loggers not re-exported by telemetry/index.js
+export {
+  IdeConnectionEvent,
+  IdeConnectionType,
+  ModelSlashCommandEvent,
+  OverageMenuShownEvent,
+  OverageOptionSelectedEvent,
+  EmptyWalletMenuShownEvent,
+  CreditPurchaseClickEvent,
+  ApiKeyUpdatedEvent,
+  ExtensionInstallEvent,
+  ExtensionUninstallEvent,
+  ExtensionUpdateEvent,
+  ExtensionEnableEvent,
+  ExtensionDisableEvent,
+} from './telemetry/types.js';
+export {
+  logIdeConnection,
+  logModelSlashCommand,
+  logExtensionDisable,
+} from './telemetry/loggers.js';
+export { startupProfiler } from './telemetry/startupProfiler.js';
+
 export { createSessionId } from './utils/session.js';
+export { LlmRole } from './telemetry/llmRole.js';
 export * from './utils/compatibility.js';
 export * from './utils/browser.js';
 export { Storage } from './config/storage.js';
@@ -287,7 +332,7 @@ export * from './services/worktreeService.js';
 // Export voice utilities
 export * from './voice/responseFormatter.js';
 
-// Export types from @google/genai
+// Export types from @google/genai (transitional dependency for internal data model)
 export type { Content, Part, FunctionCall } from '@google/genai';
 
 // Export context types and profiles
@@ -307,7 +352,6 @@ export * from './utils/trust.js';
 // Export voice utilities
 export * from './voice/audioRecorder.js';
 export * from './voice/transcriptionProvider.js';
-export * from './voice/geminiLiveTranscriptionProvider.js';
 export * from './voice/whisperTranscriptionProvider.js';
 export * from './voice/transcriptionFactory.js';
 export * from './voice/whisperModelManager.js';

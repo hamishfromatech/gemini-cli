@@ -16,7 +16,7 @@ import {
   afterEach,
   type Mock,
 } from 'vitest';
-import { NoopSandboxManager, escapeShellArg } from '@google/gemini-cli-core';
+import { NoopSandboxManager, escapeShellArg } from '@the-a-tech-corporation/core';
 
 const mockIsBinary = vi.hoisted(() => vi.fn());
 const mockShellExecutionService = vi.hoisted(() => vi.fn());
@@ -53,9 +53,9 @@ const mockLifecycleBackground = vi.hoisted(() => vi.fn());
 const mockLifecycleOnBackground = vi.hoisted(() => vi.fn());
 const mockLifecycleOffBackground = vi.hoisted(() => vi.fn());
 
-vi.mock('@google/gemini-cli-core', async (importOriginal) => {
+vi.mock('@the-a-tech-corporation/core', async (importOriginal) => {
   const actual =
-    await importOriginal<typeof import('@google/gemini-cli-core')>();
+    await importOriginal<typeof import('@the-a-tech-corporation/core')>();
   return {
     ...actual,
     ShellExecutionService: {
@@ -112,12 +112,12 @@ import {
 } from './useExecutionLifecycle.js';
 import {
   type Config,
-  type GeminiClient,
+  type ACoderClient,
   type ShellExecutionResult,
   type ShellOutputEvent,
   type AnsiOutput,
   CoreToolCallStatus,
-} from '@google/gemini-cli-core';
+} from '@the-a-tech-corporation/core';
 import * as fs from 'node:fs';
 import * as os from 'node:os';
 import * as path from 'node:path';
@@ -129,7 +129,7 @@ describe('useExecutionLifecycle', () => {
   let onExecMock: Mock;
   let onDebugMessageMock: Mock;
   let mockConfig: Config;
-  let mockGeminiClient: GeminiClient;
+  let mockACoderClient: ACoderClient;
 
   let mockShellOutputCallback: (event: ShellOutputEvent) => void;
   let resolveExecutionPromise: (result: ShellExecutionResult) => void;
@@ -159,7 +159,7 @@ describe('useExecutionLifecycle', () => {
         },
       }),
     } as unknown as Config;
-    mockGeminiClient = { addHistory: vi.fn() } as unknown as GeminiClient;
+    mockACoderClient = { addHistory: vi.fn() } as unknown as ACoderClient;
 
     vi.mocked(os.platform).mockReturnValue('linux');
     vi.mocked(os.tmpdir).mockReturnValue('/tmp');
@@ -196,7 +196,7 @@ describe('useExecutionLifecycle', () => {
         onExecMock,
         onDebugMessageMock,
         mockConfig,
-        mockGeminiClient,
+        mockACoderClient,
         setShellInputFocusedMock,
         undefined,
         undefined,
@@ -317,7 +317,7 @@ describe('useExecutionLifecycle', () => {
         ],
       }),
     );
-    expect(mockGeminiClient.addHistory).toHaveBeenCalled();
+    expect(mockACoderClient.addHistory).toHaveBeenCalled();
     expect(setShellInputFocusedMock).toHaveBeenCalledWith(false);
   });
 
@@ -525,7 +525,7 @@ describe('useExecutionLifecycle', () => {
     await act(async () => await execPromise);
 
     // With the new logic, cancelled commands are not added to history by this hook
-    // to avoid duplication/flickering, as they are handled by useGeminiStream.
+    // to avoid duplication/flickering, as they are handled by useACoderStream.
     expect(addItemToHistoryMock).toHaveBeenCalledTimes(1);
     expect(setPendingHistoryItemMock).toHaveBeenCalledWith(null);
     expect(setShellInputFocusedMock).toHaveBeenCalledWith(false);

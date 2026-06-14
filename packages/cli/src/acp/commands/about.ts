@@ -8,7 +8,7 @@ import {
   IdeClient,
   UserAccountManager,
   getVersion,
-} from '@google/gemini-cli-core';
+} from '@the-a-tech-corporation/core';
 import type {
   Command,
   CommandContext,
@@ -60,7 +60,7 @@ export class AboutCommand implements Command {
 
     return {
       name: this.name,
-      data: `Gemini CLI Info:\n${info}`,
+      data: `A-Coder CLI Info:\n${info}`,
     };
   }
 }

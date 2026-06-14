@@ -20,13 +20,13 @@ import {
   AuthType,
   type Config,
   CoreToolCallStatus,
-} from '@google/gemini-cli-core';
+} from '@the-a-tech-corporation/core';
 import { loadCliConfig, type CliArgs } from '../config/config.js';
 import {
   SessionSelector,
   convertSessionToHistoryFormats,
 } from '../utils/sessionUtils.js';
-import { convertSessionToClientHistory } from '@google/gemini-cli-core';
+import { convertSessionToClientHistory } from '@the-a-tech-corporation/core';
 import type { LoadedSettings } from '../config/settings.js';
 import { waitFor } from '../test-utils/async.js';
 
@@ -44,9 +44,9 @@ vi.mock('../utils/sessionUtils.js', async (importOriginal) => {
   };
 });
 
-vi.mock('@google/gemini-cli-core', async (importOriginal) => {
+vi.mock('@the-a-tech-corporation/core', async (importOriginal) => {
   const actual =
-    await importOriginal<typeof import('@google/gemini-cli-core')>();
+    await importOriginal<typeof import('@the-a-tech-corporation/core')>();
   return {
     ...actual,
     CoreToolCallStatus: {
@@ -84,7 +84,7 @@ describe('GeminiAgent Session Resume', () => {
       initialize: vi.fn().mockResolvedValue(undefined),
       getFileSystemService: vi.fn(),
       setFileSystemService: vi.fn(),
-      getGeminiClient: vi.fn().mockReturnValue({
+      getACoderClient: vi.fn().mockReturnValue({
         initialize: vi.fn().mockResolvedValue(undefined),
         resumeChat: vi.fn().mockResolvedValue(undefined),
         getChat: vi.fn().mockReturnValue({}),
@@ -110,7 +110,7 @@ describe('GeminiAgent Session Resume', () => {
       isPlanEnabled: vi.fn().mockReturnValue(true),
       getModel: vi.fn().mockReturnValue('gemini-pro'),
       getHasAccessToPreviewModel: vi.fn().mockReturnValue(false),
-      getGemini31LaunchedSync: vi.fn().mockReturnValue(false),
+      getACoder31LaunchedSync: vi.fn().mockReturnValue(false),
       getCheckpointingEnabled: vi.fn().mockReturnValue(false),
       toolRegistry: {
         getTool: vi.fn().mockReturnValue({ kind: 'read' }),
@@ -236,7 +236,7 @@ describe('GeminiAgent Session Resume', () => {
     });
 
     // Verify resumeChat received the correct arguments
-    expect(mockConfig.getGeminiClient().resumeChat).toHaveBeenCalledWith(
+    expect(mockConfig.getACoderClient().resumeChat).toHaveBeenCalledWith(
       mockClientHistory,
       expect.objectContaining({
         conversation: sessionData,

@@ -18,11 +18,11 @@ import {
   ExtensionRegistryClient,
   type RegistryExtension,
 } from './extensionRegistryClient.js';
-import { fetchWithTimeout, resolveToRealPath } from '@google/gemini-cli-core';
+import { fetchWithTimeout, resolveToRealPath } from '@the-a-tech-corporation/core';
 
-vi.mock('@google/gemini-cli-core', async (importOriginal) => {
+vi.mock('@the-a-tech-corporation/core', async (importOriginal) => {
   const actual =
-    await importOriginal<typeof import('@google/gemini-cli-core')>();
+    await importOriginal<typeof import('@the-a-tech-corporation/core')>();
   return {
     ...actual,
     fetchWithTimeout: vi.fn(),
@@ -124,7 +124,7 @@ describe('ExtensionRegistryClient', () => {
     expect(result.total).toBe(3);
     expect(fetchMock).toHaveBeenCalledTimes(1);
     expect(fetchMock).toHaveBeenCalledWith(
-      'https://geminicli.com/extensions.json',
+      'https://a-coder-cli.com/extensions.json',
       10000,
     );
   });

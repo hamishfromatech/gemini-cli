@@ -13,7 +13,7 @@ import {
 } from '../tools/memoryTool.js';
 import { processImports } from './memoryImportProcessor.js';
 import {
-  GEMINI_DIR,
+  A_CODER_DIR,
   homedir,
   isSubpath,
   normalizePath,
@@ -245,12 +245,12 @@ export async function readGeminiMdFiles(
             (error as NodeJS.ErrnoException).code === 'EISDIR';
 
           if (isEISDIR) {
-            // A directory exists where a GEMINI.md file is expected.
+            // A directory exists where a A_CODER.md file is expected.
             // This is valid in some project structures (e.g. a folder named
-            // GEMINI.md held for organisational purposes) — skip it silently
+            // A_CODER.md held for organisational purposes) — skip it silently
             // instead of surfacing a confusing warning to the user.
             debugLogger.debug(
-              '[DEBUG] [MemoryDiscovery] Skipping directory at GEMINI.md path:',
+              '[DEBUG] [MemoryDiscovery] Skipping directory at A_CODER.md path:',
               filePath,
             );
           } else {
@@ -320,7 +320,7 @@ export async function getGlobalMemoryPaths(): Promise<string[]> {
 
   const accessChecks = geminiMdFilenames.map(async (filename) => {
     const globalPath = toAbsolutePath(
-      path.join(userHome, GEMINI_DIR, filename),
+      path.join(userHome, A_CODER_DIR, filename),
     );
     try {
       await fs.access(globalPath, fsSync.constants.R_OK);
@@ -354,7 +354,7 @@ export async function getUserProjectMemoryPaths(
     );
     return [preferredMemoryPath];
   } catch {
-    // Fall back to the legacy private GEMINI.md file if the project has not
+    // Fall back to the legacy private A_CODER.md file if the project has not
     // been migrated to MEMORY.md yet.
   }
 
@@ -455,7 +455,7 @@ export function categorizeAndConcatenate(
 }
 
 /**
- * Traverses upward from startDir to stopDir, finding all GEMINI.md variants.
+ * Traverses upward from startDir to stopDir, finding all A_CODER.md variants.
  *
  * Files are ordered by directory level (root to leaf), with all filename
  * variants grouped together per directory.
@@ -468,7 +468,7 @@ async function findUpwardGeminiFiles(
   let currentDir = toAbsolutePath(startDir);
   const resolvedStopDirKey = normalizePath(stopDir);
   const geminiMdFilenames = getAllGeminiMdFilenames();
-  const globalGeminiDirKey = normalizePath(path.join(homedir(), GEMINI_DIR));
+  const globalGeminiDirKey = normalizePath(path.join(homedir(), A_CODER_DIR));
 
   debugLogger.debug(
     '[DEBUG] [MemoryDiscovery] Starting upward search from',
@@ -555,7 +555,7 @@ export async function loadJitSubdirectoryMemory(
   // Resolve the target to a directory before traversing upward.
   // When the target is a file (e.g. /app/src/file.ts), start from its
   // parent directory to avoid a wasted fs.access check on a nonsensical
-  // path like /app/src/file.ts/GEMINI.md.
+  // path like /app/src/file.ts/A_CODER.md.
   let startDir = resolvedTarget;
   try {
     const stat = await fs.stat(resolvedTarget);

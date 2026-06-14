@@ -1,13 +1,13 @@
-# Gemini CLI hooks
+# A-Coder CLI hooks
 
-Hooks are scripts or programs that Gemini CLI executes at specific points in the
+Hooks are scripts or programs that A-Coder CLI executes at specific points in the
 agentic loop, allowing you to intercept and customize behavior without modifying
 the CLI's source code.
 
 ## What are hooks?
 
 Hooks run synchronously as part of the agent loop—when a hook event fires,
-Gemini CLI waits for all matching hooks to complete before continuing.
+A-Coder CLI waits for all matching hooks to complete before continuing.
 
 With hooks, you can:
 
@@ -33,7 +33,7 @@ With hooks, you can:
 
 ### Hook events
 
-Hooks are triggered by specific events in Gemini CLI's lifecycle.
+Hooks are triggered by specific events in A-Coder CLI's lifecycle.
 
 | Event                 | When It Fires                                  | Impact                 | Common Use Cases                             |
 | --------------------- | ---------------------------------------------- | ---------------------- | -------------------------------------------- |
@@ -64,12 +64,12 @@ Hooks communicate via `stdin` (Input) and `stdout` (Output).
    fail. The CLI will default to "Allow" and treat the entire output as a
    `systemMessage`.
 3. **Debug via Stderr**: Use `stderr` for **all** logging and debugging (for
-   example, `echo "debug" >&2`). Gemini CLI captures `stderr` but never attempts
+   example, `echo "debug" >&2`). A-Coder CLI captures `stderr` but never attempts
    to parse it as JSON.
 
 #### Exit codes
 
-Gemini CLI uses exit codes to determine the high-level outcome of a hook
+A-Coder CLI uses exit codes to determine the high-level outcome of a hook
 execution:
 
 | Exit Code | Label            | Behavioral Impact                                                                                                                                                            |
@@ -91,12 +91,12 @@ You can filter which specific tools or triggers fire your hook using the
 
 ## Configuration
 
-Hooks are configured in `settings.json`. Gemini CLI merges configurations from
+Hooks are configured in `settings.json`. A-Coder CLI merges configurations from
 multiple layers in the following order of precedence (highest to lowest):
 
-1.  **Project settings**: `.gemini/settings.json` in the current directory.
-2.  **User settings**: `~/.gemini/settings.json`.
-3.  **System settings**: `/etc/gemini-cli/settings.json`.
+1.  **Project settings**: `.a-coder-cli/settings.json` in the current directory.
+2.  **User settings**: `~/.a-coder-cli/settings.json`.
+3.  **System settings**: `/etc/a-coder-cli-cli/settings.json`.
 4.  **Extensions**: Hooks defined by installed extensions.
 
 ### Configuration schema
@@ -111,7 +111,7 @@ multiple layers in the following order of precedence (highest to lowest):
           {
             "name": "security-check",
             "type": "command",
-            "command": "$GEMINI_PROJECT_DIR/.gemini/hooks/security.sh",
+            "command": "$A_CODER_PROJECT_DIR/.a-coder-cli/hooks/security.sh",
             "timeout": 5000
           }
         ]
@@ -137,10 +137,10 @@ multiple layers in the following order of precedence (highest to lowest):
 
 Hooks are executed with a sanitized environment.
 
-- `GEMINI_PROJECT_DIR`: The absolute path to the project root.
-- `GEMINI_PLANS_DIR`: The absolute path to the plans directory.
-- `GEMINI_SESSION_ID`: The unique ID for the current session.
-- `GEMINI_CWD`: The current working directory.
+- `A_CODER_PROJECT_DIR`: The absolute path to the project root.
+- `A_CODER_PLANS_DIR`: The absolute path to the plans directory.
+- `A_CODER_SESSION_ID`: The unique ID for the current session.
+- `A_CODER_CWD`: The current working directory.
 - `CLAUDE_PROJECT_DIR`: (Alias) Provided for compatibility.
 
 ## Security and risks
@@ -152,7 +152,7 @@ Hooks are executed with a sanitized environment.
 > machine.
 
 **Project-level hooks** are particularly risky when opening untrusted projects.
-Gemini CLI **fingerprints** project hooks. If a hook's name or command changes
+A-Coder CLI **fingerprints** project hooks. If a hook's name or command changes
 (for example, via `git pull`), it is treated as a **new, untrusted hook** and
 you will be warned before it executes.
 

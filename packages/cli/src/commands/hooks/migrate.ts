@@ -7,7 +7,7 @@
 import type { CommandModule } from 'yargs';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
-import { debugLogger, getErrorMessage } from '@google/gemini-cli-core';
+import { debugLogger, getErrorMessage } from '@the-a-tech-corporation/core';
 import { loadSettings, SettingScope } from '../../config/settings.js';
 import { exitCli } from '../utils.js';
 import stripJsonComments from 'strip-json-comments';
@@ -78,12 +78,12 @@ function migrateClaudeHook(claudeHook: unknown): unknown {
   if ('command' in hook) {
     migrated['command'] = hook['command'];
 
-    // Replace CLAUDE_PROJECT_DIR with GEMINI_PROJECT_DIR in command
+    // Replace CLAUDE_PROJECT_DIR with A_CODER_PROJECT_DIR in command
     // eslint-disable-next-line no-restricted-syntax
     if (typeof migrated['command'] === 'string') {
       migrated['command'] = migrated['command'].replace(
         /\$CLAUDE_PROJECT_DIR/g,
-        '$GEMINI_PROJECT_DIR',
+        '$A_CODER_PROJECT_DIR',
       );
     }
   }
@@ -249,9 +249,9 @@ export async function handleMigrateFromClaude() {
   try {
     settings.setValue(SettingScope.Workspace, 'hooks', mergedHooks);
 
-    debugLogger.log('✓ Hooks successfully migrated to .gemini/settings.json');
+    debugLogger.log('✓ Hooks successfully migrated to .a-coder/settings.json');
     debugLogger.log(
-      '\nMigration complete! Please review the migrated hooks in .gemini/settings.json',
+      '\nMigration complete! Please review the migrated hooks in .a-coder/settings.json',
     );
   } catch (error) {
     debugLogger.error(`Error saving migrated hooks: ${getErrorMessage(error)}`);
@@ -260,7 +260,7 @@ export async function handleMigrateFromClaude() {
 
 export const migrateCommand: CommandModule = {
   command: 'migrate',
-  describe: 'Migrate hooks from Claude Code to Gemini CLI',
+  describe: 'Migrate hooks from Claude Code to A-Coder CLI',
   builder: (yargs) =>
     yargs.option('from-claude', {
       describe: 'Migrate from Claude Code hooks',
@@ -274,7 +274,7 @@ export const migrateCommand: CommandModule = {
       await handleMigrateFromClaude();
     } else {
       debugLogger.log(
-        'Usage: gemini hooks migrate --from-claude\n\nMigrate hooks from Claude Code to Gemini CLI format.',
+        'Usage: a-coder-cli hooks migrate --from-claude\n\nMigrate hooks from Claude Code to A-Coder CLI format.',
       );
     }
     await exitCli();

@@ -9,7 +9,8 @@ import type { CompressionProps } from '../../types.js';
 import { CliSpinner } from '../CliSpinner.js';
 import { theme } from '../../semantic-colors.js';
 import { SCREEN_READER_MODEL_PREFIX } from '../../textConstants.js';
-import { CompressionStatus } from '@google/gemini-cli-core';
+import { ACODER_STATUS_ICON } from '../../constants.js';
+import { CompressionStatus } from '@the-a-tech-corporation/core';
 
 export interface CompressionDisplayProps {
   compression: CompressionProps;
@@ -63,7 +64,7 @@ export function CompressionMessage({
         {isPending ? (
           <CliSpinner type="dots" />
         ) : (
-          <Text color={theme.text.accent}>✦</Text>
+          <Text color={theme.text.accent}>{ACODER_STATUS_ICON}</Text>
         )}
       </Box>
       <Box>

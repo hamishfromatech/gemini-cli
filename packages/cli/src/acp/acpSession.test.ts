@@ -19,18 +19,18 @@ import { Session } from './acpSession.js';
 import type * as acp from '@agentclientprotocol/sdk';
 import {
   ReadManyFilesTool,
-  type GeminiChat,
+  type ACoderChat,
   type Config,
   type MessageBus,
   type GitService,
-  InvalidStreamError,
-  GeminiEventType,
-  type ServerGeminiStreamEvent,
+  InvalidACoderStreamError,
+  ACoderEventType,
+  type ServerACoderStreamEvent,
   PolicyDecision,
   MessageBusType,
   type ToolConfirmationRequest,
   DiscoveredMCPTool,
-} from '@google/gemini-cli-core';
+} from '@the-a-tech-corporation/core';
 import type { LoadedSettings } from '../config/settings.js';
 import { type Part, FinishReason } from '@google/genai';
 import * as fs from 'node:fs/promises';
@@ -47,9 +47,9 @@ vi.mock('node:path', async (importOriginal) => {
 });
 
 vi.mock(
-  '@google/gemini-cli-core',
+  '@the-a-tech-corporation/core',
   async (
-    importOriginal: () => Promise<typeof import('@google/gemini-cli-core')>,
+    importOriginal: () => Promise<typeof import('@the-a-tech-corporation/core')>,
   ) => {
     const actual = await importOriginal();
     return {
@@ -63,14 +63,14 @@ vi.mock(
 );
 
 async function* createMockStream(
-  items: readonly ServerGeminiStreamEvent[],
-): AsyncGenerator<ServerGeminiStreamEvent> {
+  items: readonly ServerACoderStreamEvent[],
+): AsyncGenerator<ServerACoderStreamEvent> {
   for (const item of items) {
     yield item;
   }
 
   yield {
-    type: GeminiEventType.Finished,
+    type: ACoderEventType.Finished,
     value: {
       reason: FinishReason.STOP,
       usageMetadata: {
@@ -82,7 +82,7 @@ async function* createMockStream(
 }
 
 describe('Session', () => {
-  let mockChat: Mocked<GeminiChat>;
+  let mockChat: Mocked<ACoderChat>;
   let mockConfig: Mocked<Config>;
   let mockConnection: Mocked<acp.AgentSideConnection>;
   let session: Session;
@@ -94,7 +94,7 @@ describe('Session', () => {
       request: Part[],
       signal: AbortSignal,
       promptId: string,
-    ) => AsyncGenerator<ServerGeminiStreamEvent>
+    ) => AsyncGenerator<ServerACoderStreamEvent>
   >;
 
   beforeEach(() => {
@@ -103,7 +103,7 @@ describe('Session', () => {
       addHistory: vi.fn(),
       recordCompletedToolCalls: vi.fn(),
       getHistory: vi.fn().mockReturnValue([]),
-    } as unknown as Mocked<GeminiChat>;
+    } as unknown as Mocked<ACoderChat>;
     mockTool = {
       kind: 'read',
       build: vi.fn().mockReturnValue({
@@ -154,7 +154,7 @@ describe('Session', () => {
       waitForMcpInit: vi.fn(),
       getDisableAlwaysAllow: vi.fn().mockReturnValue(false),
       getMaxSessionTurns: vi.fn().mockReturnValue(-1),
-      geminiClient: {
+      aCoderClient: {
         sendMessageStream: mockSendMessageStream,
         getChat: vi.fn().mockReturnValue(mockChat),
       },
@@ -210,7 +210,7 @@ describe('Session', () => {
   it('should await MCP initialization before processing a prompt', async () => {
     const stream = createMockStream([
       {
-        type: GeminiEventType.Content,
+        type: ACoderEventType.Content,
         value: 'Hi',
       },
     ]);
@@ -227,7 +227,7 @@ describe('Session', () => {
   it('should handle prompt with text response', async () => {
     const stream = createMockStream([
       {
-        type: GeminiEventType.Content,
+        type: ACoderEventType.Content,
         value: 'Hello',
       },
     ]);
@@ -249,10 +249,10 @@ describe('Session', () => {
     expect(result).toMatchObject({ stopReason: 'end_turn' });
   });
 
-  it('should pass current session information directly onto geminiClient.sendMessageStream', async () => {
+  it('should pass current session information directly onto aCoderClient.sendMessageStream', async () => {
     const stream = createMockStream([
       {
-        type: GeminiEventType.Content,
+        type: ACoderEventType.Content,
         value: 'Hello',
       },
     ]);
@@ -270,11 +270,11 @@ describe('Session', () => {
     );
   });
 
-  it('should handle prompt with empty response (InvalidStreamError)', async () => {
-    const error = new InvalidStreamError('Empty response', 'NO_RESPONSE_TEXT');
+  it('should handle prompt with empty response (InvalidACoderStreamError)', async () => {
+    const error = new InvalidACoderStreamError('Empty response', 'NO_RESPONSE_TEXT');
     mockSendMessageStream.mockImplementation(() => {
       async function* errorGen(): AsyncGenerator<
-        ServerGeminiStreamEvent,
+        ServerACoderStreamEvent,
         void,
         unknown
       > {
@@ -292,14 +292,14 @@ describe('Session', () => {
     expect(result).toMatchObject({ stopReason: 'end_turn' });
   });
 
-  it('should handle prompt with no finish reason (InvalidStreamError)', async () => {
-    const error = new InvalidStreamError(
+  it('should handle prompt with no finish reason (InvalidACoderStreamError)', async () => {
+    const error = new InvalidACoderStreamError(
       'No finish reason',
       'NO_FINISH_REASON',
     );
     mockSendMessageStream.mockImplementation(() => {
       async function* errorGen(): AsyncGenerator<
-        ServerGeminiStreamEvent,
+        ServerACoderStreamEvent,
         void,
         unknown
       > {
@@ -341,7 +341,7 @@ describe('Session', () => {
   it('should handle tool calls', async () => {
     const stream1 = createMockStream([
       {
-        type: GeminiEventType.ToolCallRequest,
+        type: ACoderEventType.ToolCallRequest,
         value: {
           callId: 'call-1',
           name: 'test_tool',
@@ -353,7 +353,7 @@ describe('Session', () => {
     ]);
     const stream2 = createMockStream([
       {
-        type: GeminiEventType.Content,
+        type: ACoderEventType.Content,
         value: 'Result',
       },
     ]);
@@ -392,7 +392,7 @@ describe('Session', () => {
 
     const stream1 = createMockStream([
       {
-        type: GeminiEventType.ToolCallRequest,
+        type: ACoderEventType.ToolCallRequest,
         value: {
           callId: 'call-1',
           name: 'test_tool',
@@ -404,7 +404,7 @@ describe('Session', () => {
     ]);
     const stream2 = createMockStream([
       {
-        type: GeminiEventType.Content,
+        type: ACoderEventType.Content,
         value: '',
       },
     ]);
@@ -430,7 +430,7 @@ describe('Session', () => {
 
     const stream = createMockStream([
       {
-        type: GeminiEventType.Content,
+        type: ACoderEventType.Content,
         value: '',
       },
     ]);
@@ -469,7 +469,7 @@ describe('Session', () => {
 
     mockSendMessageStream.mockImplementation(() => {
       async function* errorGen(): AsyncGenerator<
-        ServerGeminiStreamEvent,
+        ServerACoderStreamEvent,
         void,
         unknown
       > {
@@ -495,7 +495,7 @@ describe('Session', () => {
 
     const stream1 = createMockStream([
       {
-        type: GeminiEventType.ToolCallRequest,
+        type: ACoderEventType.ToolCallRequest,
         value: {
           callId: 'call-1',
           name: 'unknown_tool',
@@ -507,7 +507,7 @@ describe('Session', () => {
     ]);
     const stream2 = createMockStream([
       {
-        type: GeminiEventType.Content,
+        type: ACoderEventType.Content,
         value: '',
       },
     ]);
@@ -524,10 +524,10 @@ describe('Session', () => {
     expect(mockSendMessageStream).toHaveBeenCalledTimes(2);
   });
 
-  it('should handle GeminiEventType.LoopDetected', async () => {
+  it('should handle ACoderEventType.LoopDetected', async () => {
     const stream = createMockStream([
       {
-        type: GeminiEventType.LoopDetected,
+        type: ACoderEventType.LoopDetected,
       },
     ]);
     mockSendMessageStream.mockReturnValue(stream);
@@ -540,10 +540,10 @@ describe('Session', () => {
     expect(result.stopReason).toBe('max_turn_requests');
   });
 
-  it('should handle GeminiEventType.ContextWindowWillOverflow', async () => {
+  it('should handle ACoderEventType.ContextWindowWillOverflow', async () => {
     const stream = createMockStream([
       {
-        type: GeminiEventType.ContextWindowWillOverflow,
+        type: ACoderEventType.ContextWindowWillOverflow,
         value: { estimatedRequestTokenCount: 1000, remainingTokenCount: 200 },
       },
     ]);
@@ -557,10 +557,10 @@ describe('Session', () => {
     expect(result.stopReason).toBe('max_tokens');
   });
 
-  it('should handle GeminiEventType.MaxSessionTurns', async () => {
+  it('should handle ACoderEventType.MaxSessionTurns', async () => {
     const stream = createMockStream([
       {
-        type: GeminiEventType.MaxSessionTurns,
+        type: ACoderEventType.MaxSessionTurns,
       },
     ]);
     mockSendMessageStream.mockReturnValue(stream);
@@ -575,7 +575,7 @@ describe('Session', () => {
 
   it('should send sessionUpdate when approval mode changes', async () => {
     const { coreEvents, CoreEvent, ApprovalMode } = await import(
-      '@google/gemini-cli-core'
+      '@the-a-tech-corporation/core'
     );
 
     coreEvents.emit(CoreEvent.ApprovalModeChanged, {
@@ -615,7 +615,7 @@ describe('Session', () => {
 
     const stream1 = createMockStream([
       {
-        type: GeminiEventType.ToolCallRequest,
+        type: ACoderEventType.ToolCallRequest,
         value: {
           callId: 'call-1',
           name: 'test_tool',
@@ -627,7 +627,7 @@ describe('Session', () => {
     ]);
     const stream2 = createMockStream([
       {
-        type: GeminiEventType.Content,
+        type: ACoderEventType.Content,
         value: '',
       },
     ]);
@@ -675,7 +675,7 @@ describe('Session', () => {
 
     const stream1 = createMockStream([
       {
-        type: GeminiEventType.ToolCallRequest,
+        type: ACoderEventType.ToolCallRequest,
         value: {
           callId: 'call-1',
           name: 'test_tool',
@@ -687,7 +687,7 @@ describe('Session', () => {
     ]);
     const stream2 = createMockStream([
       {
-        type: GeminiEventType.Content,
+        type: ACoderEventType.Content,
         value: '',
       },
     ]);

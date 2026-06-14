@@ -1,25 +1,25 @@
 # Observability with OpenTelemetry
 
 Observability is the key to turning experimental AI into reliable software.
-Gemini CLI provides built-in support for OpenTelemetry, transforming every agent
+A-Coder CLI provides built-in support for OpenTelemetry, transforming every agent
 interaction into a rich stream of logs, metrics, and traces. This three-pillar
 approach gives you the high-fidelity visibility needed to understand agent
 behavior, optimize performance, and ensure reliability across your entire
 workflow.
 
 Whether you are debugging a complex tool interaction locally or monitoring
-enterprise-wide usage in the cloud, Gemini CLI's observability system provides
+enterprise-wide usage in the cloud, A-Coder CLI's observability system provides
 the actionable intelligence needed to move from "black box" AI to predictable,
 high-performance systems.
 
 ## OpenTelemetry integration
 
-Gemini CLI integrates with **[OpenTelemetry]**, a vendor-neutral,
+A-Coder CLI integrates with **[OpenTelemetry]**, a vendor-neutral,
 industry-standard observability framework.
 
 The observability system provides:
 
-- Universal compatibility: Export to any OpenTelemetry backend (Google Cloud,
+- Universal compatibility: Export to any OpenTelemetry backend (local collector,
   Jaeger, Prometheus, Datadog, etc.).
 - Standardized data: Use consistent formats and collection methods across your
   toolchain.
@@ -32,21 +32,21 @@ The observability system provides:
 
 ## Configuration
 
-You control telemetry behavior through the `.gemini/settings.json` file.
+You control telemetry behavior through the `.a-coder-cli/settings.json` file.
 Environment variables can override these settings.
 
 | Setting        | Environment Variable              | Description                                         | Values            | Default                 |
 | -------------- | --------------------------------- | --------------------------------------------------- | ----------------- | ----------------------- |
-| `enabled`      | `GEMINI_TELEMETRY_ENABLED`        | Enable or disable telemetry                         | `true`/`false`    | `false`                 |
-| `traces`       | `GEMINI_TELEMETRY_TRACES_ENABLED` | Enable detailed attribute tracing                   | `true`/`false`    | `false`                 |
-| `target`       | `GEMINI_TELEMETRY_TARGET`         | Where to send telemetry data                        | `"gcp"`/`"local"` | `"local"`               |
-| `otlpEndpoint` | `GEMINI_TELEMETRY_OTLP_ENDPOINT`  | OTLP collector endpoint                             | URL string        | `http://localhost:4317` |
-| `otlpProtocol` | `GEMINI_TELEMETRY_OTLP_PROTOCOL`  | OTLP transport protocol                             | `"grpc"`/`"http"` | `"grpc"`                |
-| `outfile`      | `GEMINI_TELEMETRY_OUTFILE`        | Save telemetry to file (overrides `otlpEndpoint`)   | file path         | -                       |
-| `logPrompts`   | `GEMINI_TELEMETRY_LOG_PROMPTS`    | Include prompts in telemetry logs                   | `true`/`false`    | `true`                  |
-| `useCollector` | `GEMINI_TELEMETRY_USE_COLLECTOR`  | Use external OTLP collector (advanced)              | `true`/`false`    | `false`                 |
-| `useCliAuth`   | `GEMINI_TELEMETRY_USE_CLI_AUTH`   | Use CLI credentials for telemetry (GCP target only) | `true`/`false`    | `false`                 |
-| -              | `GEMINI_CLI_SURFACE`              | Optional custom label for traffic reporting         | string            | -                       |
+| `enabled`      | `A_CODER_TELEMETRY_ENABLED`        | Enable or disable telemetry                         | `true`/`false`    | `false`                 |
+| `traces`       | `A_CODER_TELEMETRY_TRACES_ENABLED` | Enable detailed attribute tracing                   | `true`/`false`    | `false`                 |
+| `target`       | `A_CODER_TELEMETRY_TARGET`         | Where to send telemetry data                        | `"otlp"`/`"local"` | `"local"`               |
+| `otlpEndpoint` | `A_CODER_TELEMETRY_OTLP_ENDPOINT`  | OTLP collector endpoint                             | URL string        | `http://localhost:4317` |
+| `otlpProtocol` | `A_CODER_TELEMETRY_OTLP_PROTOCOL`  | OTLP transport protocol                             | `"grpc"`/`"http"` | `"grpc"`                |
+| `outfile`      | `A_CODER_TELEMETRY_OUTFILE`        | Save telemetry to file (overrides `otlpEndpoint`)   | file path         | -                       |
+| `logPrompts`   | `A_CODER_TELEMETRY_LOG_PROMPTS`    | Include prompts in telemetry logs                   | `true`/`false`    | `true`                  |
+| `useCollector` | `A_CODER_TELEMETRY_USE_COLLECTOR`  | Use external OTLP collector (advanced)              | `true`/`false`    | `false`                 |
+| `useCliAuth`   | `A_CODER_TELEMETRY_USE_CLI_AUTH`   | Use CLI credentials for telemetry (OTLP target only) | `true`/`false`    | `false`                 |
+| -              | `A_CODER_CLI_SURFACE`              | Optional custom label for traffic reporting         | string            | -                       |
 
 **Note on boolean environment variables:** For boolean settings like `enabled`,
 setting the environment variable to `true` or `1` enables the feature.
@@ -54,28 +54,28 @@ setting the environment variable to `true` or `1` enables the feature.
 For detailed configuration information, see the
 [Configuration guide](../reference/configuration.md).
 
-## Google Cloud telemetry
+## OTLP telemetry backend
 
-You can export telemetry data directly to Google Cloud Trace, Cloud Monitoring,
-and Cloud Logging.
+You can export telemetry data directly to any OTLP-compatible backend,
+and your backend logging.
 
 ### Prerequisites
 
-You must complete several setup steps before enabling Google Cloud telemetry.
+You must complete several setup steps before enabling OTLP telemetry.
 
-1.  Set your Google Cloud project ID:
+1.  Set your OTLP project or endpoint identifier:
     - To send telemetry to a separate project:
 
       **macOS/Linux**
 
       ```bash
-      export OTLP_GOOGLE_CLOUD_PROJECT="your-telemetry-project-id"
+      export OTLP_PROJECT="your-telemetry-project-id"
       ```
 
       **Windows (PowerShell)**
 
       ```powershell
-      $env:OTLP_GOOGLE_CLOUD_PROJECT="your-telemetry-project-id"
+      $env:OTLP_PROJECT="your-telemetry-project-id"
       ```
 
     - To send telemetry to the same project as inference:
@@ -83,44 +83,26 @@ You must complete several setup steps before enabling Google Cloud telemetry.
       **macOS/Linux**
 
       ```bash
-      export GOOGLE_CLOUD_PROJECT="your-project-id"
+      # Optional: export PROJECT_ID="your-project-id"
       ```
 
       **Windows (PowerShell)**
 
       ```powershell
-      $env:GOOGLE_CLOUD_PROJECT="your-project-id"
+      # Optional: $env:PROJECT_ID="your-project-id"
       ```
 
-2.  Authenticate with Google Cloud using one of these methods:
-    - **Method A: Application Default Credentials (ADC)**: Use this method for
-      service accounts or standard `gcloud` authentication.
-      - For user accounts:
-        ```bash
-        gcloud auth application-default login
-        ```
-      - For service accounts:
-
-        **macOS/Linux**
-
-        ```bash
-        export GOOGLE_APPLICATION_CREDENTIALS="/path/to/your/service-account.json"
-        ```
-
-        **Windows (PowerShell)**
-
-        ```powershell
-        $env:GOOGLE_APPLICATION_CREDENTIALS="C:\path\to\your\service-account.json"
-        ```
-    * **Method B: CLI Auth** (Direct export only): Simplest method for local
-      users. Gemini CLI uses the same OAuth credentials you used for login. To
-      enable this, set `useCliAuth: true` in your `.gemini/settings.json`:
+2.  Configure authentication for your OTLP backend as required.
+    - **Method A: Bearer token**: Set `OTLP_AUTH_HEADER` with a token accepted by your backend.
+    - **Method B: CLI Auth** (Direct export only): Simplest method for local
+      users. A-Coder CLI uses the same credentials you used for authentication. To
+      enable this, set `useCliAuth: true` in your `.a-coder-cli/settings.json`:
 
       ```json
       {
         "telemetry": {
           "enabled": true,
-          "target": "gcp",
+          "target": "otlp",
           "useCliAuth": true
         }
       }
@@ -132,50 +114,43 @@ You must complete several setup steps before enabling Google Cloud telemetry.
 > and cannot be used when `useCollector` is `true`. If both are enabled,
 > telemetry will be disabled.
 
-3.  Ensure your account or service account has these IAM roles:
-    - Cloud Trace Agent
-    - Monitoring Metric Writer
-    - Logs Writer
+3.  Ensure your OTLP backend account has the necessary write permissions:
+    - Trace write access
+    - Metrics write access
+    - Logs write access
 
-4.  Enable the required Google Cloud APIs:
-    ```bash
-    gcloud services enable \
-      cloudtrace.googleapis.com \
-      monitoring.googleapis.com \
-      logging.googleapis.com \
-      --project="$OTLP_GOOGLE_CLOUD_PROJECT"
-    ```
+4.  Ensure your OTLP backend is reachable and accepts the configured protocol.
 
 ### Direct export
 
-We recommend using direct export to send telemetry directly to Google Cloud
+We recommend using direct export to send telemetry directly to your OTLP backend
 services.
 
-1.  Enable telemetry in `.gemini/settings.json`:
+1.  Enable telemetry in `.a-coder-cli/settings.json`:
     ```json
     {
       "telemetry": {
         "enabled": true,
-        "target": "gcp"
+        "target": "otlp"
       }
     }
     ```
-2.  Run Gemini CLI and send prompts.
-3.  View logs, metrics, and traces in the Google Cloud Console. See
-    [View Google Cloud telemetry](#view-google-cloud-telemetry) for details.
+2.  Run A-Coder CLI and send prompts.
+3.  View logs, metrics, and traces in your OTLP backend console. See
+    [View OTLP telemetry](#view-otlp-telemetry) for details.
 
-### View Google Cloud telemetry
+### View OTLP telemetry
 
-After you enable telemetry and run Gemini CLI, you can view your data in the
-Google Cloud Console.
+After you enable telemetry and run A-Coder CLI, you can view your data in the
+your OTLP backend console.
 
-- **Logs:** [Logs Explorer](https://console.cloud.google.com/logs/)
+- **Logs:** [Logs Explorer](https://your-otlp-backend/logs/)
 - **Metrics:**
-  [Metrics Explorer](https://console.cloud.google.com/monitoring/metrics-explorer)
-- **Traces:** [Trace Explorer](https://console.cloud.google.com/traces/list)
+  [Metrics Explorer](https://your-otlp-backend/metrics-explorer)
+- **Traces:** [Trace Explorer](https://your-otlp-backend/traces/list)
 
 For detailed information on how to use these tools, see the following official
-Google Cloud documentation:
+OTLP backend documentation:
 
 - [View and analyze logs with Logs Explorer](https://cloud.google.com/logging/docs/view/logs-explorer-interface)
 - [Create charts with Metrics Explorer](https://cloud.google.com/monitoring/charts/metrics-explorer)
@@ -183,48 +158,48 @@ Google Cloud documentation:
 
 #### Monitoring dashboards
 
-Gemini CLI provides a pre-configured
-[Google Cloud Monitoring](https://cloud.google.com/monitoring) dashboard to
+A-Coder CLI provides a pre-configured
+[your monitoring dashboard] to
 visualize your telemetry.
 
-Find this dashboard under **Google Cloud Monitoring Dashboard Templates** as
-"**Gemini CLI Monitoring**".
+Find this dashboard under your backend's dashboard templates as
+"**A-Coder CLI Monitoring**".
 
-![Gemini CLI Monitoring Dashboard Overview](/docs/assets/monitoring-dashboard-overview.png)
+![A-Coder CLI Monitoring Dashboard Overview](/docs/assets/monitoring-dashboard-overview.png)
 
-![Gemini CLI Monitoring Dashboard Metrics](/docs/assets/monitoring-dashboard-metrics.png)
+![A-Coder CLI Monitoring Dashboard Metrics](/docs/assets/monitoring-dashboard-metrics.png)
 
-![Gemini CLI Monitoring Dashboard Logs](/docs/assets/monitoring-dashboard-logs.png)
+![A-Coder CLI Monitoring Dashboard Logs](/docs/assets/monitoring-dashboard-logs.png)
 
 To learn more, see
-[Instant insights: Gemini CLI’s pre-configured monitoring dashboards](https://cloud.google.com/blog/topics/developers-practitioners/instant-insights-gemini-clis-new-pre-configured-monitoring-dashboards/).
+[Instant insights: A-Coder CLI’s pre-configured monitoring dashboards](/docs/monitoring-dashboards).
 
 ## Local telemetry
 
 You can capture telemetry data locally for development and debugging. We
 recommend using file-based output for local development.
 
-1.  Enable telemetry in `.gemini/settings.json`:
+1.  Enable telemetry in `.a-coder-cli/settings.json`:
     ```json
     {
       "telemetry": {
         "enabled": true,
         "target": "local",
-        "outfile": ".gemini/telemetry.log"
+        "outfile": ".a-coder-cli/telemetry.log"
       }
     }
     ```
-2.  Run Gemini CLI and send prompts.
-3.  View logs and metrics in `.gemini/telemetry.log`.
+2.  Run A-Coder CLI and send prompts.
+3.  View logs and metrics in `.a-coder-cli/telemetry.log`.
 
 For advanced local telemetry setups (such as Jaeger or Genkit), see the
 [Local development guide](../local-development.md#viewing-traces).
 
 ## Client identification
 
-Gemini CLI includes identifiers in its `User-Agent` header to help you
+A-Coder CLI includes identifiers in its `User-Agent` header to help you
 differentiate and report on API traffic from different environments (for
-example, identifying calls from Gemini Code Assist versus a standard terminal).
+example, identifying calls from the A-Coder CLI A2A server versus a standard terminal).
 
 ### Automatic identification
 
@@ -234,54 +209,54 @@ a "surface" tag in the parenthetical metadata.
 
 | Environment                         | User-Agent Prefix            | Surface Tag |
 | :---------------------------------- | :--------------------------- | :---------- |
-| **Gemini Code Assist (Agent Mode)** | `GeminiCLI-a2a-server`       | `vscode`    |
-| **Zed (via ACP)**                   | `GeminiCLI-acp-zed`          | `zed`       |
-| **XCode (via ACP)**                 | `GeminiCLI-acp-xcode`        | `xcode`     |
-| **IntelliJ IDEA (via ACP)**         | `GeminiCLI-acp-intellijidea` | `jetbrains` |
-| **Standard Terminal**               | `GeminiCLI`                  | `terminal`  |
+| **A-Coder CLI A2A Server** | `A-CoderCLI-a2a-server`       | `vscode`    |
+| **Zed (via ACP)**                   | `A-CoderCLI-acp-zed`          | `zed`       |
+| **XCode (via ACP)**                 | `A-CoderCLI-acp-xcode`        | `xcode`     |
+| **IntelliJ IDEA (via ACP)**         | `A-CoderCLI-acp-intellijidea` | `jetbrains` |
+| **Standard Terminal**               | `A-CoderCLI`                  | `terminal`  |
 
 **Example User-Agent:**
-`GeminiCLI-a2a-server/0.34.0/gemini-pro (linux; x64; vscode)`
+`A-CoderCLI-a2a-server/0.34.0/a-coder-cli-pro (linux; x64; vscode)`
 
 ### Custom identification
 
 You can provide a custom identifier for your own scripts or automation by
-setting the `GEMINI_CLI_SURFACE` environment variable. This is useful for
-tracking specific internal tools or distribution channels in your GCP logs.
+setting the `A_CODER_CLI_SURFACE` environment variable. This is useful for
+tracking specific internal tools or distribution channels in your provider logs.
 
 **macOS/Linux**
 
 ```bash
-export GEMINI_CLI_SURFACE="my-custom-tool"
+export A_CODER_CLI_SURFACE="my-custom-tool"
 ```
 
 **Windows (PowerShell)**
 
 ```powershell
-$env:GEMINI_CLI_SURFACE="my-custom-tool"
+$env:A_CODER_CLI_SURFACE="my-custom-tool"
 ```
 
 When set, the value appears at the end of the `User-Agent` parenthetical:
-`GeminiCLI/0.34.0/gemini-pro (linux; x64; my-custom-tool)`
+`A-CoderCLI/0.34.0/a-coder-cli-pro (linux; x64; my-custom-tool)`
 
 ## Logs, metrics, and traces
 
 This section describes the structure of logs, metrics, and traces generated by
-Gemini CLI.
+A-Coder CLI.
 
-Gemini CLI includes `session.id`, `installation.id`, `active_approval_mode`, and
+A-Coder CLI includes `session.id`, `installation.id`, `active_approval_mode`, and
 `user.email` (when authenticated) as common attributes on all data.
 
 ### Logs
 
-Logs provide timestamped records of specific events. Gemini CLI logs events
+Logs provide timestamped records of specific events. A-Coder CLI logs events
 across several categories.
 
 #### Sessions
 
 Session logs capture startup configuration and prompt submissions.
 
-##### `gemini_cli.config`
+##### `a_coder_cli.config`
 
 Emitted at startup with the CLI configuration.
 
@@ -294,7 +269,7 @@ Emitted at startup with the CLI configuration.
 - `core_tools_enabled` (string)
 - `approval_mode` (string)
 - `api_key_enabled` (boolean)
-- `vertex_ai_enabled` (boolean)
+- `custom_provider_enabled` (boolean)
 - `log_user_prompts_enabled` (boolean)
 - `file_filtering_respect_git_ignore` (boolean)
 - `debug_mode` (boolean)
@@ -317,7 +292,7 @@ Emitted at startup with the CLI configuration.
 
 </details>
 
-##### `gemini_cli.user_prompt`
+##### `a_coder_cli.user_prompt`
 
 Emitted when you submit a prompt.
 
@@ -378,7 +353,7 @@ Logs when you execute a plan and switch from plan mode to active execution.
 
 Tool logs capture executions, truncation, and edit behavior.
 
-##### `gemini_cli.tool_call`
+##### `a_coder_cli.tool_call`
 
 Emitted for each tool (function) call.
 
@@ -409,7 +384,7 @@ Emitted for each tool (function) call.
 
 </details>
 
-##### `gemini_cli.tool_output_truncated`
+##### `a_coder_cli.tool_output_truncated`
 
 Logs when tool output is truncated.
 
@@ -425,7 +400,7 @@ Logs when tool output is truncated.
 
 </details>
 
-##### `gemini_cli.edit_strategy`
+##### `a_coder_cli.edit_strategy`
 
 Records the chosen edit strategy.
 
@@ -436,7 +411,7 @@ Records the chosen edit strategy.
 
 </details>
 
-##### `gemini_cli.edit_correction`
+##### `a_coder_cli.edit_correction`
 
 Records the result of an edit correction.
 
@@ -476,7 +451,7 @@ Provides detailed GenAI operation data aligned with OpenTelemetry conventions.
 
 File logs track operations performed by tools.
 
-##### `gemini_cli.file_operation`
+##### `a_coder_cli.file_operation`
 
 Emitted for each file creation, read, or update.
 
@@ -494,11 +469,11 @@ Emitted for each file creation, read, or update.
 
 #### API
 
-API logs capture requests, responses, and errors from Gemini API.
+API logs capture requests, responses, and errors from the configured API.
 
-##### `gemini_cli.api_request`
+##### `a_coder_cli.api_request`
 
-Request sent to Gemini API.
+Request sent to the configured API.
 
 <details>
 <summary>Attributes</summary>
@@ -510,9 +485,9 @@ Request sent to Gemini API.
 
 </details>
 
-##### `gemini_cli.api_response`
+##### `a_coder_cli.api_response`
 
-Response received from Gemini API.
+Response received from the configured API.
 
 <details>
 <summary>Attributes</summary>
@@ -533,7 +508,7 @@ Response received from Gemini API.
 
 </details>
 
-##### `gemini_cli.api_error`
+##### `a_coder_cli.api_error`
 
 Logs when an API request fails.
 
@@ -551,7 +526,7 @@ Logs when an API request fails.
 
 </details>
 
-##### `gemini_cli.malformed_json_response`
+##### `a_coder_cli.malformed_json_response`
 
 Logs when a JSON response cannot be parsed.
 
@@ -564,9 +539,9 @@ Logs when a JSON response cannot be parsed.
 
 #### Model routing
 
-These logs track how Gemini CLI selects and routes requests to models.
+These logs track how A-Coder CLI selects and routes requests to models.
 
-##### `gemini_cli.slash_command`
+##### `a_coder_cli.slash_command`
 
 Logs slash command execution.
 
@@ -579,7 +554,7 @@ Logs slash command execution.
 
 </details>
 
-##### `gemini_cli.slash_command.model`
+##### `a_coder_cli.slash_command.model`
 
 Logs model selection via slash command.
 
@@ -590,7 +565,7 @@ Logs model selection via slash command.
 
 </details>
 
-##### `gemini_cli.model_routing`
+##### `a_coder_cli.model_routing`
 
 Records model router decisions and reasoning.
 
@@ -611,7 +586,7 @@ Records model router decisions and reasoning.
 
 These logs track chat context compression and streaming chunk errors.
 
-##### `gemini_cli.chat_compression`
+##### `a_coder_cli.chat_compression`
 
 Logs chat context compression events.
 
@@ -623,7 +598,7 @@ Logs chat context compression events.
 
 </details>
 
-##### `gemini_cli.chat.invalid_chunk`
+##### `a_coder_cli.chat.invalid_chunk`
 
 Logs invalid chunks received in a stream.
 
@@ -634,7 +609,7 @@ Logs invalid chunks received in a stream.
 
 </details>
 
-##### `gemini_cli.chat.content_retry`
+##### `a_coder_cli.chat.content_retry`
 
 Logs retries due to content errors.
 
@@ -648,7 +623,7 @@ Logs retries due to content errors.
 
 </details>
 
-##### `gemini_cli.chat.content_retry_failure`
+##### `a_coder_cli.chat.content_retry_failure`
 
 Logs when all content retries fail.
 
@@ -662,7 +637,7 @@ Logs when all content retries fail.
 
 </details>
 
-##### `gemini_cli.conversation_finished`
+##### `a_coder_cli.conversation_finished`
 
 Logs when a conversation session ends.
 
@@ -678,7 +653,7 @@ Logs when a conversation session ends.
 
 Resilience logs record fallback mechanisms and recovery attempts.
 
-##### `gemini_cli.flash_fallback`
+##### `a_coder_cli.flash_fallback`
 
 Logs switch to a flash model fallback.
 
@@ -689,7 +664,7 @@ Logs switch to a flash model fallback.
 
 </details>
 
-##### `gemini_cli.ripgrep_fallback`
+##### `a_coder_cli.ripgrep_fallback`
 
 Logs fallback to standard grep.
 
@@ -700,7 +675,7 @@ Logs fallback to standard grep.
 
 </details>
 
-##### `gemini_cli.web_fetch_fallback_attempt`
+##### `a_coder_cli.web_fetch_fallback_attempt`
 
 Logs web-fetch fallback attempts.
 
@@ -711,7 +686,7 @@ Logs web-fetch fallback attempts.
 
 </details>
 
-##### `gemini_cli.agent.recovery_attempt`
+##### `a_coder_cli.agent.recovery_attempt`
 
 Logs attempts to recover from agent errors.
 
@@ -729,7 +704,7 @@ Logs attempts to recover from agent errors.
 
 Extension logs track lifecycle events and settings changes.
 
-##### `gemini_cli.extension_install`
+##### `a_coder_cli.extension_install`
 
 Logs when you install an extension.
 
@@ -743,7 +718,7 @@ Logs when you install an extension.
 
 </details>
 
-##### `gemini_cli.extension_uninstall`
+##### `a_coder_cli.extension_uninstall`
 
 Logs when you uninstall an extension.
 
@@ -755,7 +730,7 @@ Logs when you uninstall an extension.
 
 </details>
 
-##### `gemini_cli.extension_enable`
+##### `a_coder_cli.extension_enable`
 
 Logs when you enable an extension.
 
@@ -767,7 +742,7 @@ Logs when you enable an extension.
 
 </details>
 
-##### `gemini_cli.extension_disable`
+##### `a_coder_cli.extension_disable`
 
 Logs when you disable an extension.
 
@@ -783,7 +758,7 @@ Logs when you disable an extension.
 
 Agent logs track the lifecycle of agent executions.
 
-##### `gemini_cli.agent.start`
+##### `a_coder_cli.agent.start`
 
 Logs when an agent run begins.
 
@@ -795,7 +770,7 @@ Logs when an agent run begins.
 
 </details>
 
-##### `gemini_cli.agent.finish`
+##### `a_coder_cli.agent.finish`
 
 Logs when an agent run completes.
 
@@ -814,7 +789,7 @@ Logs when an agent run completes.
 
 IDE logs capture connectivity events for the IDE companion.
 
-##### `gemini_cli.ide_connection`
+##### `a_coder_cli.ide_connection`
 
 Logs IDE companion connections.
 
@@ -843,7 +818,7 @@ Logs terminal control sequence overflows.
 
 #### Miscellaneous
 
-##### `gemini_cli.rewind`
+##### `a_coder_cli.rewind`
 
 Logs when the conversation state is rewound.
 
@@ -854,7 +829,7 @@ Logs when the conversation state is rewound.
 
 </details>
 
-##### `gemini_cli.conseca.verdict`
+##### `a_coder_cli.conseca.verdict`
 
 Logs security verdicts from ConSeca.
 
@@ -868,7 +843,7 @@ Logs security verdicts from ConSeca.
 
 </details>
 
-##### `gemini_cli.hook_call`
+##### `a_coder_cli.hook_call`
 
 Logs execution of lifecycle hooks.
 
@@ -882,7 +857,7 @@ Logs execution of lifecycle hooks.
 
 </details>
 
-##### `gemini_cli.tool_output_masking`
+##### `a_coder_cli.tool_output_masking`
 
 Logs when tool output is masked for privacy.
 
@@ -896,7 +871,7 @@ Logs when tool output is masked for privacy.
 
 </details>
 
-##### `gemini_cli.keychain.availability`
+##### `a_coder_cli.keychain.availability`
 
 Logs keychain availability checks.
 
@@ -905,7 +880,7 @@ Logs keychain availability checks.
 
 - `available` (boolean)
 
-##### `gemini_cli.startup_stats`
+##### `a_coder_cli.startup_stats`
 
 Logs detailed startup performance statistics.
 
@@ -927,11 +902,11 @@ Metrics provide numerical measurements of behavior over time.
 
 #### Custom metrics
 
-Gemini CLI exports several custom metrics.
+A-Coder CLI exports several custom metrics.
 
 ##### Sessions
 
-##### `gemini_cli.session.count`
+##### `a_coder_cli.session.count`
 
 Incremented once per CLI startup.
 
@@ -939,10 +914,10 @@ Incremented once per CLI startup.
 
 Tracks onboarding flow from authentication to the user
 
-- `gemini_cli.onboarding.start` (Counter, Int): Incremented when the
+- `a_coder_cli.onboarding.start` (Counter, Int): Incremented when the
   authentication flow begins.
 
-- `gemini_cli.onboarding.success` (Counter, Int): Incremented when the user
+- `a_coder_cli.onboarding.success` (Counter, Int): Incremented when the user
 onboarding flow completes successfully.
 <details>
 <summary>Attributes (Success)</summary>
@@ -951,7 +926,7 @@ onboarding flow completes successfully.
 
 ##### Tools
 
-##### `gemini_cli.tool.call.count`
+##### `a_coder_cli.tool.call.count`
 
 Counts tool calls.
 
@@ -965,7 +940,7 @@ Counts tool calls.
 
 </details>
 
-##### `gemini_cli.tool.call.latency`
+##### `a_coder_cli.tool.call.latency`
 
 Measures tool call latency (in ms).
 
@@ -978,7 +953,7 @@ Measures tool call latency (in ms).
 
 ##### API
 
-##### `gemini_cli.api.request.count`
+##### `a_coder_cli.api.request.count`
 
 Counts all API requests.
 
@@ -991,7 +966,7 @@ Counts all API requests.
 
 </details>
 
-##### `gemini_cli.api.request.latency`
+##### `a_coder_cli.api.request.latency`
 
 Measures API request latency (in ms).
 
@@ -1004,7 +979,7 @@ Measures API request latency (in ms).
 
 ##### Token usage
 
-##### `gemini_cli.token.usage`
+##### `a_coder_cli.token.usage`
 
 Counts input, output, thought, cache, and tool tokens.
 
@@ -1018,7 +993,7 @@ Counts input, output, thought, cache, and tool tokens.
 
 ##### Files
 
-##### `gemini_cli.file.operation.count`
+##### `a_coder_cli.file.operation.count`
 
 Counts file operations.
 
@@ -1033,7 +1008,7 @@ Counts file operations.
 
 </details>
 
-##### `gemini_cli.lines.changed`
+##### `a_coder_cli.lines.changed`
 
 Counts added or removed lines.
 
@@ -1047,7 +1022,7 @@ Counts added or removed lines.
 
 ##### Chat and streaming
 
-##### `gemini_cli.chat_compression`
+##### `a_coder_cli.chat_compression`
 
 Counts compression operations.
 
@@ -1059,21 +1034,21 @@ Counts compression operations.
 
 </details>
 
-##### `gemini_cli.chat.invalid_chunk.count`
+##### `a_coder_cli.chat.invalid_chunk.count`
 
 Counts invalid stream chunks.
 
-##### `gemini_cli.chat.content_retry.count`
+##### `a_coder_cli.chat.content_retry.count`
 
 Counts content error retries.
 
-##### `gemini_cli.chat.content_retry_failure.count`
+##### `a_coder_cli.chat.content_retry_failure.count`
 
 Counts requests where all retries failed.
 
 ##### Model routing
 
-##### `gemini_cli.slash_command.model.call_count`
+##### `a_coder_cli.slash_command.model.call_count`
 
 Counts model selections.
 
@@ -1084,7 +1059,7 @@ Counts model selections.
 
 </details>
 
-##### `gemini_cli.model_routing.latency`
+##### `a_coder_cli.model_routing.latency`
 
 Measures routing decision latency.
 
@@ -1097,7 +1072,7 @@ Measures routing decision latency.
 
 </details>
 
-##### `gemini_cli.model_routing.failure.count`
+##### `a_coder_cli.model_routing.failure.count`
 
 Counts routing failures.
 
@@ -1112,7 +1087,7 @@ Counts routing failures.
 
 ##### Agent runs
 
-##### `gemini_cli.agent.run.count`
+##### `a_coder_cli.agent.run.count`
 
 Counts agent runs.
 
@@ -1124,7 +1099,7 @@ Counts agent runs.
 
 </details>
 
-##### `gemini_cli.agent.duration`
+##### `a_coder_cli.agent.duration`
 
 Measures agent run duration.
 
@@ -1135,7 +1110,7 @@ Measures agent run duration.
 
 </details>
 
-##### `gemini_cli.agent.turns`
+##### `a_coder_cli.agent.turns`
 
 Counts turns per agent run.
 
@@ -1148,7 +1123,7 @@ Counts turns per agent run.
 
 ##### Approval mode
 
-##### `gemini_cli.plan.execution.count`
+##### `a_coder_cli.plan.execution.count`
 
 Counts plan executions.
 
@@ -1161,15 +1136,15 @@ Counts plan executions.
 
 ##### UI
 
-##### `gemini_cli.ui.flicker.count`
+##### `a_coder_cli.ui.flicker.count`
 
 Counts terminal flicker events.
 
 ##### Performance
 
-Gemini CLI provides detailed performance metrics for advanced monitoring.
+A-Coder CLI provides detailed performance metrics for advanced monitoring.
 
-##### `gemini_cli.startup.duration`
+##### `a_coder_cli.startup.duration`
 
 Measures startup time by phase.
 
@@ -1181,7 +1156,7 @@ Measures startup time by phase.
 
 </details>
 
-##### `gemini_cli.memory.usage`
+##### `a_coder_cli.memory.usage`
 
 Measures heap and RSS memory.
 
@@ -1193,7 +1168,7 @@ Measures heap and RSS memory.
 
 </details>
 
-##### `gemini_cli.cpu.usage`
+##### `a_coder_cli.cpu.usage`
 
 Measures CPU usage percentage.
 
@@ -1204,11 +1179,11 @@ Measures CPU usage percentage.
 
 </details>
 
-##### `gemini_cli.tool.queue.depth`
+##### `a_coder_cli.tool.queue.depth`
 
 Measures tool execution queue depth.
 
-##### `gemini_cli.tool.execution.breakdown`
+##### `a_coder_cli.tool.execution.breakdown`
 
 Breaks down tool time by phase.
 
@@ -1240,7 +1215,7 @@ traces to debug tool interactions and optimize performance.
 > [!NOTE]
 > Detailed trace attributes (like full prompts and tool outputs) are disabled by default
 > to minimize overhead. You must explicitly set `telemetry.traces` to `true` (or set
-> `GEMINI_TELEMETRY_TRACES_ENABLED=true`) to capture them.
+> `A_CODER_TELEMETRY_TRACES_ENABLED=true`) to capture them.
 
 Every trace captures rich metadata via standard span attributes.
 
@@ -1250,7 +1225,7 @@ Every trace captures rich metadata via standard span attributes.
 - `gen_ai.operation.name`: High-level operation (for example, `tool_call`,
   `llm_call`, `user_prompt`, `system_prompt`, `agent_call`, or
   `schedule_tool_calls`).
-- `gen_ai.agent.name`: Set to `gemini-cli`.
+- `gen_ai.agent.name`: Set to `a-coder-cli`.
 - `gen_ai.agent.description`: The service agent description.
 - `gen_ai.input.messages`: Input data or metadata.
 - `gen_ai.output.messages`: Output data or results.

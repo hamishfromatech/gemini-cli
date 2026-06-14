@@ -12,10 +12,10 @@ import {
   AuthType,
   Config,
   ApprovalMode,
-  GEMINI_DIR,
-  DEFAULT_GEMINI_EMBEDDING_MODEL,
+  A_CODER_DIR,
+  DEFAULT_A_CODER_EMBEDDING_MODEL,
   startupProfiler,
-  PREVIEW_GEMINI_MODEL,
+  PREVIEW_A_CODER_MODEL,
   homedir,
   GitService,
   fetchAdminControlsOnce,
@@ -28,7 +28,7 @@ import {
   type TelemetryTarget,
   type ConfigParameters,
   type ExtensionLoader,
-} from '@google/gemini-cli-core';
+} from '@the-a-tech-corporation/core';
 
 import { logger } from '../utils/logger.js';
 import type { Settings } from './settings.js';
@@ -44,7 +44,7 @@ export async function loadConfig(
 
   const folderTrust =
     settings.folderTrust === true ||
-    process.env['GEMINI_FOLDER_TRUST'] === 'true';
+    process.env['A_CODER_FOLDER_TRUST'] === 'true';
 
   let checkpointing = process.env['CHECKPOINTING']
     ? process.env['CHECKPOINTING'] === 'true'
@@ -60,7 +60,7 @@ export async function loadConfig(
   }
 
   const approvalMode =
-    process.env['GEMINI_YOLO_MODE'] === 'true'
+    process.env['A_CODER_YOLO_MODE'] === 'true'
       ? ApprovalMode.YOLO
       : ApprovalMode.DEFAULT;
 
@@ -85,8 +85,8 @@ export async function loadConfig(
   const configParams: ConfigParameters = {
     sessionId: taskId,
     clientName: 'a2a-server',
-    model: PREVIEW_GEMINI_MODEL,
-    embeddingModel: DEFAULT_GEMINI_EMBEDDING_MODEL,
+    model: PREVIEW_A_CODER_MODEL,
+    embeddingModel: DEFAULT_A_CODER_EMBEDDING_MODEL,
     sandbox: undefined, // Sandbox might not be relevant for a server-side agent
     targetDir: workspaceDir, // Or a specific directory the agent operates on
     debugMode: process.env['DEBUG'] === 'true' || false,
@@ -112,7 +112,7 @@ export async function loadConfig(
     // Git-aware file filtering settings
     fileFiltering: {
       respectGitIgnore: settings.fileFiltering?.respectGitIgnore,
-      respectGeminiIgnore: settings.fileFiltering?.respectGeminiIgnore,
+      respectACoderIgnore: settings.fileFiltering?.respectACoderIgnore,
       enableRecursiveFileSearch:
         settings.fileFiltering?.enableRecursiveFileSearch,
       customIgnoreFilePaths: [
@@ -220,8 +220,8 @@ export function loadEnvironment(): void {
 function findEnvFile(startDir: string): string | null {
   let currentDir = path.resolve(startDir);
   while (true) {
-    // prefer gemini-specific .env under GEMINI_DIR
-    const geminiEnvPath = path.join(currentDir, GEMINI_DIR, '.env');
+    // prefer gemini-specific .env under A_CODER_DIR
+    const geminiEnvPath = path.join(currentDir, A_CODER_DIR, '.env');
     if (fs.existsSync(geminiEnvPath)) {
       return geminiEnvPath;
     }
@@ -232,7 +232,7 @@ function findEnvFile(startDir: string): string | null {
     const parentDir = path.dirname(currentDir);
     if (parentDir === currentDir || !parentDir) {
       // check .env under home as fallback, again preferring gemini-specific .env
-      const homeGeminiEnvPath = path.join(process.cwd(), GEMINI_DIR, '.env');
+      const homeGeminiEnvPath = path.join(process.cwd(), A_CODER_DIR, '.env');
       if (fs.existsSync(homeGeminiEnvPath)) {
         return homeGeminiEnvPath;
       }
@@ -265,13 +265,13 @@ async function refreshAuthentication(
       );
 
       const useComputeAdc =
-        process.env['GEMINI_CLI_USE_COMPUTE_ADC'] === 'true';
+        process.env['A_CODER_CLI_USE_COMPUTE_ADC'] === 'true';
       const isHeadless = isHeadlessMode();
 
       if (isHeadless || useComputeAdc) {
         const reason = isHeadless
           ? 'headless mode'
-          : 'GEMINI_CLI_USE_COMPUTE_ADC=true';
+          : 'A_CODER_CLI_USE_COMPUTE_ADC=true';
         throw new FatalAuthenticationError(
           `COMPUTE_ADC failed: ${adcMessage}. (LOGIN_WITH_GOOGLE fallback skipped due to ${reason}. Run in an interactive terminal to use OAuth.)`,
         );
@@ -296,11 +296,11 @@ async function refreshAuthentication(
     logger.info(
       `[${logPrefix}] GOOGLE_CLOUD_PROJECT: ${process.env['GOOGLE_CLOUD_PROJECT']}`,
     );
-  } else if (process.env['GEMINI_API_KEY']) {
+  } else if (process.env['OPENAI_API_KEY']) {
     logger.info(`[${logPrefix}] Using Gemini API Key`);
     await config.refreshAuth(AuthType.USE_GEMINI);
   } else {
-    const errorMessage = `[${logPrefix}] Unable to set GeneratorConfig. Please provide a GEMINI_API_KEY or set USE_CCPA.`;
+    const errorMessage = `[${logPrefix}] Unable to set GeneratorConfig. Please provide a OPENAI_API_KEY or set USE_CCPA.`;
     logger.error(errorMessage);
     throw new Error(errorMessage);
   }

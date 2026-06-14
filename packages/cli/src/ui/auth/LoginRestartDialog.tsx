@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { type Config } from '@google/gemini-cli-core';
+import { type Config } from '@the-a-tech-corporation/core';
 import { Box, Text } from 'ink';
 import { theme } from '../semantic-colors.js';
 import { useKeypress } from '../hooks/useKeypress.js';
@@ -48,7 +48,7 @@ export const LoginRestartDialog = ({
 
   const displayMessage =
     message ??
-    "You've successfully signed in with Google. Gemini CLI needs to be restarted.";
+    "You've successfully signed in with Google. A-Coder CLI needs to be restarted.";
 
   return (
     <Box

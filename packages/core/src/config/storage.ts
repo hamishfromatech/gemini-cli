@@ -9,7 +9,9 @@ import * as os from 'node:os';
 import * as crypto from 'node:crypto';
 import * as fs from 'node:fs';
 import {
-  GEMINI_DIR,
+  A_CODER_DIR,
+  CLAUDE_DIR,
+  OPENCODE_DIR,
   homedir,
   GOOGLE_ACCOUNTS_FILENAME,
   isSubpath,
@@ -51,12 +53,12 @@ export class Storage {
     return !!this.projectIdentifier;
   }
 
-  static getGlobalGeminiDir(): string {
+  static getGlobalACoderDir(): string {
     const homeDir = homedir();
     if (!homeDir) {
-      return path.join(os.tmpdir(), GEMINI_DIR);
+      return path.join(os.tmpdir(), A_CODER_DIR);
     }
-    return path.join(homeDir, GEMINI_DIR);
+    return path.join(homeDir, A_CODER_DIR);
   }
 
   static getGlobalAgentsDir(): string {
@@ -68,66 +70,82 @@ export class Storage {
   }
 
   static getMcpOAuthTokensPath(): string {
-    return path.join(Storage.getGlobalGeminiDir(), 'mcp-oauth-tokens.json');
+    return path.join(Storage.getGlobalACoderDir(), 'mcp-oauth-tokens.json');
   }
 
   static getA2AOAuthTokensPath(): string {
-    return path.join(Storage.getGlobalGeminiDir(), 'a2a-oauth-tokens.json');
+    return path.join(Storage.getGlobalACoderDir(), 'a2a-oauth-tokens.json');
   }
 
   static getGlobalSettingsPath(): string {
-    return path.join(Storage.getGlobalGeminiDir(), 'settings.json');
+    return path.join(Storage.getGlobalACoderDir(), 'settings.json');
   }
 
   static getInstallationIdPath(): string {
-    return path.join(Storage.getGlobalGeminiDir(), 'installation_id');
+    return path.join(Storage.getGlobalACoderDir(), 'installation_id');
   }
 
   static getGoogleAccountsPath(): string {
-    return path.join(Storage.getGlobalGeminiDir(), GOOGLE_ACCOUNTS_FILENAME);
+    return path.join(Storage.getGlobalACoderDir(), GOOGLE_ACCOUNTS_FILENAME);
   }
 
   static getTrustedFoldersPath(): string {
-    if (process.env['GEMINI_CLI_TRUSTED_FOLDERS_PATH']) {
-      return process.env['GEMINI_CLI_TRUSTED_FOLDERS_PATH'];
+    if (process.env['A_CODER_CLI_TRUSTED_FOLDERS_PATH']) {
+      return process.env['A_CODER_CLI_TRUSTED_FOLDERS_PATH'];
     }
-    return path.join(Storage.getGlobalGeminiDir(), TRUSTED_FOLDERS_FILENAME);
+    return path.join(Storage.getGlobalACoderDir(), TRUSTED_FOLDERS_FILENAME);
   }
 
   static getUserCommandsDir(): string {
-    return path.join(Storage.getGlobalGeminiDir(), 'commands');
+    return path.join(Storage.getGlobalACoderDir(), 'commands');
   }
 
   static getUserSkillsDir(): string {
-    return path.join(Storage.getGlobalGeminiDir(), 'skills');
+    return path.join(Storage.getGlobalACoderDir(), 'skills');
   }
 
   static getUserAgentSkillsDir(): string {
     return path.join(Storage.getGlobalAgentsDir(), 'skills');
   }
 
+  static getUserClaudeSkillsDir(): string {
+    const homeDir = homedir();
+    if (!homeDir) {
+      return '';
+    }
+    return path.join(homeDir, CLAUDE_DIR, 'skills');
+  }
+
+  static getUserOpencodeSkillsDir(): string {
+    const homeDir = homedir();
+    if (!homeDir) {
+      return '';
+    }
+    return path.join(homeDir, OPENCODE_DIR, 'skills');
+  }
+
   static getUserPoliciesDir(): string {
-    return path.join(Storage.getGlobalGeminiDir(), 'policies');
+    return path.join(Storage.getGlobalACoderDir(), 'policies');
   }
 
   static getUserKeybindingsPath(): string {
-    return path.join(Storage.getGlobalGeminiDir(), 'keybindings.json');
+    return path.join(Storage.getGlobalACoderDir(), 'keybindings.json');
   }
 
   static getUserAgentsDir(): string {
-    return path.join(Storage.getGlobalGeminiDir(), 'agents');
+    return path.join(Storage.getGlobalACoderDir(), 'agents');
   }
 
   static getAcknowledgedAgentsPath(): string {
     return path.join(
-      Storage.getGlobalGeminiDir(),
+      Storage.getGlobalACoderDir(),
       'acknowledgments',
       'agents.json',
     );
   }
 
   static getPolicyIntegrityStoragePath(): string {
-    return path.join(Storage.getGlobalGeminiDir(), 'policy_integrity.json');
+    return path.join(Storage.getGlobalACoderDir(), 'policy_integrity.json');
   }
 
   private static getSystemConfigDir(): string {
@@ -141,8 +159,8 @@ export class Storage {
   }
 
   static getSystemSettingsPath(): string {
-    if (process.env['GEMINI_CLI_SYSTEM_SETTINGS_PATH']) {
-      return process.env['GEMINI_CLI_SYSTEM_SETTINGS_PATH'];
+    if (process.env['A_CODER_CLI_SYSTEM_SETTINGS_PATH']) {
+      return process.env['A_CODER_CLI_SYSTEM_SETTINGS_PATH'];
     }
     return path.join(Storage.getSystemConfigDir(), 'settings.json');
   }
@@ -152,7 +170,7 @@ export class Storage {
   }
 
   static getGlobalTempDir(): string {
-    return path.join(Storage.getGlobalGeminiDir(), TMP_DIR_NAME);
+    return path.join(Storage.getGlobalACoderDir(), TMP_DIR_NAME);
   }
 
   static getGlobalBinDir(): string {
@@ -160,7 +178,7 @@ export class Storage {
   }
 
   getGeminiDir(): string {
-    return path.join(this.targetDir, GEMINI_DIR);
+    return path.join(this.targetDir, A_CODER_DIR);
   }
 
   /**
@@ -204,7 +222,7 @@ export class Storage {
   }
 
   static getOAuthCredsPath(): string {
-    return path.join(Storage.getGlobalGeminiDir(), OAUTH_FILE);
+    return path.join(Storage.getGlobalACoderDir(), OAUTH_FILE);
   }
 
   getProjectRoot(): string {
@@ -236,12 +254,12 @@ export class Storage {
       }
 
       const registryPath = path.join(
-        Storage.getGlobalGeminiDir(),
+        Storage.getGlobalACoderDir(),
         'projects.json',
       );
       const registry = new ProjectRegistry(registryPath, [
         Storage.getGlobalTempDir(),
-        path.join(Storage.getGlobalGeminiDir(), 'history'),
+        path.join(Storage.getGlobalACoderDir(), 'history'),
       ]);
       await registry.initialize();
 
@@ -266,7 +284,7 @@ export class Storage {
     await StorageMigration.migrateDirectory(oldTempDir, newTempDir);
 
     // Migrate History Dir
-    const historyDir = path.join(Storage.getGlobalGeminiDir(), 'history');
+    const historyDir = path.join(Storage.getGlobalACoderDir(), 'history');
     const newHistoryDir = path.join(historyDir, shortId);
     const oldHistoryDir = path.join(historyDir, oldHash);
     await StorageMigration.migrateDirectory(oldHistoryDir, newHistoryDir);
@@ -274,7 +292,7 @@ export class Storage {
 
   getHistoryDir(): string {
     const identifier = this.getProjectIdentifier();
-    const historyDir = path.join(Storage.getGlobalGeminiDir(), 'history');
+    const historyDir = path.join(Storage.getGlobalACoderDir(), 'history');
     return path.join(historyDir, identifier);
   }
 
@@ -304,6 +322,14 @@ export class Storage {
 
   getProjectAgentSkillsDir(): string {
     return path.join(this.getAgentsDir(), 'skills');
+  }
+
+  getProjectClaudeSkillsDir(): string {
+    return path.join(this.targetDir, CLAUDE_DIR, 'skills');
+  }
+
+  getProjectOpencodeSkillsDir(): string {
+    return path.join(this.targetDir, OPENCODE_DIR, 'skills');
   }
 
   getProjectAgentsDir(): string {
@@ -423,7 +449,7 @@ export class Storage {
   }
 
   getExtensionsConfigPath(): string {
-    return path.join(this.getExtensionsDir(), 'gemini-extension.json');
+    return path.join(this.getExtensionsDir(), 'a-coder-extension.json');
   }
 
   getHistoryFilePath(): string {

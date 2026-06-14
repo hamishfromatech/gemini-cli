@@ -11,7 +11,7 @@ import {
   getAuthTypeFromEnv,
   type Config,
   type AuthType,
-} from '@google/gemini-cli-core';
+} from '@the-a-tech-corporation/core';
 import { USER_SETTINGS_PATH, type LoadedSettings } from './config/settings.js';
 import { validateAuthMethod } from './config/auth.js';
 import { handleError } from './utils/errors.js';
@@ -35,7 +35,7 @@ export async function validateNonInteractiveAuth(
     }
 
     if (!effectiveAuthType) {
-      const message = `Please set an Auth method in your ${USER_SETTINGS_PATH} or specify one of the following environment variables before running: GEMINI_API_KEY, GOOGLE_GENAI_USE_VERTEXAI, GOOGLE_GENAI_USE_GCA`;
+      const message = `Please set an Auth method in your ${USER_SETTINGS_PATH} or specify one of the following environment variables before running: OPENAI_API_KEY, A_CODER_API_KEY, OPENAI_BASE_URL, A_CODER_BASE_URL`;
       throw new Error(message);
     }
 

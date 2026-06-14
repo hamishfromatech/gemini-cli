@@ -25,7 +25,7 @@ export class TrustedHooksManager {
 
   constructor() {
     this.configPath = path.join(
-      Storage.getGlobalGeminiDir(),
+      Storage.getGlobalACoderDir(),
       'trusted_hooks.json',
     );
     this.load();

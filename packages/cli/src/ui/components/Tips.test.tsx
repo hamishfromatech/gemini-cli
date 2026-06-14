@@ -7,12 +7,12 @@
 import { render } from '../../test-utils/render.js';
 import { Tips } from './Tips.js';
 import { describe, it, expect, vi } from 'vitest';
-import type { Config } from '@google/gemini-cli-core';
+import type { Config } from '@the-a-tech-corporation/core';
 
 describe('Tips', () => {
   it.each([
-    { fileCount: 0, description: 'renders all tips including GEMINI.md tip' },
-    { fileCount: 5, description: 'renders fewer tips when GEMINI.md exists' },
+    { fileCount: 0, description: 'renders all tips including A_CODER.md tip' },
+    { fileCount: 5, description: 'renders fewer tips when A_CODER.md exists' },
   ])('$description', async ({ fileCount }) => {
     const config = {
       getGeminiMdFileCount: vi.fn().mockReturnValue(fileCount),

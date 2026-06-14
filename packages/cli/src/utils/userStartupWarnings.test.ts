@@ -16,7 +16,7 @@ import {
 import {
   getCompatibilityWarnings,
   WarningPriority,
-} from '@google/gemini-cli-core';
+} from '@the-a-tech-corporation/core';
 
 // Mock os.homedir to control the home directory in tests
 vi.mock('node:os', async (importOriginal) => {
@@ -27,9 +27,9 @@ vi.mock('node:os', async (importOriginal) => {
   };
 });
 
-vi.mock('@google/gemini-cli-core', async (importOriginal) => {
+vi.mock('@the-a-tech-corporation/core', async (importOriginal) => {
   const actual =
-    await importOriginal<typeof import('@google/gemini-cli-core')>();
+    await importOriginal<typeof import('@the-a-tech-corporation/core')>();
   return {
     ...actual,
     getCompatibilityWarnings: vi.fn().mockReturnValue([]),
@@ -76,7 +76,7 @@ describe('getUserStartupWarnings', () => {
         expect.objectContaining({
           id: 'home-directory',
           message: expect.stringContaining(
-            'Warning you are running Gemini CLI in your home directory',
+            'Warning you are running A-Coder CLI in your home directory',
           ),
           priority: WarningPriority.Low,
         }),
@@ -130,17 +130,17 @@ describe('getUserStartupWarnings', () => {
         expect.objectContaining({
           id: 'home-directory',
           message: expect.stringContaining(
-            'Warning you are running Gemini CLI in your home directory',
+            'Warning you are running A-Coder CLI in your home directory',
           ),
           priority: WarningPriority.Low,
         }),
       );
     });
 
-    it('should not return a warning when GEMINI_CLI_HOME differs from os.homedir', async () => {
+    it('should not return a warning when A_CODER_CLI_HOME differs from os.homedir', async () => {
       const projectDir = path.join(testRootDir, 'project');
       await fs.mkdir(projectDir, { recursive: true });
-      vi.stubEnv('GEMINI_CLI_HOME', projectDir);
+      vi.stubEnv('A_CODER_CLI_HOME', projectDir);
 
       const warnings = await getUserStartupWarnings({}, projectDir);
       expect(warnings.find((w) => w.id === 'home-directory')).toBeUndefined();
@@ -195,12 +195,12 @@ describe('getUserStartupWarnings', () => {
   describe('folder trust check', () => {
     it('should throw FatalUntrustedWorkspaceError when untrusted in headless mode', async () => {
       const { isHeadlessMode, FatalUntrustedWorkspaceError } = await import(
-        '@google/gemini-cli-core'
+        '@the-a-tech-corporation/core'
       );
       vi.mocked(isFolderTrustEnabled).mockReturnValue(true);
       vi.mocked(isWorkspaceTrusted).mockImplementation(() => {
         throw new FatalUntrustedWorkspaceError(
-          'Gemini CLI is not running in a trusted directory',
+          'A-Coder CLI is not running in a trusted directory',
         );
       });
       vi.mocked(isHeadlessMode).mockReturnValue(true);
@@ -211,7 +211,7 @@ describe('getUserStartupWarnings', () => {
     });
 
     it('should not return a warning when trusted in headless mode', async () => {
-      const { isHeadlessMode } = await import('@google/gemini-cli-core');
+      const { isHeadlessMode } = await import('@the-a-tech-corporation/core');
       vi.mocked(isFolderTrustEnabled).mockReturnValue(true);
       vi.mocked(isWorkspaceTrusted).mockReturnValue({
         isTrusted: true,
@@ -224,7 +224,7 @@ describe('getUserStartupWarnings', () => {
     });
 
     it('should not return a warning when untrusted in interactive mode', async () => {
-      const { isHeadlessMode } = await import('@google/gemini-cli-core');
+      const { isHeadlessMode } = await import('@the-a-tech-corporation/core');
       vi.mocked(isFolderTrustEnabled).mockReturnValue(true);
       vi.mocked(isWorkspaceTrusted).mockReturnValue({
         isTrusted: false,

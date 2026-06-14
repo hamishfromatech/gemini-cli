@@ -5,7 +5,7 @@
  */
 
 import type { Config } from '../config/config.js';
-import type { GeminiChat } from '../core/geminiChat.js';
+import type { ACoderChat } from '../core/geminiChat.js';
 import { ContextProcessorRegistry } from './config/registry.js';
 import { loadContextManagementConfig } from './config/configLoader.js';
 import { ContextTracer } from './tracer.js';
@@ -29,7 +29,7 @@ import { registerBuiltInBehaviors } from './graph/builtinBehaviors.js';
 
 export async function initializeContextManager(
   config: Config,
-  chat: GeminiChat,
+  chat: ACoderChat,
   lastPromptId: string,
 ): Promise<ContextManager | undefined> {
   const isV1Enabled = config.getContextManagementConfig().enabled;
@@ -81,7 +81,7 @@ export async function initializeContextManager(
   const projectTempDir = storage.getProjectTempDir();
 
   const tracer = new ContextTracer({
-    enabled: !!process.env['GEMINI_CONTEXT_TRACE_DIR'],
+    enabled: !!process.env['A_CODER_CONTEXT_TRACE_DIR'],
     targetDir: projectTempDir,
     sessionId: lastPromptId,
   });
@@ -127,7 +127,7 @@ export async function initializeContextManager(
     behaviorRegistry,
     {
       calibrateTokenCalculation:
-        !!process.env['GEMINI_CONTEXT_CALIBRATE_TOKEN_CALCULATIONS'],
+        !!process.env['A_CODER_CONTEXT_CALIBRATE_TOKEN_CALCULATIONS'],
     },
   );
 

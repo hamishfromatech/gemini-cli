@@ -2,7 +2,7 @@
 
 /**
  * @license
- * Copyright 2026 Google LLC
+ * Copyright 2026 The A-Tech Corporation
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -42,7 +42,7 @@ function getModelFromPath(reportPath) {
   if (matchNew) return matchNew[1];
 
   const matchOld = artifactDir.match(/^eval-logs-(\d+)$/);
-  if (matchOld) return 'gemini-2.5-pro'; // Legacy default
+  if (matchOld) return 'qwen3-pro'; // Legacy default
 
   return 'unknown';
 }
@@ -147,7 +147,7 @@ function fetchHistoricalData() {
 function generateMarkdown(currentStatsByModel, history) {
   console.log('### Evals Nightly Summary\n');
   console.log(
-    'See [evals/README.md](https://github.com/google-gemini/gemini-cli/tree/main/evals) for more details.\n',
+    'See [evals/README.md](https://github.com/hamishfromatech/a-coder-cli/tree/main/evals) for more details.\n',
   );
 
   // Reverse history to show oldest first

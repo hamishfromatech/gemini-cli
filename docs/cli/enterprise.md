@@ -1,7 +1,7 @@
-# Gemini CLI for the enterprise
+# A-Coder CLI for the enterprise
 
 This document outlines configuration patterns and best practices for deploying
-and managing Gemini CLI in an enterprise environment. By leveraging system-level
+and managing A-Coder CLI in an enterprise environment. By leveraging system-level
 settings, administrators can enforce security policies, manage tool access, and
 ensure a consistent experience for all users.
 
@@ -9,7 +9,7 @@ ensure a consistent experience for all users.
 > [!WARNING]
 > The patterns described in this document are intended to help
 > administrators create a more controlled and secure environment for using
-> Gemini CLI. However, they should not be considered a foolproof security
+> A-Coder CLI. However, they should not be considered a foolproof security
 > boundary. A determined user with sufficient privileges on their local machine
 > may still be able to circumvent these configurations. These measures are
 > designed to prevent accidental misuse and enforce corporate policy in a
@@ -28,8 +28,8 @@ Settings are merged from four files. The precedence order for single-value
 settings (like `theme`) is:
 
 1. System Defaults (`system-defaults.json`)
-2. User Settings (`~/.gemini/settings.json`)
-3. Workspace Settings (`<project>/.gemini/settings.json`)
+2. User Settings (`~/.a-coder-cli/settings.json`)
+3. Workspace Settings (`<project>/.a-coder-cli/settings.json`)
 4. System Overrides (`settings.json`)
 
 This means the System Overrides file has the final say. For settings that are
@@ -47,12 +47,12 @@ Here is how settings from different levels are combined.
       "theme": "default-corporate-theme"
     },
     "context": {
-      "includeDirectories": ["/etc/gemini-cli/common-context"]
+      "includeDirectories": ["/etc/a-coder-cli-cli/common-context"]
     }
   }
   ```
 
-- **User `settings.json` (`~/.gemini/settings.json`):**
+- **User `settings.json` (`~/.a-coder-cli/settings.json`):**
 
   ```json
   {
@@ -68,12 +68,12 @@ Here is how settings from different levels are combined.
       }
     },
     "context": {
-      "includeDirectories": ["~/gemini-context"]
+      "includeDirectories": ["~/a-coder-cli-context"]
     }
   }
   ```
 
-- **Workspace `settings.json` (`<project>/.gemini/settings.json`):**
+- **Workspace `settings.json` (`<project>/.a-coder-cli/settings.json`):**
 
   ```json
   {
@@ -103,7 +103,7 @@ Here is how settings from different levels are combined.
       }
     },
     "context": {
-      "includeDirectories": ["/etc/gemini-cli/global-context"]
+      "includeDirectories": ["/etc/a-coder-cli-cli/global-context"]
     }
   }
   ```
@@ -129,10 +129,10 @@ This results in the following merged configuration:
     },
     "context": {
       "includeDirectories": [
-        "/etc/gemini-cli/common-context",
-        "~/gemini-context",
+        "/etc/a-coder-cli-cli/common-context",
+        "~/a-coder-cli-context",
         "./project-context",
-        "/etc/gemini-cli/global-context"
+        "/etc/a-coder-cli-cli/global-context"
       ]
     }
   }
@@ -149,10 +149,10 @@ This results in the following merged configuration:
   Defaults, User, Workspace, and then System Overrides.
 
 - **Location**:
-  - **Linux**: `/etc/gemini-cli/settings.json`
-  - **Windows**: `C:\ProgramData\gemini-cli\settings.json`
-  - **macOS**: `/Library/Application Support/GeminiCli/settings.json`
-  - The path can be overridden using the `GEMINI_CLI_SYSTEM_SETTINGS_PATH`
+  - **Linux**: `/etc/a-coder-cli-cli/settings.json`
+  - **Windows**: `C:\ProgramData\a-coder-cli-cli\settings.json`
+  - **macOS**: `/Library/Application Support/A-CoderCli/settings.json`
+  - The path can be overridden using the `A_CODER_CLI_SYSTEM_SETTINGS_PATH`
     environment variable.
 - **Control**: This file should be managed by system administrators and
   protected with appropriate file permissions to prevent unauthorized
@@ -163,45 +163,45 @@ configuration patterns described below.
 
 ### Enforcing system settings with a wrapper script
 
-While the `GEMINI_CLI_SYSTEM_SETTINGS_PATH` environment variable provides
+While the `A_CODER_CLI_SYSTEM_SETTINGS_PATH` environment variable provides
 flexibility, a user could potentially override it to point to a different
 settings file, bypassing the centrally managed configuration. To mitigate this,
 enterprises can deploy a wrapper script or alias that ensures the environment
 variable is always set to the corporate-controlled path.
 
-This approach ensures that no matter how the user calls the `gemini` command,
+This approach ensures that no matter how the user calls the `a-coder-cli` command,
 the enterprise settings are always loaded with the highest precedence.
 
 **Example wrapper script:**
 
-Administrators can create a script named `gemini` and place it in a directory
-that appears earlier in the user's `PATH` than the actual Gemini CLI binary (for
-example, `/usr/local/bin/gemini`).
+Administrators can create a script named `a-coder-cli` and place it in a directory
+that appears earlier in the user's `PATH` than the actual A-Coder CLI binary (for
+example, `/usr/local/bin/a-coder-cli`).
 
 ```bash
 #!/bin/bash
 
 # Enforce the path to the corporate system settings file.
 # This ensures that the company's configuration is always applied.
-export GEMINI_CLI_SYSTEM_SETTINGS_PATH="/etc/gemini-cli/settings.json"
+export A_CODER_CLI_SYSTEM_SETTINGS_PATH="/etc/a-coder-cli-cli/settings.json"
 
-# Find the original gemini executable.
+# Find the original a-coder-cli executable.
 # This is a simple example; a more robust solution might be needed
 # depending on the installation method.
-REAL_GEMINI_PATH=$(type -aP gemini | grep -v "^$(type -P gemini)$" | head -n 1)
+REAL_A_CODER_PATH=$(type -aP a-coder-cli | grep -v "^$(type -P a-coder-cli)$" | head -n 1)
 
-if [ -z "$REAL_GEMINI_PATH" ]; then
-  echo "Error: The original 'gemini' executable was not found." >&2
+if [ -z "$REAL_A_CODER_PATH" ]; then
+  echo "Error: The original 'a-coder-cli' executable was not found." >&2
   exit 1
 fi
 
-# Pass all arguments to the real Gemini CLI executable.
-exec "$REAL_GEMINI_PATH" "$@"
+# Pass all arguments to the real A-Coder CLI executable.
+exec "$REAL_A_CODER_PATH" "$@"
 ```
 
-By deploying this script, the `GEMINI_CLI_SYSTEM_SETTINGS_PATH` is set within
+By deploying this script, the `A_CODER_CLI_SYSTEM_SETTINGS_PATH` is set within
 the script's environment, and the `exec` command replaces the script process
-with the actual Gemini CLI process, which inherits the environment variable.
+with the actual A-Coder CLI process, which inherits the environment variable.
 This makes it significantly more difficult for a user to bypass the enforced
 settings.
 
@@ -211,39 +211,39 @@ On Windows, administrators can achieve similar results by adding the environment
 variable to the system-wide or user-specific PowerShell profile:
 
 ```powershell
-Add-Content -Path $PROFILE -Value '$env:GEMINI_CLI_SYSTEM_SETTINGS_PATH="C:\ProgramData\gemini-cli\settings.json"'
+Add-Content -Path $PROFILE -Value '$env:A_CODER_CLI_SYSTEM_SETTINGS_PATH="C:\ProgramData\a-coder-cli-cli\settings.json"'
 ```
 
 ## User isolation in shared environments
 
 In shared compute environments (like ML experiment runners or shared build
-servers), you can isolate Gemini CLI state by overriding the user's home
+servers), you can isolate A-Coder CLI state by overriding the user's home
 directory.
 
-By default, Gemini CLI stores configuration and history in `~/.gemini`. You can
-use the `GEMINI_CLI_HOME` environment variable to point to a unique directory
-for a specific user or job. The CLI will create a `.gemini` folder inside the
+By default, A-Coder CLI stores configuration and history in `~/.a-coder-cli`. You can
+use the `A_CODER_CLI_HOME` environment variable to point to a unique directory
+for a specific user or job. The CLI will create a `.a-coder-cli` folder inside the
 specified path.
 
 **macOS/Linux**
 
 ```bash
 # Isolate state for a specific job
-export GEMINI_CLI_HOME="/tmp/gemini-job-123"
-gemini
+export A_CODER_CLI_HOME="/tmp/a-coder-cli-job-123"
+a-coder-cli
 ```
 
 **Windows (PowerShell)**
 
 ```powershell
 # Isolate state for a specific job
-$env:GEMINI_CLI_HOME="C:\temp\gemini-job-123"
-gemini
+$env:A_CODER_CLI_HOME="C:\temp\a-coder-cli-job-123"
+a-coder-cli
 ```
 
 ## Restricting tool access
 
-You can significantly enhance security by controlling which tools the Gemini
+You can significantly enhance security by controlling which tools the A-Coder
 model can use. This is achieved through the `tools.core` setting and the
 [Policy Engine](../reference/policy-engine.md). For a list of available tools,
 see the [Tools reference](../reference/tools.md).
@@ -318,7 +318,7 @@ effectively.
 
 ### How MCP server configurations are merged
 
-Gemini CLI loads `settings.json` files from three levels: System, Workspace, and
+A-Coder CLI loads `settings.json` files from three levels: System, Workspace, and
 User. When it comes to the `mcpServers` object, these configurations are
 **merged**:
 
@@ -456,7 +456,7 @@ a custom `sandbox.Dockerfile` as described in the
 
 ## Controlling network access via proxy
 
-In corporate environments with strict network policies, you can configure Gemini
+In corporate environments with strict network policies, you can configure A-Coder
 CLI to route all outbound traffic through a corporate proxy. This can be set via
 an environment variable, but it can also be enforced for custom tools via the
 `mcpServers` configuration.
@@ -480,7 +480,7 @@ an environment variable, but it can also be enforced for custom tools via the
 
 ## Telemetry and auditing
 
-For auditing and monitoring purposes, you can configure Gemini CLI to send
+For auditing and monitoring purposes, you can configure A-Coder CLI to send
 telemetry data to a central location. This lets you track tool usage and other
 events. For more information, see the [telemetry documentation](./telemetry.md).
 
@@ -530,7 +530,7 @@ enforced one.
 
 For enterprises using Google Workspace, you can enforce that users only
 authenticate with their corporate Google accounts. This is a network-level
-control that is configured on a proxy server, not within Gemini CLI itself. It
+control that is configured on a proxy server, not within A-Coder CLI itself. It
 works by intercepting authentication requests to Google and adding a special
 HTTP header.
 
@@ -561,7 +561,7 @@ logins from accounts belonging to the specified domains.
 ## Putting it all together: example system `settings.json`
 
 Here is an example of a system `settings.json` file that combines several of the
-patterns discussed above to create a secure, controlled environment for Gemini
+patterns discussed above to create a secure, controlled environment for A-Coder
 CLI.
 
 ```json
@@ -581,7 +581,7 @@ CLI.
   },
   "mcpServers": {
     "corp-tools": {
-      "command": "/opt/gemini-tools/start.sh",
+      "command": "/opt/a-coder-cli-tools/start.sh",
       "timeout": 5000
     }
   },

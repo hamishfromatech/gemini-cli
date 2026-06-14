@@ -8,7 +8,7 @@ import { access, cp, mkdir, readdir, writeFile } from 'node:fs/promises';
 import { join, dirname, basename } from 'node:path';
 import type { CommandModule } from 'yargs';
 import { fileURLToPath } from 'node:url';
-import { debugLogger } from '@google/gemini-cli-core';
+import { debugLogger } from '@the-a-tech-corporation/core';
 import { exitCli } from '../utils.js';
 
 interface NewArgs {
@@ -63,13 +63,13 @@ async function handleNew(args: NewArgs) {
       version: '1.0.0',
     };
     await writeFile(
-      join(args.path, 'gemini-extension.json'),
+      join(args.path, 'a-coder-extension.json'),
       JSON.stringify(manifest, null, 2),
     );
     debugLogger.log(`Successfully created new extension at ${args.path}.`);
   }
   debugLogger.log(
-    `You can install this using "gemini extensions link ${args.path}" to test it out.`,
+    `You can install this using "a-coder-cli extensions link ${args.path}" to test it out.`,
   );
 }
 

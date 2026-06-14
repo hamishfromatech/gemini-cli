@@ -1,6 +1,6 @@
 # Shell tool (`run_shell_command`)
 
-The `run_shell_command` tool allows the Gemini model to execute commands
+The `run_shell_command` tool allows the A-Coder model to execute commands
 directly on your system's shell. It is the primary mechanism for the agent to
 interact with your environment beyond simple file edits.
 
@@ -49,7 +49,7 @@ The tool returns a JSON object containing:
 ## Configuration
 
 You can configure the behavior of the `run_shell_command` tool by modifying your
-`settings.json` file or by using the `/settings` command in Gemini CLI.
+`settings.json` file or by using the `/settings` command in A-Coder CLI.
 
 ### Enabling interactive commands
 
@@ -114,7 +114,7 @@ pseudo-terminal (pty). This lets you run commands that require real-time user
 input, such as text editors (`vim`, `nano`), terminal-based UIs (`htop`), and
 interactive version control operations (`git rebase -i`).
 
-When an interactive command is running, you can send input to it from the Gemini
+When an interactive command is running, you can send input to it from the A-Coder
 CLI. To focus on the interactive shell, press `Tab`. The terminal output,
 including complex TUIs, will be rendered correctly.
 
@@ -131,9 +131,9 @@ including complex TUIs, will be rendered correctly.
 
 ## Environment variables
 
-When `run_shell_command` executes a command, it sets the `GEMINI_CLI=1`
+When `run_shell_command` executes a command, it sets the `A_CODER_CLI=1`
 environment variable in the subprocess's environment. This allows scripts or
-tools to detect if they are being run from within Gemini CLI.
+tools to detect if they are being run from within A-Coder CLI.
 
 ## Command restrictions
 

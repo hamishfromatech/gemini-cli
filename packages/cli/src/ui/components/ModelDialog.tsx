@@ -10,24 +10,24 @@ import { Box, Text } from 'ink';
 import { ModelQuotaDisplay } from './ModelQuotaDisplay.js';
 import { useUIState } from '../contexts/UIStateContext.js';
 import {
-  PREVIEW_GEMINI_MODEL,
-  PREVIEW_GEMINI_3_1_MODEL,
-  PREVIEW_GEMINI_FLASH_MODEL,
-  PREVIEW_GEMINI_FLASH_LITE_MODEL,
-  DEFAULT_GEMINI_MODEL,
-  DEFAULT_GEMINI_FLASH_MODEL,
-  DEFAULT_GEMINI_FLASH_LITE_MODEL,
-  GEMINI_MODEL_ALIAS_AUTO,
+  PREVIEW_A_CODER_MODEL,
+  PREVIEW_A_CODER_3_1_MODEL,
+  PREVIEW_A_CODER_FLASH_MODEL,
+  PREVIEW_A_CODER_FLASH_LITE_MODEL,
+  DEFAULT_A_CODER_MODEL,
+  DEFAULT_A_CODER_FLASH_MODEL,
+  DEFAULT_A_CODER_FLASH_LITE_MODEL,
+  A_CODER_MODEL_ALIAS_AUTO,
   GEMMA_4_31B_IT_MODEL,
   GEMMA_4_26B_A4B_IT_MODEL,
   ModelSlashCommandEvent,
   logModelSlashCommand,
   getDisplayString,
   AuthType,
-  PREVIEW_GEMINI_3_1_CUSTOM_TOOLS_MODEL,
+  PREVIEW_A_CODER_3_1_CUSTOM_TOOLS_MODEL,
   isProModel,
   getAutoModelDescription,
-} from '@google/gemini-cli-core';
+} from '@the-a-tech-corporation/core';
 import { useKeypress } from '../hooks/useKeypress.js';
 import { theme } from '../semantic-colors.js';
 import { DescriptiveRadioButtonSelect } from './shared/DescriptiveRadioButtonSelect.js';
@@ -63,14 +63,14 @@ export function ModelDialog({ onClose }: ModelDialogProps): React.JSX.Element {
   }, [config]);
 
   // Determine the Preferred Model (read once when the dialog opens).
-  const preferredModel = config?.getModel() || GEMINI_MODEL_ALIAS_AUTO;
+  const preferredModel = config?.getModel() || A_CODER_MODEL_ALIAS_AUTO;
 
   const shouldShowPreviewModels = config?.getHasAccessToPreviewModel() ?? false;
-  const useGemini31 = config?.getGemini31LaunchedSync?.() ?? false;
-  const useGemini3_5Flash = config?.hasGemini35FlashGAAccess?.() ?? false;
+  const useACoder31 = config?.getACoder31LaunchedSync?.() ?? false;
+  const useACoder3_5Flash = config?.hasACoder35FlashGAAccess?.() ?? false;
   const selectedAuthType = settings.merged.security.auth.selectedType;
   const useCustomToolModel =
-    useGemini31 && selectedAuthType === AuthType.USE_GEMINI;
+    useACoder31 && selectedAuthType === AuthType.USE_GEMINI;
 
   const manualModelSelected = useMemo(() => {
     if (
@@ -87,14 +87,14 @@ export function ModelDialog({ onClose }: ModelDialogProps): React.JSX.Element {
     }
 
     const manualModels = [
-      DEFAULT_GEMINI_MODEL,
-      DEFAULT_GEMINI_FLASH_MODEL,
-      DEFAULT_GEMINI_FLASH_LITE_MODEL,
-      PREVIEW_GEMINI_MODEL,
-      PREVIEW_GEMINI_3_1_MODEL,
-      PREVIEW_GEMINI_3_1_CUSTOM_TOOLS_MODEL,
-      PREVIEW_GEMINI_FLASH_LITE_MODEL,
-      PREVIEW_GEMINI_FLASH_MODEL,
+      DEFAULT_A_CODER_MODEL,
+      DEFAULT_A_CODER_FLASH_MODEL,
+      DEFAULT_A_CODER_FLASH_LITE_MODEL,
+      PREVIEW_A_CODER_MODEL,
+      PREVIEW_A_CODER_3_1_MODEL,
+      PREVIEW_A_CODER_3_1_CUSTOM_TOOLS_MODEL,
+      PREVIEW_A_CODER_FLASH_LITE_MODEL,
+      PREVIEW_A_CODER_FLASH_MODEL,
     ].filter((m) => m !== 'none');
     if (manualModels.includes(preferredModel)) {
       return preferredModel;
@@ -129,8 +129,8 @@ export function ModelDialog({ onClose }: ModelDialogProps): React.JSX.Element {
       const allOptions = config
         .getModelConfigService()
         .getAvailableModelOptions({
-          useGemini3_1: useGemini31,
-          useGemini3_5Flash,
+          useGemini3_1: useACoder31,
+          useACoder3_5Flash,
           useCustomTools: useCustomToolModel,
           hasAccessToPreview: shouldShowPreviewModels,
           hasAccessToProModel,
@@ -159,14 +159,14 @@ export function ModelDialog({ onClose }: ModelDialogProps): React.JSX.Element {
     // --- LEGACY PATH ---
     const list = [
       {
-        value: GEMINI_MODEL_ALIAS_AUTO,
-        title: getDisplayString(GEMINI_MODEL_ALIAS_AUTO),
+        value: A_CODER_MODEL_ALIAS_AUTO,
+        title: getDisplayString(A_CODER_MODEL_ALIAS_AUTO),
         description: getAutoModelDescription(
           shouldShowPreviewModels,
-          useGemini31,
-          useGemini3_5Flash,
+          useACoder31,
+          useACoder3_5Flash,
         ),
-        key: GEMINI_MODEL_ALIAS_AUTO,
+        key: A_CODER_MODEL_ALIAS_AUTO,
       },
       {
         value: 'Manual',
@@ -183,8 +183,8 @@ export function ModelDialog({ onClose }: ModelDialogProps): React.JSX.Element {
     config,
     shouldShowPreviewModels,
     manualModelSelected,
-    useGemini31,
-    useGemini3_5Flash,
+    useACoder31,
+    useACoder3_5Flash,
     useCustomToolModel,
     hasAccessToProModel,
   ]);
@@ -198,8 +198,8 @@ export function ModelDialog({ onClose }: ModelDialogProps): React.JSX.Element {
       const allOptions = config
         .getModelConfigService()
         .getAvailableModelOptions({
-          useGemini3_1: useGemini31,
-          useGemini3_5Flash,
+          useGemini3_1: useACoder31,
+          useACoder3_5Flash,
           useCustomTools: useCustomToolModel,
           hasAccessToPreview: shouldShowPreviewModels,
           hasAccessToProModel,
@@ -219,19 +219,19 @@ export function ModelDialog({ onClose }: ModelDialogProps): React.JSX.Element {
 
     const options = [
       {
-        value: DEFAULT_GEMINI_MODEL,
-        title: getDisplayString(DEFAULT_GEMINI_MODEL),
-        key: DEFAULT_GEMINI_MODEL,
+        value: DEFAULT_A_CODER_MODEL,
+        title: getDisplayString(DEFAULT_A_CODER_MODEL),
+        key: DEFAULT_A_CODER_MODEL,
       },
       {
-        value: DEFAULT_GEMINI_FLASH_LITE_MODEL,
-        title: getDisplayString(DEFAULT_GEMINI_FLASH_LITE_MODEL),
-        key: DEFAULT_GEMINI_FLASH_LITE_MODEL,
+        value: DEFAULT_A_CODER_FLASH_LITE_MODEL,
+        title: getDisplayString(DEFAULT_A_CODER_FLASH_LITE_MODEL),
+        key: DEFAULT_A_CODER_FLASH_LITE_MODEL,
       },
       {
-        value: DEFAULT_GEMINI_FLASH_MODEL,
-        title: getDisplayString(DEFAULT_GEMINI_FLASH_MODEL),
-        key: DEFAULT_GEMINI_FLASH_MODEL,
+        value: DEFAULT_A_CODER_FLASH_MODEL,
+        title: getDisplayString(DEFAULT_A_CODER_FLASH_MODEL),
+        key: DEFAULT_A_CODER_FLASH_MODEL,
       },
     ];
 
@@ -251,12 +251,12 @@ export function ModelDialog({ onClose }: ModelDialogProps): React.JSX.Element {
     }
 
     if (shouldShowPreviewModels) {
-      const previewProModel = useGemini31
-        ? PREVIEW_GEMINI_3_1_MODEL
-        : PREVIEW_GEMINI_MODEL;
+      const previewProModel = useACoder31
+        ? PREVIEW_A_CODER_3_1_MODEL
+        : PREVIEW_A_CODER_MODEL;
 
       const previewProValue = useCustomToolModel
-        ? PREVIEW_GEMINI_3_1_CUSTOM_TOOLS_MODEL
+        ? PREVIEW_A_CODER_3_1_CUSTOM_TOOLS_MODEL
         : previewProModel;
 
       const previewOptions = [
@@ -266,17 +266,17 @@ export function ModelDialog({ onClose }: ModelDialogProps): React.JSX.Element {
           key: previewProModel,
         },
         {
-          value: PREVIEW_GEMINI_FLASH_MODEL,
-          title: getDisplayString(PREVIEW_GEMINI_FLASH_MODEL),
-          key: PREVIEW_GEMINI_FLASH_MODEL,
+          value: PREVIEW_A_CODER_FLASH_MODEL,
+          title: getDisplayString(PREVIEW_A_CODER_FLASH_MODEL),
+          key: PREVIEW_A_CODER_FLASH_MODEL,
         },
       ];
 
-      if (PREVIEW_GEMINI_FLASH_LITE_MODEL !== 'none') {
+      if (PREVIEW_A_CODER_FLASH_LITE_MODEL !== 'none') {
         previewOptions.push({
-          value: PREVIEW_GEMINI_FLASH_LITE_MODEL,
-          title: getDisplayString(PREVIEW_GEMINI_FLASH_LITE_MODEL),
-          key: PREVIEW_GEMINI_FLASH_LITE_MODEL,
+          value: PREVIEW_A_CODER_FLASH_LITE_MODEL,
+          title: getDisplayString(PREVIEW_A_CODER_FLASH_LITE_MODEL),
+          key: PREVIEW_A_CODER_FLASH_LITE_MODEL,
         });
       }
 
@@ -291,8 +291,8 @@ export function ModelDialog({ onClose }: ModelDialogProps): React.JSX.Element {
     return options;
   }, [
     shouldShowPreviewModels,
-    useGemini31,
-    useGemini3_5Flash,
+    useACoder31,
+    useACoder3_5Flash,
     useCustomToolModel,
     hasAccessToProModel,
     config,

@@ -436,7 +436,7 @@ describe('settings-validation', () => {
         expect(formatted).toContain('Expected: string, but received: object');
         expect(formatted).toContain('Please fix the configuration.');
         expect(formatted).toContain(
-          'https://geminicli.com/docs/reference/configuration/',
+          'https://a-coder-cli.com/docs/reference/configuration/',
         );
       }
     });
@@ -454,10 +454,10 @@ describe('settings-validation', () => {
       if (result.error) {
         const formatted = formatValidationError(
           result.error,
-          '~/.gemini/settings.json',
+          '~/.a-coder/settings.json',
         );
 
-        expect(formatted).toContain('~/.gemini/settings.json');
+        expect(formatted).toContain('~/.a-coder/settings.json');
         expect(formatted).toContain('model.summarizeToolOutput');
       }
     });
@@ -476,7 +476,7 @@ describe('settings-validation', () => {
         const formatted = formatValidationError(result.error, 'test.json');
 
         expect(formatted).toContain(
-          'https://geminicli.com/docs/reference/configuration/',
+          'https://a-coder-cli.com/docs/reference/configuration/',
         );
       }
     });

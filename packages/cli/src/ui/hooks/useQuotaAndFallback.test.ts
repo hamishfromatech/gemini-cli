@@ -26,17 +26,17 @@ import {
   makeFakeConfig,
   type GoogleApiError,
   RetryableQuotaError,
-  PREVIEW_GEMINI_MODEL,
+  PREVIEW_A_CODER_MODEL,
   ModelNotFoundError,
-  DEFAULT_GEMINI_MODEL,
-  DEFAULT_GEMINI_FLASH_MODEL,
+  DEFAULT_A_CODER_MODEL,
+  DEFAULT_A_CODER_FLASH_MODEL,
   getG1CreditBalance,
   shouldAutoUseCredits,
   shouldShowOverageMenu,
   shouldShowEmptyWalletMenu,
   logBillingEvent,
   G1_CREDIT_TYPE,
-} from '@google/gemini-cli-core';
+} from '@the-a-tech-corporation/core';
 import { useQuotaAndFallback } from './useQuotaAndFallback.js';
 import type { UseHistoryManagerReturn } from './useHistoryManager.js';
 import { MessageType } from '../types.js';
@@ -44,9 +44,9 @@ import { MessageType } from '../types.js';
 // Use a type alias for SpyInstance as it's not directly exported
 type SpyInstance = ReturnType<typeof vi.spyOn>;
 
-vi.mock('@google/gemini-cli-core', async (importOriginal) => {
+vi.mock('@the-a-tech-corporation/core', async (importOriginal) => {
   const actual =
-    await importOriginal<typeof import('@google/gemini-cli-core')>();
+    await importOriginal<typeof import('@the-a-tech-corporation/core')>();
   return {
     ...actual,
     getG1CreditBalance: vi.fn(),
@@ -614,7 +614,7 @@ Your admin might have disabled the access. Contact them to enable the Preview Re
       );
 
       const intentPromise = handler(
-        PREVIEW_GEMINI_MODEL,
+        PREVIEW_A_CODER_MODEL,
         'gemini-flash',
         error,
       );
@@ -655,7 +655,7 @@ Your admin might have disabled the access. Contact them to enable the Preview Re
       let promise: Promise<FallbackIntent | null>;
       act(() => {
         promise = handler(
-          PREVIEW_GEMINI_MODEL,
+          PREVIEW_A_CODER_MODEL,
           'gemini-flash',
           new TerminalQuotaError('pro quota', mockGoogleApiError),
         );
@@ -697,7 +697,7 @@ Your admin might have disabled the access. Contact them to enable the Preview Re
       let promise: Promise<FallbackIntent | null>;
       act(() => {
         promise = handler(
-          PREVIEW_GEMINI_MODEL,
+          PREVIEW_A_CODER_MODEL,
           'gemini-flash',
           new TerminalQuotaError('pro quota', mockGoogleApiError),
         );
@@ -737,7 +737,7 @@ Your admin might have disabled the access. Contact them to enable the Preview Re
       let promise: Promise<FallbackIntent | null>;
       act(() => {
         promise = handler(
-          PREVIEW_GEMINI_MODEL,
+          PREVIEW_A_CODER_MODEL,
           'gemini-flash',
           new TerminalQuotaError('pro quota', mockGoogleApiError),
         );
@@ -780,7 +780,7 @@ Your admin might have disabled the access. Contact them to enable the Preview Re
       let promise: Promise<FallbackIntent | null>;
       act(() => {
         promise = handler(
-          PREVIEW_GEMINI_MODEL,
+          PREVIEW_A_CODER_MODEL,
           'gemini-flash',
           new TerminalQuotaError('pro quota', mockGoogleApiError),
         );
@@ -924,8 +924,8 @@ Your admin might have disabled the access. Contact them to enable the Preview Re
       let promise: Promise<FallbackIntent | null>;
       act(() => {
         promise = handler(
-          PREVIEW_GEMINI_MODEL,
-          DEFAULT_GEMINI_MODEL,
+          PREVIEW_A_CODER_MODEL,
+          DEFAULT_A_CODER_MODEL,
           new Error('preview model failed'),
         );
       });
@@ -962,8 +962,8 @@ Your admin might have disabled the access. Contact them to enable the Preview Re
       let promise: Promise<FallbackIntent | null>;
       act(() => {
         promise = handler(
-          PREVIEW_GEMINI_MODEL,
-          DEFAULT_GEMINI_FLASH_MODEL,
+          PREVIEW_A_CODER_MODEL,
+          DEFAULT_A_CODER_FLASH_MODEL,
           new Error('preview model failed'),
         );
       });

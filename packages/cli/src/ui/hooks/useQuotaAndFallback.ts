@@ -14,12 +14,12 @@ import {
   TerminalQuotaError,
   ModelNotFoundError,
   type UserTierId,
-  VALID_GEMINI_MODELS,
+  VALID_A_CODER_MODELS,
   isProModel,
   isOverageEligibleModel,
   getDisplayString,
   type GeminiUserTier,
-} from '@google/gemini-cli-core';
+} from '@the-a-tech-corporation/core';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { type UseHistoryManagerReturn } from './useHistoryManager.js';
 import { MessageType } from '../types.js';
@@ -135,7 +135,7 @@ export function useQuotaAndFallback({
         message = messageLines.join('\n');
       } else if (error instanceof ModelNotFoundError) {
         isModelNotFoundError = true;
-        if (VALID_GEMINI_MODELS.has(failedModel)) {
+        if (VALID_A_CODER_MODELS.has(failedModel)) {
           const messageLines = [
             `It seems like you don't have access to ${getDisplayString(failedModel)}.`,
             `Your admin might have disabled the access. Contact them to enable the Preview Release Channel.`,

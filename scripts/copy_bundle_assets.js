@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2025 Google LLC
+ * Copyright 2026 The A-Tech Corporation
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -91,7 +91,7 @@ const bundleMcpDest = join(bundleDir, 'bundled');
 if (!existsSync(bundleMcpSrc)) {
   console.error(
     `Error: chrome-devtools-mcp bundle not found at ${bundleMcpSrc}.\n` +
-      `Run "npm run bundle:browser-mcp -w @google/gemini-cli-core" first.`,
+      `Run "npm run bundle:browser-mcp -w @the-a-tech-corporation/core" first.`,
   );
   process.exit(1);
 }

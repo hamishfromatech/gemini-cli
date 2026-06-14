@@ -13,8 +13,8 @@ import type { AgentRegistry } from './registry.js';
 
 describe('GeneralistAgent', () => {
   beforeEach(() => {
-    vi.stubEnv('GEMINI_SYSTEM_MD', '');
-    vi.stubEnv('GEMINI_WRITE_SYSTEM_MD', '');
+    vi.stubEnv('A_CODER_SYSTEM_MD', '');
+    vi.stubEnv('A_CODER_WRITE_SYSTEM_MD', '');
   });
 
   afterEach(() => {

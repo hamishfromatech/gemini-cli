@@ -22,7 +22,7 @@ describe('ContextTracer (Real FS & Mock ID Gen)', () => {
   let tmpDir: string;
 
   beforeEach(async () => {
-    vi.stubEnv('GEMINI_CONTEXT_TRACE_DIR', '');
+    vi.stubEnv('A_CODER_CONTEXT_TRACE_DIR', '');
     tmpDir = await fs.mkdtemp(path.join(os.tmpdir(), 'gemini-tracer-test-'));
 
     vi.useFakeTimers();
@@ -95,7 +95,7 @@ describe('ContextTracer (Real FS & Mock ID Gen)', () => {
     tracer.logEvent('TestComponent', 'LargeAction', { largeKey: hugeString });
 
     // Nothing should be written
-    const traceDir = path.join(tmpDir, '.gemini');
+    const traceDir = path.join(tmpDir, '.a-coder');
     expect(existsSync(traceDir)).toBe(false);
   });
 });

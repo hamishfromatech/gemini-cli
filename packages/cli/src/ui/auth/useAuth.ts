@@ -13,8 +13,8 @@ import {
   debugLogger,
   isAccountSuspendedError,
   ProjectIdRequiredError,
-} from '@google/gemini-cli-core';
-import { getErrorMessage } from '@google/gemini-cli-core';
+} from '@the-a-tech-corporation/core';
+import { getErrorMessage } from '@the-a-tech-corporation/core';
 import { AuthState } from '../types.js';
 import { validateAuthMethod } from '../../config/auth.js';
 
@@ -66,7 +66,7 @@ export const useAuthCommand = (
   );
 
   const reloadApiKey = useCallback(async () => {
-    const envKey = process.env['GEMINI_API_KEY'];
+    const envKey = process.env['OPENAI_API_KEY'];
     if (envKey !== undefined) {
       setApiKeyDefaultValue(envKey);
       return envKey;
@@ -93,9 +93,9 @@ export const useAuthCommand = (
 
       const authType = settings.merged.security.auth.selectedType;
       if (!authType) {
-        if (process.env['GEMINI_API_KEY']) {
+        if (process.env['OPENAI_API_KEY']) {
           onAuthError(
-            'Existing API key detected (GEMINI_API_KEY). Select "Gemini API Key" option to use it.',
+            'Existing API key detected (OPENAI_API_KEY). Select "Gemini API Key" option to use it.',
           );
         } else {
           onAuthError('No authentication method selected.');
@@ -121,14 +121,14 @@ export const useAuthCommand = (
         return;
       }
 
-      const defaultAuthType = process.env['GEMINI_DEFAULT_AUTH_TYPE'];
+      const defaultAuthType = process.env['A_CODER_DEFAULT_AUTH_TYPE'];
       if (
         defaultAuthType &&
         // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion
         !Object.values(AuthType).includes(defaultAuthType as AuthType)
       ) {
         onAuthError(
-          `Invalid value for GEMINI_DEFAULT_AUTH_TYPE: "${defaultAuthType}". ` +
+          `Invalid value for A_CODER_DEFAULT_AUTH_TYPE: "${defaultAuthType}". ` +
             `Valid values are: ${Object.values(AuthType).join(', ')}.`,
         );
         return;

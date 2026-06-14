@@ -9,7 +9,7 @@ import { type ReactElement } from 'react';
 import type {
   ExtensionLoader,
   GeminiCLIExtension,
-} from '@google/gemini-cli-core';
+} from '@the-a-tech-corporation/core';
 import { createMockCommandContext } from '../../test-utils/mockCommandContext.js';
 import { MessageType } from '../types.js';
 import {
@@ -504,7 +504,7 @@ describe('extensionsCommand', () => {
 
       await exploreAction(mockContext, '');
 
-      const extensionsUrl = 'https://geminicli.com/extensions/';
+      const extensionsUrl = 'https://a-coder-cli.com/extensions/';
       expect(mockContext.ui.addItem).toHaveBeenCalledWith({
         type: MessageType.INFO,
         text: `Opening extensions page in your browser: ${extensionsUrl}`,
@@ -517,7 +517,7 @@ describe('extensionsCommand', () => {
       // Simulate a sandbox environment
       vi.stubEnv('NODE_ENV', '');
       vi.stubEnv('SANDBOX', 'gemini-sandbox');
-      const extensionsUrl = 'https://geminicli.com/extensions/';
+      const extensionsUrl = 'https://a-coder-cli.com/extensions/';
 
       await exploreAction(mockContext, '');
 
@@ -533,7 +533,7 @@ describe('extensionsCommand', () => {
     it('should add an info message and not call open in NODE_ENV test environment', async () => {
       vi.stubEnv('NODE_ENV', 'test');
       vi.stubEnv('SANDBOX', '');
-      const extensionsUrl = 'https://geminicli.com/extensions/';
+      const extensionsUrl = 'https://a-coder-cli.com/extensions/';
 
       await exploreAction(mockContext, '');
 
@@ -548,7 +548,7 @@ describe('extensionsCommand', () => {
 
     it('should handle errors when opening the browser', async () => {
       vi.stubEnv('NODE_ENV', '');
-      const extensionsUrl = 'https://geminicli.com/extensions/';
+      const extensionsUrl = 'https://a-coder-cli.com/extensions/';
       const errorMessage = 'Failed to open browser';
       vi.mocked(open).mockRejectedValue(new Error(errorMessage));
 

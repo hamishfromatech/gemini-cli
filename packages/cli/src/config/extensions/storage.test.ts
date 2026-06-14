@@ -13,7 +13,7 @@ import {
   EXTENSION_SETTINGS_FILENAME,
   EXTENSIONS_CONFIG_FILENAME,
 } from './variables.js';
-import { Storage } from '@google/gemini-cli-core';
+import { Storage } from '@the-a-tech-corporation/core';
 
 vi.mock('node:os');
 vi.mock('node:fs', async (importOriginal) => {
@@ -26,7 +26,7 @@ vi.mock('node:fs', async (importOriginal) => {
     },
   };
 });
-vi.mock('@google/gemini-cli-core');
+vi.mock('@the-a-tech-corporation/core');
 
 describe('ExtensionStorage', () => {
   const mockHomeDir = '/mock/home';
@@ -39,7 +39,7 @@ describe('ExtensionStorage', () => {
       () =>
         ({
           getExtensionsDir: () =>
-            path.join(mockHomeDir, '.gemini', 'extensions'),
+            path.join(mockHomeDir, '.a-coder', 'extensions'),
         }) as any, // eslint-disable-line @typescript-eslint/no-explicit-any
     );
     storage = new ExtensionStorage(extensionName);
@@ -52,7 +52,7 @@ describe('ExtensionStorage', () => {
   it('should return the correct extension directory', () => {
     const expectedDir = path.join(
       mockHomeDir,
-      '.gemini',
+      '.a-coder',
       'extensions',
       extensionName,
     );
@@ -62,7 +62,7 @@ describe('ExtensionStorage', () => {
   it('should return the correct config path', () => {
     const expectedPath = path.join(
       mockHomeDir,
-      '.gemini',
+      '.a-coder',
       'extensions',
       extensionName,
       EXTENSIONS_CONFIG_FILENAME, // EXTENSIONS_CONFIG_FILENAME
@@ -73,7 +73,7 @@ describe('ExtensionStorage', () => {
   it('should return the correct env file path', () => {
     const expectedPath = path.join(
       mockHomeDir,
-      '.gemini',
+      '.a-coder',
       'extensions',
       extensionName,
       EXTENSION_SETTINGS_FILENAME, // EXTENSION_SETTINGS_FILENAME
@@ -82,19 +82,19 @@ describe('ExtensionStorage', () => {
   });
 
   it('should return the correct user extensions directory', () => {
-    const expectedDir = path.join(mockHomeDir, '.gemini', 'extensions');
+    const expectedDir = path.join(mockHomeDir, '.a-coder', 'extensions');
     expect(ExtensionStorage.getUserExtensionsDir()).toBe(expectedDir);
   });
 
   it('should create a temporary directory', async () => {
-    const mockTmpDir = '/tmp/gemini-extension-123';
+    const mockTmpDir = '/tmp/a-coder-extension-123';
     vi.mocked(fs.promises.mkdtemp).mockResolvedValue(mockTmpDir);
     vi.mocked(os.tmpdir).mockReturnValue('/tmp');
 
     const result = await ExtensionStorage.createTmpDir();
 
     expect(fs.promises.mkdtemp).toHaveBeenCalledWith(
-      path.join('/tmp', 'gemini-extension'),
+      path.join('/tmp', 'a-coder-extension'),
     );
     expect(result).toBe(mockTmpDir);
   });

@@ -23,7 +23,7 @@ export { AgentChatHistory, type HistoryTurn } from './agentChatHistory.js';
 import { AgentChatHistory, type HistoryTurn } from './agentChatHistory.js';
 
 import { randomUUID } from 'node:crypto';
-import { toParts } from '../code_assist/converter.js';
+import { toParts } from './converter.js';
 import {
   retryWithBackoff,
   isRetryableError,
@@ -216,7 +216,7 @@ function extractCuratedHistory(
  * Custom error to signal that a stream completed with invalid content,
  * which should trigger a retry.
  */
-export class InvalidStreamError extends Error {
+export class InvalidACoderStreamError extends Error {
   readonly type:
     | 'NO_FINISH_REASON'
     | 'NO_RESPONSE_TEXT'
@@ -232,7 +232,7 @@ export class InvalidStreamError extends Error {
       | 'UNEXPECTED_TOOL_CALL',
   ) {
     super(message);
-    this.name = 'InvalidStreamError';
+    this.name = 'InvalidACoderStreamError';
     this.type = type;
   }
 }
@@ -267,7 +267,7 @@ export class AgentExecutionBlockedError extends Error {
  * @remarks
  * The session maintains all the turns between user and model.
  */
-export class GeminiChat {
+export class ACoderChat {
   // A promise to represent the current state of the message being sent to the
   // model.
   private sendPromise: Promise<void> = Promise.resolve();
@@ -511,7 +511,7 @@ export class GeminiChat {
     const requestHistory = this.getHistoryTurns(true);
 
     const streamWithRetries = async function* (
-      this: GeminiChat,
+      this: ACoderChat,
     ): AsyncGenerator<StreamEvent, void, void> {
       try {
         const maxAttempts = this.context.config.getMaxAttempts();
@@ -580,7 +580,7 @@ export class GeminiChat {
               this.context.config.getRetryFetchErrors(),
             );
 
-            const isContentError = error instanceof InvalidStreamError;
+            const isContentError = error instanceof InvalidACoderStreamError;
             const isRetryableContentError =
               isContentError && error.type !== 'NO_RESPONSE_TEXT';
             const errorType = isContentError
@@ -728,7 +728,7 @@ export class GeminiChat {
         false,
         hasAccessToPreview,
         this.context.config,
-        this.context.config.hasGemini35FlashGAAccess?.() ?? false,
+        this.context.config.hasACoder35FlashGAAccess?.() ?? false,
       );
 
       // If the active model has changed (e.g. due to a fallback updating the config),
@@ -740,7 +740,7 @@ export class GeminiChat {
           false,
           hasAccessToPreview,
           this.context.config,
-          this.context.config.hasGemini35FlashGAAccess?.() ?? false,
+          this.context.config.hasACoder35FlashGAAccess?.() ?? false,
         );
       }
 
@@ -803,7 +803,7 @@ export class GeminiChat {
             false,
             hasAccessToPreview,
             this.context.config,
-            this.context.config.hasGemini35FlashGAAccess?.() ?? false,
+            this.context.config.hasACoder35FlashGAAccess?.() ?? false,
           );
           lastModelToUse = modelToUse;
           // Re-evaluate contentsToUse based on the new model's feature support
@@ -1328,25 +1328,25 @@ export class GeminiChat {
     // - Empty response text (e.g., only thoughts with no actual content)
     if (!hasToolCall) {
       if (!finishReason) {
-        throw new InvalidStreamError(
+        throw new InvalidACoderStreamError(
           'Model stream ended without a finish reason.',
           'NO_FINISH_REASON',
         );
       }
       if (finishReason === FinishReason.MALFORMED_FUNCTION_CALL) {
-        throw new InvalidStreamError(
+        throw new InvalidACoderStreamError(
           'Model stream ended with malformed function call.',
           'MALFORMED_FUNCTION_CALL',
         );
       }
       if (finishReason === FinishReason.UNEXPECTED_TOOL_CALL) {
-        throw new InvalidStreamError(
+        throw new InvalidACoderStreamError(
           'Model stream ended with unexpected tool call.',
           'UNEXPECTED_TOOL_CALL',
         );
       }
       if (!responseText) {
-        throw new InvalidStreamError(
+        throw new InvalidACoderStreamError(
           'Model stream ended with empty response text.',
           'NO_RESPONSE_TEXT',
         );

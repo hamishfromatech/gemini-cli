@@ -10,14 +10,14 @@ import type {
   LoadedSettings,
 } from '../../config/settings.js';
 import { MessageType } from '../types.js';
-import type { EditorType } from '@google/gemini-cli-core';
+import type { EditorType } from '@the-a-tech-corporation/core';
 import {
   allowEditorTypeInSandbox,
   hasValidEditorCommand,
   getEditorDisplayName,
   coreEvents,
   CoreEvent,
-} from '@google/gemini-cli-core';
+} from '@the-a-tech-corporation/core';
 import type { UseHistoryManagerReturn } from './useHistoryManager.js';
 
 import { SettingPaths } from '../../config/settingPaths.js';

@@ -8,7 +8,7 @@ import { describe, expect } from 'vitest';
 import {
   TRACKER_CREATE_TASK_TOOL_NAME,
   TRACKER_UPDATE_TASK_TOOL_NAME,
-} from '@google/gemini-cli-core';
+} from '@the-a-tech-corporation/core';
 import { evalTest, assertModelHasOutput } from './test-helper.js';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -130,8 +130,8 @@ describe('tracker_mode', () => {
     prompt:
       'Where is my task tracker storage located? Please provide the absolute path in your response.',
     assert: async (rig, result) => {
-      // The response should contain the dynamic path which follows the .gemini/tmp/.../tracker structure.
-      expect(result).toMatch(/\.gemini\/tmp\/.*\/tracker/);
+      // The response should contain the dynamic path which follows the .a-coder/tmp/.../tracker structure.
+      expect(result).toMatch(/\.a-coder\/tmp\/.*\/tracker/);
     },
   });
 

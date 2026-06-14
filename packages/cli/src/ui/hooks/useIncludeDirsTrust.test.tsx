@@ -17,7 +17,7 @@ import { renderHook } from '../../test-utils/render.js';
 import { waitFor } from '../../test-utils/async.js';
 import { useIncludeDirsTrust } from './useIncludeDirsTrust.js';
 import * as trustedFolders from '../../config/trustedFolders.js';
-import type { Config, WorkspaceContext } from '@google/gemini-cli-core';
+import type { Config, WorkspaceContext } from '@the-a-tech-corporation/core';
 import type { UseHistoryManagerReturn } from './useHistoryManager.js';
 import type { LoadedTrustedFolders } from '../../config/trustedFolders.js';
 
@@ -82,7 +82,7 @@ describe('useIncludeDirsTrust', () => {
       getWorkspaceContext: () => mockWorkspaceContext,
       shouldLoadMemoryFromIncludeDirectories: vi.fn().mockReturnValue(false),
       getMemoryContextManager: vi.fn(),
-      getGeminiClient: vi
+      getACoderClient: vi
         .fn()
         .mockReturnValue({ addDirectoryContext: vi.fn() }),
     } as unknown as Config;

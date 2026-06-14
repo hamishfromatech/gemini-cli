@@ -6,7 +6,7 @@
 
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { Config } from './config.js';
-import { DEFAULT_GEMINI_MODEL, DEFAULT_GEMINI_FLASH_MODEL } from './models.js';
+import { DEFAULT_A_CODER_MODEL, DEFAULT_A_CODER_FLASH_MODEL } from './models.js';
 import { logFlashFallback } from '../telemetry/loggers.js';
 import { FlashFallbackEvent } from '../telemetry/types.js';
 
@@ -31,14 +31,14 @@ describe('Flash Model Fallback Configuration', () => {
       targetDir: '/test',
       debugMode: false,
       cwd: '/test',
-      model: DEFAULT_GEMINI_MODEL,
+      model: DEFAULT_A_CODER_MODEL,
     });
 
     // Initialize contentGeneratorConfig for testing
     (
       config as unknown as { contentGeneratorConfig: unknown }
     ).contentGeneratorConfig = {
-      model: DEFAULT_GEMINI_MODEL,
+      model: DEFAULT_A_CODER_MODEL,
       authType: 'oauth-personal',
     };
   });
@@ -46,8 +46,8 @@ describe('Flash Model Fallback Configuration', () => {
   describe('getModel', () => {
     it('should return contentGeneratorConfig model if available', () => {
       // Simulate initialized content generator config
-      config.setModel(DEFAULT_GEMINI_FLASH_MODEL);
-      expect(config.getModel()).toBe(DEFAULT_GEMINI_FLASH_MODEL);
+      config.setModel(DEFAULT_A_CODER_FLASH_MODEL);
+      expect(config.getModel()).toBe(DEFAULT_A_CODER_FLASH_MODEL);
     });
 
     it('should fall back to initial model if contentGeneratorConfig is not available', () => {
@@ -66,8 +66,8 @@ describe('Flash Model Fallback Configuration', () => {
 
   describe('activateFallbackMode', () => {
     it('should set model to fallback and log event', () => {
-      config.activateFallbackMode(DEFAULT_GEMINI_FLASH_MODEL);
-      expect(config.getModel()).toBe(DEFAULT_GEMINI_FLASH_MODEL);
+      config.activateFallbackMode(DEFAULT_A_CODER_FLASH_MODEL);
+      expect(config.getModel()).toBe(DEFAULT_A_CODER_FLASH_MODEL);
       expect(logFlashFallback).toHaveBeenCalledWith(
         config,
         expect.any(FlashFallbackEvent),
@@ -76,20 +76,20 @@ describe('Flash Model Fallback Configuration', () => {
 
     it('should set fallback override when failedModel is provided and register runtime override', () => {
       config.activateFallbackMode(
-        DEFAULT_GEMINI_FLASH_MODEL,
-        DEFAULT_GEMINI_MODEL,
+        DEFAULT_A_CODER_FLASH_MODEL,
+        DEFAULT_A_CODER_MODEL,
       );
-      expect(config.getModel()).toBe(DEFAULT_GEMINI_FLASH_MODEL);
-      expect(config.getFallbackOverride(DEFAULT_GEMINI_MODEL)).toBe(
-        DEFAULT_GEMINI_FLASH_MODEL,
+      expect(config.getModel()).toBe(DEFAULT_A_CODER_FLASH_MODEL);
+      expect(config.getFallbackOverride(DEFAULT_A_CODER_MODEL)).toBe(
+        DEFAULT_A_CODER_FLASH_MODEL,
       );
 
       // Verify it registers the runtime model override with ModelConfigService
       expect(
         config
           .getModelConfigService()
-          .getResolvedConfig({ model: DEFAULT_GEMINI_MODEL }).model,
-      ).toBe(DEFAULT_GEMINI_FLASH_MODEL);
+          .getResolvedConfig({ model: DEFAULT_A_CODER_MODEL }).model,
+      ).toBe(DEFAULT_A_CODER_FLASH_MODEL);
     });
 
     it('should flatten override chains when a model that was previously a target fails', () => {

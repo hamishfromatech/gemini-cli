@@ -9,25 +9,25 @@ import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
 import { execSync } from 'node:child_process';
-import { TestRig } from '@google/gemini-cli-test-utils';
+import { TestRig } from '@the-a-tech-corporation/test-utils';
 import {
   createUnauthorizedToolError,
   parseAgentMarkdown,
   Storage,
   getProjectHash,
   SESSION_FILE_PREFIX,
-  PREVIEW_GEMINI_FLASH_MODEL,
+  PREVIEW_A_CODER_FLASH_MODEL,
   getErrorMessage,
-} from '@google/gemini-cli-core';
+} from '@the-a-tech-corporation/core';
 
-export * from '@google/gemini-cli-test-utils';
+export * from '@the-a-tech-corporation/test-utils';
 
 /**
  * The default model used for all evaluations.
- * Can be overridden by setting the GEMINI_MODEL environment variable.
+ * Can be overridden by setting the A_CODER_MODEL environment variable.
  */
 export const EVAL_MODEL =
-  process.env['GEMINI_MODEL'] || PREVIEW_GEMINI_FLASH_MODEL;
+  process.env['A_CODER_MODEL'] || PREVIEW_A_CODER_FLASH_MODEL;
 
 // Indicates the consistency expectation for this test.
 // - ALWAYS_PASSES - Means that the test is expected to pass 100% of the time. These
@@ -124,10 +124,10 @@ export async function internalEvalTest(evalCase: EvalCase) {
           evalCase.sessionId ||
           `test-session-${crypto.randomUUID().slice(0, 8)}`;
 
-        // Temporarily set GEMINI_CLI_HOME so Storage writes to the same
+        // Temporarily set A_CODER_CLI_HOME so Storage writes to the same
         // directory the CLI subprocess will use (rig.homeDir).
-        const originalGeminiHome = process.env['GEMINI_CLI_HOME'];
-        process.env['GEMINI_CLI_HOME'] = rig.homeDir!;
+        const originalGeminiHome = process.env['A_CODER_CLI_HOME'];
+        process.env['A_CODER_CLI_HOME'] = rig.homeDir!;
         try {
           const storage = new Storage(fs.realpathSync(rig.testDir!));
           await storage.initialize();
@@ -155,11 +155,11 @@ export async function internalEvalTest(evalCase: EvalCase) {
           // Storage initialization may fail in some environments; log and continue.
           console.warn('Failed to write session history:', e);
         } finally {
-          // Restore original GEMINI_CLI_HOME.
+          // Restore original A_CODER_CLI_HOME.
           if (originalGeminiHome === undefined) {
-            delete process.env['GEMINI_CLI_HOME'];
+            delete process.env['A_CODER_CLI_HOME'];
           } else {
-            process.env['GEMINI_CLI_HOME'] = originalGeminiHome;
+            process.env['A_CODER_CLI_HOME'] = originalGeminiHome;
           }
         }
       }
@@ -171,8 +171,8 @@ export async function internalEvalTest(evalCase: EvalCase) {
         approvalMode: evalCase.approvalMode ?? 'yolo',
         timeout: evalCase.timeout,
         env: {
-          GEMINI_CLI_ACTIVITY_LOG_TARGET: activityLogFile,
-          GEMINI_CLI_TRUST_WORKSPACE: 'true',
+          A_CODER_CLI_ACTIVITY_LOG_TARGET: activityLogFile,
+          A_CODER_CLI_TRUST_WORKSPACE: 'true',
         },
       });
 
@@ -242,7 +242,7 @@ function logReliabilityEvent(
   const reliabilityLog = {
     timestamp: new Date().toISOString(),
     testName,
-    model: process.env['GEMINI_MODEL'] || 'unknown',
+    model: process.env['A_CODER_MODEL'] || 'unknown',
     attempt,
     status,
     errorCode,
@@ -288,7 +288,7 @@ export async function prepareWorkspace(
     fs.mkdirSync(path.dirname(fullPath), { recursive: true });
     fs.writeFileSync(fullPath, content);
 
-    if (filePath.startsWith('.gemini/agents/') && filePath.endsWith('.md')) {
+    if (filePath.startsWith('.a-coder/agents/') && filePath.endsWith('.md')) {
       const hash = crypto.createHash('sha256').update(content).digest('hex');
       try {
         const agentDefs = await parseAgentMarkdown(fullPath, content);
@@ -311,7 +311,7 @@ export async function prepareWorkspace(
   if (Object.keys(acknowledgedAgents).length > 0) {
     const ackPath = path.join(
       homeDir,
-      '.gemini',
+      '.a-coder',
       'acknowledgments',
       'agents.json',
     );

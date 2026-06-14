@@ -1,7 +1,7 @@
 # Trusted Folders
 
 The Trusted Folders feature is a security setting that gives you control over
-which projects can use the full capabilities of Gemini CLI. It prevents
+which projects can use the full capabilities of A-Coder CLI. It prevents
 potentially malicious code from running by asking you to approve a folder before
 the CLI loads any project-specific configurations from it.
 
@@ -24,7 +24,7 @@ Add the following to your user `settings.json` file:
 
 ## How it works: The trust dialog
 
-Once the feature is enabled, the first time you run Gemini CLI from a folder, a
+Once the feature is enabled, the first time you run A-Coder CLI from a folder, a
 dialog will automatically appear, prompting you to make a choice:
 
 - **Trust folder**: Grants full trust to the current folder (for example,
@@ -35,12 +35,12 @@ dialog will automatically appear, prompting you to make a choice:
 - **Don't trust**: Marks the folder as untrusted. The CLI will operate in a
   restricted "safe mode."
 
-Your choice is saved in a central file (`~/.gemini/trustedFolders.json`), so you
+Your choice is saved in a central file (`~/.a-coder-cli/trustedFolders.json`), so you
 will only be asked once per folder.
 
 ## Understanding folder contents: The discovery phase
 
-Before you make a choice, Gemini CLI performs a **discovery phase** to scan the
+Before you make a choice, A-Coder CLI performs a **discovery phase** to scan the
 folder for potential configurations. This information is displayed in the trust
 dialog to help you make an informed decision.
 
@@ -71,11 +71,11 @@ that you know are safe.
 
 ## Why trust matters: The impact of an untrusted workspace
 
-When a folder is **untrusted**, Gemini CLI runs in a restricted "safe mode" to
+When a folder is **untrusted**, A-Coder CLI runs in a restricted "safe mode" to
 protect you. In this mode, the following features are disabled:
 
 1.  **Workspace settings are ignored**: The CLI will **not** load the
-    `.gemini/settings.json` file from the project. This prevents the loading of
+    `.a-coder-cli/settings.json` file from the project. This prevents the loading of
     custom tools and other potentially dangerous configurations.
 
 2.  **Environment variables are ignored**: The CLI will **not** load any `.env`
@@ -97,12 +97,12 @@ protect you. In this mode, the following features are disabled:
     commands from .toml files, including both project-specific and global user
     commands.
 
-Granting trust to a folder unlocks the full functionality of Gemini CLI for that
+Granting trust to a folder unlocks the full functionality of A-Coder CLI for that
 workspace.
 
 ## Headless and automated environments
 
-When running Gemini CLI in a headless environment (for example, a CI/CD
+When running A-Coder CLI in a headless environment (for example, a CI/CD
 pipeline) where interactive prompts are not possible, the trust dialog cannot be
 displayed. If the folder is untrusted and the Folder Trust feature is enabled,
 the CLI will throw a `FatalUntrustedWorkspaceError` and exit.
@@ -111,7 +111,7 @@ To proceed in these environments, you can bypass the trust check using one of
 the following methods:
 
 - **Command-line flag:** Run the CLI with the `--skip-trust` flag.
-- **Environment variable:** Set the `GEMINI_CLI_TRUST_WORKSPACE=true`
+- **Environment variable:** Set the `A_CODER_CLI_TRUST_WORKSPACE=true`
   environment variable.
 
 These methods will trust the current workspace for the duration of the session
@@ -119,13 +119,13 @@ without prompting.
 
 For detailed instructions on managing folder trust within CI/CD workflows,
 review the
-[Gemini CLI trust guidance for GitHub Actions](https://github.com/google-github-actions/run-gemini-cli/blob/main/docs/trust-guidance.md).
+[A-Coder CLI trust guidance for GitHub Actions](https://github.com/google-github-actions/run-a-coder-cli-cli/blob/main/docs/trust-guidance.md).
 
 ## Overriding the trust file location
 
-By default, trust settings are saved to `~/.gemini/trustedFolders.json`. If you
+By default, trust settings are saved to `~/.a-coder-cli/trustedFolders.json`. If you
 need to store this file in a different location, you can set the
-`GEMINI_CLI_TRUSTED_FOLDERS_PATH` environment variable to the desired absolute
+`A_CODER_CLI_TRUSTED_FOLDERS_PATH` environment variable to the desired absolute
 file path.
 
 ## Managing your trust settings
@@ -139,7 +139,7 @@ options:
 
 - **View all trust rules**: To see a complete list of all your trusted and
   untrusted folder rules, you can inspect the contents of the
-  `~/.gemini/trustedFolders.json` file in your home directory.
+  `~/.a-coder-cli/trustedFolders.json` file in your home directory.
 
 ## The trust check process (advanced)
 
@@ -151,4 +151,4 @@ trust is determined:
     if the workspace is trusted. The IDE's response takes highest priority.
 
 2.  **Local trust file**: If the IDE is not connected, the CLI checks the
-    central `~/.gemini/trustedFolders.json` file.
+    central `~/.a-coder-cli/trustedFolders.json` file.

@@ -27,7 +27,7 @@ import {
   loadSkillsFromDir,
   getRealPath,
   normalizePath,
-} from '@google/gemini-cli-core';
+} from '@the-a-tech-corporation/core';
 import {
   loadSettings,
   createTestMergedSettings,
@@ -108,9 +108,9 @@ const mockIntegrityManager = vi.hoisted(() => ({
   verify: vi.fn().mockResolvedValue('verified'),
   store: vi.fn().mockResolvedValue(undefined),
 }));
-vi.mock('@google/gemini-cli-core', async (importOriginal) => {
+vi.mock('@the-a-tech-corporation/core', async (importOriginal) => {
   const actual =
-    await importOriginal<typeof import('@google/gemini-cli-core')>();
+    await importOriginal<typeof import('@the-a-tech-corporation/core')>();
   return {
     ...actual,
     logExtensionEnable: mockLogExtensionEnable,
@@ -271,7 +271,7 @@ describe('extension tests', () => {
       consoleSpy.mockRestore();
     });
 
-    it('should load context file path when GEMINI.md is present', async () => {
+    it('should load context file path when A_CODER.md is present', async () => {
       createExtension({
         extensionsDir: userExtensionsDir,
         name: 'ext1',
@@ -290,7 +290,7 @@ describe('extension tests', () => {
       const ext1 = extensions.find((e) => e.name === 'ext1');
       const ext2 = extensions.find((e) => e.name === 'ext2');
       expect(ext1?.contextFiles).toEqual([
-        path.join(userExtensionsDir, 'ext1', 'GEMINI.md'),
+        path.join(userExtensionsDir, 'ext1', 'A_CODER.md'),
       ]);
       expect(ext2?.contextFiles).toEqual([]);
     });
@@ -1124,7 +1124,7 @@ name = "yolo-checker"
         );
 
         fs.writeFileSync(
-          path.join(sourceExtDir, 'gemini-extension.json'),
+          path.join(sourceExtDir, 'a-coder-extension.json'),
           JSON.stringify({
             name: 'hook-extension-install',
             version: '1.0.0',
@@ -1193,7 +1193,7 @@ name = "yolo-checker"
       );
     });
 
-    it('should throw an error and cleanup if gemini-extension.json is missing', async () => {
+    it('should throw an error and cleanup if a-coder-extension.json is missing', async () => {
       const sourceExtDir = getRealPath(path.join(tempHomeDir, 'bad-extension'));
       fs.mkdirSync(sourceExtDir, { recursive: true });
       const configPath = path.join(sourceExtDir, EXTENSIONS_CONFIG_FILENAME);
@@ -1209,7 +1209,7 @@ name = "yolo-checker"
       expect(fs.existsSync(targetExtDir)).toBe(false);
     });
 
-    it('should throw an error for invalid JSON in gemini-extension.json', async () => {
+    it('should throw an error for invalid JSON in a-coder-extension.json', async () => {
       const sourceExtDir = getRealPath(path.join(tempHomeDir, 'bad-json-ext'));
       fs.mkdirSync(sourceExtDir, { recursive: true });
       const configPath = path.join(sourceExtDir, EXTENSIONS_CONFIG_FILENAME);
@@ -1223,7 +1223,7 @@ name = "yolo-checker"
       ).rejects.toThrow(`Failed to load extension config from ${configPath}`);
     });
 
-    it('should throw an error for missing name in gemini-extension.json', async () => {
+    it('should throw an error for missing name in a-coder-extension.json', async () => {
       const sourceExtDir = getRealPath(
         createExtension({
           extensionsDir: tempHomeDir,
@@ -1418,10 +1418,10 @@ name = "yolo-checker"
     it('should add the workspace to trusted folders if user consents', async () => {
       const trustedFoldersPath = path.join(
         tempHomeDir,
-        '.gemini',
+        '.a-coder',
         'trustedFolders.json',
       );
-      vi.stubEnv('GEMINI_CLI_TRUSTED_FOLDERS_PATH', trustedFoldersPath);
+      vi.stubEnv('A_CODER_CLI_TRUSTED_FOLDERS_PATH', trustedFoldersPath);
       vi.mocked(isWorkspaceTrusted).mockReturnValue({
         isTrusted: false,
         source: undefined,

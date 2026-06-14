@@ -17,11 +17,11 @@
 const { execFileSync } = require('child_process');
 
 const isDryRun = process.argv.includes('--dry-run');
-const REPO = 'google-gemini/gemini-cli';
+const REPO = 'hamishfromatech/a-coder-cli';
 const ORG = 'google-gemini';
 const TEAM_SLUG = 'gemini-cli-maintainers';
 const DISCUSSION_URL =
-  'https://github.com/google-gemini/gemini-cli/discussions/16706';
+  'https://github.com/hamishfromatech/a-coder-cli/discussions/16706';
 
 /**
  * Executes a GitHub CLI command safely using an argument array.
@@ -117,7 +117,7 @@ async function main() {
   );
 
   const commentBody =
-    "\nHi @{AUTHOR}, thank you so much for your contribution to Gemini CLI! We really appreciate the time and effort you've put into this.\n\nWe're making some updates to our contribution process to improve how we track and review changes. Please take a moment to review our recent discussion post: [Improving Our Contribution Process & Introducing New Guidelines](${DISCUSSION_URL}).\n\nKey Update: Starting **January 26, 2026**, the Gemini CLI project will require all pull requests to be associated with an existing issue. Any pull requests not linked to an issue by that date will be automatically closed.\n\nThank you for your understanding and for being a part of our community!\n  ".trim();
+    "\nHi @{AUTHOR}, thank you so much for your contribution to A-Coder CLI! We really appreciate the time and effort you've put into this.\n\nWe're making some updates to our contribution process to improve how we track and review changes. Please take a moment to review our recent discussion post: [Improving Our Contribution Process & Introducing New Guidelines](${DISCUSSION_URL}).\n\nKey Update: Starting **January 26, 2026**, the A-Coder CLI project will require all pull requests to be associated with an existing issue. Any pull requests not linked to an issue by that date will be automatically closed.\n\nThank you for your understanding and for being a part of our community!\n  ".trim();
 
   let successCount = 0;
   let skipCount = 0;

@@ -18,10 +18,10 @@ import {
   type Config,
   type ToolResultDisplay,
   CoreToolCallStatus,
-} from '@google/gemini-cli-core';
+} from '@the-a-tech-corporation/core';
 
-vi.mock('../GeminiRespondingSpinner.js', () => ({
-  GeminiRespondingSpinner: () => null,
+vi.mock('../ACoderRespondingSpinner.js', () => ({
+  ACoderRespondingSpinner: () => null,
 }));
 
 vi.mock('./ToolResultDisplay.js', () => ({

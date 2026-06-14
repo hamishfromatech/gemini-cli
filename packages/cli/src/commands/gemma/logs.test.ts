@@ -15,12 +15,12 @@ import { exitCli } from '../utils.js';
 import { getLogFilePath } from './constants.js';
 import { logsCommand, readLastLines } from './logs.js';
 
-vi.mock('@google/gemini-cli-core', async (importOriginal) => {
+vi.mock('@the-a-tech-corporation/core', async (importOriginal) => {
   const { mockCoreDebugLogger } = await import(
     '../../test-utils/mockDebugLogger.js'
   );
   return mockCoreDebugLogger(
-    await importOriginal<typeof import('@google/gemini-cli-core')>(),
+    await importOriginal<typeof import('@the-a-tech-corporation/core')>(),
     {
       stripAnsi: false,
     },

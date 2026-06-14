@@ -108,7 +108,7 @@ interface MockMemoryConfig {
   };
   getTargetDir: () => string;
   getToolRegistry: () => unknown;
-  getGeminiClient: () => unknown;
+  getACoderClient: () => unknown;
   getSkillManager: () => { getSkills: () => unknown[] };
   isAutoMemoryEnabled: () => boolean;
   modelConfigService: {
@@ -168,8 +168,8 @@ beforeEach(() => {
         const memoryDir = config.storage.getProjectMemoryTempDir();
         const inboxDir = path.join(memoryDir, '.inbox');
 
-        const homeDir = process.env['GEMINI_CLI_HOME'] ?? os.homedir();
-        const globalGeminiDir = path.join(homeDir, '.gemini');
+        const homeDir = process.env['A_CODER_CLI_HOME'] ?? os.homedir();
+        const globalGeminiDir = path.join(homeDir, '.a-coder');
 
         await fs.mkdir(path.join(inboxDir, 'private'), { recursive: true });
         await fs.mkdir(path.join(inboxDir, 'global'), { recursive: true });
@@ -188,7 +188,7 @@ beforeEach(() => {
           ].join('\n'),
         );
 
-        const globalTarget = path.join(globalGeminiDir, 'GEMINI.md');
+        const globalTarget = path.join(globalGeminiDir, 'A_CODER.md');
         await fs.writeFile(
           path.join(inboxDir, 'global', 'reply-style.patch'),
           [
@@ -247,7 +247,7 @@ async function createFixture(): Promise<Fixture> {
   await fs.mkdir(homeDir, { recursive: true });
   await fs.mkdir(targetDir, { recursive: true });
   await fs.mkdir(path.join(projectTempDir, 'chats'), { recursive: true });
-  vi.stubEnv('GEMINI_CLI_HOME', homeDir);
+  vi.stubEnv('A_CODER_CLI_HOME', homeDir);
 
   const config: MockMemoryConfig = {
     storage: {
@@ -259,7 +259,7 @@ async function createFixture(): Promise<Fixture> {
     },
     getTargetDir: () => targetDir,
     getToolRegistry: () => ({}),
-    getGeminiClient: () => ({}),
+    getACoderClient: () => ({}),
     getSkillManager: () => ({ getSkills: () => [] }),
     isAutoMemoryEnabled: () => true,
     modelConfigService: {
@@ -417,8 +417,8 @@ describe('Auto Memory inbox routing', () => {
       );
       const activeGlobalMemoryPath = path.join(
         fixture.homeDir,
-        '.gemini',
-        'GEMINI.md',
+        '.a-coder',
+        'A_CODER.md',
       );
       const run = await readRun(fixture);
 

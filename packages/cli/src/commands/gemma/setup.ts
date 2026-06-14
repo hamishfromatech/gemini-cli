@@ -10,7 +10,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { execFileSync, spawn as nodeSpawn } from 'node:child_process';
 import chalk from 'chalk';
-import { debugLogger } from '@google/gemini-cli-core';
+import { debugLogger } from '@the-a-tech-corporation/core';
 import { loadSettings, SettingScope } from '../../config/settings.js';
 import { exitCli } from '../utils.js';
 import {
@@ -364,9 +364,9 @@ async function handleSetup(argv: SetupArgs): Promise<number> {
     });
 
     log(chalk.green('  ✓ Settings updated'));
-    log(chalk.dim('    User (~/.gemini/settings.json): autoStartServer'));
+    log(chalk.dim('    User (~/.a-coder/settings.json): autoStartServer'));
     log(
-      chalk.dim('    Workspace (.gemini/settings.json): enabled, classifier'),
+      chalk.dim('    Workspace (.a-coder/settings.json): enabled, classifier'),
     );
     settingsUpdated = true;
   } catch (error) {
@@ -376,7 +376,7 @@ async function handleSetup(argv: SetupArgs): Promise<number> {
       ),
     );
     logError(
-      '  You can manually add the configuration to ~/.gemini/settings.json',
+      '  You can manually add the configuration to ~/.a-coder/settings.json',
     );
   }
 
@@ -389,7 +389,7 @@ async function handleSetup(argv: SetupArgs): Promise<number> {
     } else {
       log(
         chalk.yellow(
-          `  ! Server may not have started correctly. Check: gemini gemma status`,
+          `  ! Server may not have started correctly. Check: a-coder-cli gemma status`,
         ),
       );
     }
@@ -429,12 +429,12 @@ async function handleSetup(argv: SetupArgs): Promise<number> {
   if (!settingsUpdated) {
     log(
       chalk.yellow(
-        '  Fix the settings update above, then rerun "gemini gemma status".',
+        '  Fix the settings update above, then rerun "a-coder-cli gemma status".',
       ),
     );
     log('');
   } else if (!argv.start) {
-    log(chalk.yellow('  Note: Run "gemini gemma start" to start the server.'));
+    log(chalk.yellow('  Note: Run "a-coder-cli gemma start" to start the server.'));
     if (autoStartServer) {
       log(
         chalk.yellow(
@@ -446,15 +446,15 @@ async function handleSetup(argv: SetupArgs): Promise<number> {
   } else if (!serverStarted) {
     log(
       chalk.yellow(
-        '  Review the server logs and rerun "gemini gemma start" after fixing the issue.',
+        '  Review the server logs and rerun "a-coder-cli gemma start" after fixing the issue.',
       ),
     );
     log('');
   }
   log('  Useful commands:');
-  log(chalk.dim('    gemini gemma status   Check routing status'));
-  log(chalk.dim('    gemini gemma start    Start the LiteRT server'));
-  log(chalk.dim('    gemini gemma stop     Stop the LiteRT server'));
+  log(chalk.dim('    a-coder-cli gemma status   Check routing status'));
+  log(chalk.dim('    a-coder-cli gemma start    Start the LiteRT server'));
+  log(chalk.dim('    a-coder-cli gemma stop     Stop the LiteRT server'));
   log(chalk.dim('    /gemma               Check status inside a session'));
   log('');
 

@@ -5,7 +5,7 @@
  */
 
 import { describe, expect } from 'vitest';
-import { TRACKER_CREATE_TASK_TOOL_NAME } from '@google/gemini-cli-core';
+import { TRACKER_CREATE_TASK_TOOL_NAME } from '@the-a-tech-corporation/core';
 import { evalTest, TEST_AGENTS } from './test-helper.js';
 
 describe('subtask delegation eval test cases', () => {
@@ -33,21 +33,21 @@ describe('subtask delegation eval test cases', () => {
     prompt:
       'Please read the requirements in requirements.txt using a researcher, then implement the requested logic in src/logic.ts using a developer, and finally document the implementation in docs/logic.md using a documentation expert.',
     files: {
-      '.gemini/agents/researcher.md': `---
+      '.a-coder/agents/researcher.md': `---
 name: researcher
 description: Expert in reading files and extracting requirements.
 tools:
   - read_file
 ---
 You are the researcher. Read the provided file and extract requirements.`,
-      '.gemini/agents/developer.md': `---
+      '.a-coder/agents/developer.md': `---
 name: developer
 description: Expert in implementing logic in TypeScript.
 tools:
   - write_file
 ---
 You are the developer. Implement the requested logic in the specified file.`,
-      '.gemini/agents/doc-expert.md': `---
+      '.a-coder/agents/doc-expert.md': `---
 name: doc-expert
 description: Expert in writing technical documentation.
 tools:

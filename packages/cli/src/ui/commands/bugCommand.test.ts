@@ -9,7 +9,7 @@ import open from 'open';
 import path from 'node:path';
 import { bugCommand } from './bugCommand.js';
 import { createMockCommandContext } from '../../test-utils/mockCommandContext.js';
-import { getVersion, type Config } from '@google/gemini-cli-core';
+import { getVersion, type Config } from '@the-a-tech-corporation/core';
 import { GIT_COMMIT_INFO } from '../../generated/git-commit.js';
 import { formatBytes } from '../utils/formatters.js';
 import { MessageType } from '../types.js';
@@ -49,9 +49,9 @@ vi.mock('../utils/historyExportUtils.js', async (importOriginal) => {
 });
 import { exportHistoryToFile } from '../utils/historyExportUtils.js';
 
-vi.mock('@google/gemini-cli-core', async (importOriginal) => {
+vi.mock('@the-a-tech-corporation/core', async (importOriginal) => {
   const actual =
-    await importOriginal<typeof import('@google/gemini-cli-core')>();
+    await importOriginal<typeof import('@the-a-tech-corporation/core')>();
   return {
     ...actual,
     IdeClient: {
@@ -121,7 +121,7 @@ describe('bugCommand', () => {
             getContentGeneratorConfig: () => ({ authType: 'oauth-personal' }),
             getSessionId: vi.fn().mockReturnValue('test-session-id'),
           } as unknown as Config,
-          geminiClient: {
+          aCoderClient: {
             getChat: () => ({
               getHistory: () => [],
             }),
@@ -147,7 +147,7 @@ describe('bugCommand', () => {
 * **Kitty Keyboard Protocol:** Supported
 * **IDE Client:** VSCode
 `;
-    const expectedUrl = `https://github.com/google-gemini/gemini-cli/issues/new?template=bug_report.yml&title=A%20test%20bug&info=${encodeURIComponent(expectedInfo)}&problem=A%20test%20bug`;
+    const expectedUrl = `https://github.com/hamishfromatech/a-coder-cli/issues/new?template=bug_report.yml&title=A%20test%20bug&info=${encodeURIComponent(expectedInfo)}&problem=A%20test%20bug`;
 
     expect(open).toHaveBeenCalledWith(expectedUrl);
   });
@@ -170,7 +170,7 @@ describe('bugCommand', () => {
             },
             getSessionId: vi.fn().mockReturnValue('test-session-id'),
           } as unknown as Config,
-          geminiClient: {
+          aCoderClient: {
             getChat: () => ({
               getHistory: () => history,
             }),
@@ -216,7 +216,7 @@ describe('bugCommand', () => {
             getContentGeneratorConfig: () => ({ authType: 'vertex-ai' }),
             getSessionId: vi.fn().mockReturnValue('test-session-id'),
           } as unknown as Config,
-          geminiClient: {
+          aCoderClient: {
             getChat: () => ({
               getHistory: () => [],
             }),
@@ -261,7 +261,7 @@ describe('bugCommand', () => {
             storage: tempDir ? { getProjectTempDir: () => tempDir } : undefined,
             getSessionId: vi.fn().mockReturnValue('test-session-id'),
           } as unknown as Config,
-          geminiClient: { getChat: () => ({ getHistory: () => [] }) },
+          aCoderClient: { getChat: () => ({ getHistory: () => [] }) },
         },
       },
     });

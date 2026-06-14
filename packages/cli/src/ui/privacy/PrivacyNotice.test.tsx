@@ -11,13 +11,13 @@ import type {
   AuthType,
   Config,
   ContentGeneratorConfig,
-} from '@google/gemini-cli-core';
+} from '@the-a-tech-corporation/core';
 
 // Mock child components
-vi.mock('./GeminiPrivacyNotice.js', async () => {
+vi.mock('./ACoderPrivacyNotice.js', async () => {
   const { Text } = await import('ink');
   return {
-    GeminiPrivacyNotice: () => <Text>GeminiPrivacyNotice</Text>,
+    ACoderPrivacyNotice: () => <Text>ACoderPrivacyNotice</Text>,
   };
 });
 
@@ -48,7 +48,7 @@ describe('PrivacyNotice', () => {
   it.each([
     {
       authType: 'gemini-api-key' as AuthType,
-      expectedComponent: 'GeminiPrivacyNotice',
+      expectedComponent: 'ACoderPrivacyNotice',
     },
     {
       authType: 'vertex-ai' as AuthType,

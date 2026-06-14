@@ -1,6 +1,6 @@
 # CLI commands
 
-Gemini CLI supports several built-in commands to help you manage your session,
+A-Coder CLI supports several built-in commands to help you manage your session,
 customize the interface, and control its behavior. These commands are prefixed
 with a forward slash (`/`), an at symbol (`@`), or an exclamation mark (`!`).
 
@@ -23,8 +23,8 @@ Slash commands provide meta-level control over the CLI itself.
       and remote agents.
     - **Usage:** `/agents list`
   - **`reload`** (alias: `refresh`):
-    - **Description:** Rescans agent directories (`~/.gemini/agents` and
-      `.gemini/agents`) and reloads the registry.
+    - **Description:** Rescans agent directories (`~/.a-coder-cli/agents` and
+      `.a-coder-cli/agents`) and reloads the registry.
     - **Usage:** `/agents reload`
   - **`enable`**:
     - **Description:** Enables a specific subagent.
@@ -43,11 +43,11 @@ Slash commands provide meta-level control over the CLI itself.
 
 ### `/bug`
 
-- **Description:** File an issue about Gemini CLI. By default, the issue is
-  filed within the GitHub repository for Gemini CLI. The string you enter after
+- **Description:** File an issue about A-Coder CLI. By default, the issue is
+  filed within the GitHub repository for A-Coder CLI. The string you enter after
   `/bug` will become the headline for the bug being filed. The default `/bug`
   behavior can be modified using the `advanced.bugCommand` setting in your
-  `.gemini/settings.json` files.
+  `.a-coder-cli/settings.json` files.
 
 ### `/chat`
 
@@ -76,15 +76,15 @@ Slash commands provide meta-level control over the CLI itself.
     - **Description:** Resumes a conversation from a previous save.
     - **Note:** You can only resume chats that were saved within the current
       project. To resume a chat from a different project, you must run the
-      Gemini CLI from that project's directory.
+      A-Coder CLI from that project's directory.
     - **Equivalent:** `/resume resume <tag>`
   - **`save <tag>`**
     - **Description:** Saves the current conversation history. You must add a
       `<tag>` for identifying the conversation state.
     - **Details on checkpoint location:** The default locations for saved chat
       checkpoints are:
-      - Linux/macOS: `~/.gemini/tmp/<project_hash>/`
-      - Windows: `C:\Users\<YourUsername>\.gemini\tmp\<project_hash>\`
+      - Linux/macOS: `~/.a-coder-cli/tmp/<project_hash>/`
+      - Windows: `C:\Users\<YourUsername>\.a-coder-cli\tmp\<project_hash>\`
       - **Behavior:** Chats are saved into a project-specific directory,
         determined by where you run the CLI. Consequently, saved chats are only
         accessible when working within that same project.
@@ -113,13 +113,13 @@ Slash commands provide meta-level control over the CLI itself.
 - **Sub-commands:**
   - **`list`**:
     - **Description:** List available custom command `.toml` files from all
-      sources (user-level `~/.gemini/commands/`, project-level
-      `<project>/.gemini/commands/`, and active extensions).
+      sources (user-level `~/.a-coder-cli/commands/`, project-level
+      `<project>/.a-coder-cli/commands/`, and active extensions).
     - **Usage:** `/commands list`
   - **`reload`**:
     - **Description:** Reload custom command definitions from all sources
-      (user-level `~/.gemini/commands/`, project-level
-      `<project>/.gemini/commands/`, MCP prompts, and extensions). Use this to
+      (user-level `~/.a-coder-cli/commands/`, project-level
+      `<project>/.a-coder-cli/commands/`, MCP prompts, and extensions). Use this to
       pick up new or modified `.toml` files without restarting the CLI.
     - **Usage:** `/commands reload`
 
@@ -131,7 +131,7 @@ Slash commands provide meta-level control over the CLI itself.
 
 ### `/copy`
 
-- **Description:** Copies the last output produced by Gemini CLI to your
+- **Description:** Copies the last output produced by A-Coder CLI to your
   clipboard, for easy sharing or reuse.
 - **Behavior:**
   - Local sessions use system clipboard tools (pbcopy/xclip/clip).
@@ -161,7 +161,7 @@ Slash commands provide meta-level control over the CLI itself.
 
 ### `/docs`
 
-- **Description:** Open Gemini CLI documentation in your browser.
+- **Description:** Open A-Coder CLI documentation in your browser.
 
 ### `/editor`
 
@@ -170,7 +170,7 @@ Slash commands provide meta-level control over the CLI itself.
 ### `/extensions`
 
 - **Description:** Manage extensions. See
-  [Gemini CLI Extensions](../extensions/index.md).
+  [A-Coder CLI Extensions](../extensions/index.md).
 - **Sub-commands:**
   - **`config`**:
     - **Description:** Configure extension settings.
@@ -195,13 +195,13 @@ Slash commands provide meta-level control over the CLI itself.
 
 ### `/help` (or `/?`)
 
-- **Description:** Display help information about Gemini CLI, including
+- **Description:** Display help information about A-Coder CLI, including
   available commands and their usage.
 
 ### `/hooks`
 
 - **Description:** Manage hooks, which allow you to intercept and customize
-  Gemini CLI behavior at specific lifecycle events.
+  A-Coder CLI behavior at specific lifecycle events.
 - **Sub-commands:**
   - **`disable-all`**:
     - **Description:** Disable all enabled hooks.
@@ -229,9 +229,9 @@ Slash commands provide meta-level control over the CLI itself.
 
 ### `/init`
 
-- **Description:** To help users easily create a `GEMINI.md` file, this command
+- **Description:** To help users easily create a `A_CODER.md` file, this command
   analyzes the current directory and generates a tailored context file, making
-  it simpler for them to provide project-specific instructions to the Gemini
+  it simpler for them to provide project-specific instructions to the A-Coder
   agent.
 
 ### `/mcp`
@@ -263,22 +263,22 @@ Slash commands provide meta-level control over the CLI itself.
 ### `/memory`
 
 - **Description:** Manage the AI's instructional context (hierarchical memory
-  loaded from `GEMINI.md` files).
+  loaded from `A_CODER.md` files).
 - **Sub-commands:**
   - **`list`**:
-    - **Description:** Lists the paths of the GEMINI.md files in use for
+    - **Description:** Lists the paths of the A_CODER.md files in use for
       hierarchical memory.
   - **`refresh`**:
     - **Description:** Reload the hierarchical instructional memory from all
-      `GEMINI.md` files found in the configured locations (global,
+      `A_CODER.md` files found in the configured locations (global,
       project/ancestors, and sub-directories). This command updates the model
-      with the latest `GEMINI.md` content.
+      with the latest `A_CODER.md` content.
   - **`show`**:
     - **Description:** Display the full, concatenated content of the current
-      hierarchical memory that has been loaded from all `GEMINI.md` files. This
-      lets you inspect the instructional context being provided to the Gemini
+      hierarchical memory that has been loaded from all `A_CODER.md` files. This
+      lets you inspect the instructional context being provided to the A-Coder
       model.
-  - **Note:** For more details on how `GEMINI.md` files contribute to
+  - **Note:** For more details on how `A_CODER.md` files contribute to
     hierarchical memory, see the
     [CLI Configuration documentation](./configuration.md).
 
@@ -324,7 +324,7 @@ Slash commands provide meta-level control over the CLI itself.
 
 ### `/quit` (or `/exit`)
 
-- **Description:** Exit Gemini CLI.
+- **Description:** Exit A-Coder CLI.
 - **Flags:**
   - **`--delete`** _(optional)_: Exit and permanently delete the current
     session's history and temporary files (chat recording, tool outputs). Useful
@@ -392,11 +392,11 @@ Slash commands provide meta-level control over the CLI itself.
 
 ### `/settings`
 
-- **Description:** Open the settings editor to view and modify Gemini CLI
+- **Description:** Open the settings editor to view and modify A-Coder CLI
   settings.
 - **Details:** This command provides a user-friendly interface for changing
-  settings that control the behavior and appearance of Gemini CLI. It is
-  equivalent to manually editing the `.gemini/settings.json` file, but with
+  settings that control the behavior and appearance of A-Coder CLI. It is
+  equivalent to manually editing the `.a-coder-cli/settings.json` file, but with
   validation and guidance to prevent errors. See the
   [settings documentation](../cli/settings.md) for a full list of available
   settings.
@@ -413,7 +413,7 @@ Slash commands provide meta-level control over the CLI itself.
 ### `/setup-github`
 
 - **Description:** Set up GitHub Actions to triage issues and review PRs with
-  Gemini.
+  A-Coder.
 
 ### `/skills`
 
@@ -435,7 +435,7 @@ Slash commands provide meta-level control over the CLI itself.
 
 ### `/stats`
 
-- **Description:** Display detailed statistics for the current Gemini CLI
+- **Description:** Display detailed statistics for the current A-Coder CLI
   session.
 - **Sub-commands:**
   - **`session`**:
@@ -454,13 +454,13 @@ Slash commands provide meta-level control over the CLI itself.
 
 ### `/theme`
 
-- **Description:** Open a dialog that lets you change the visual theme of Gemini
+- **Description:** Open a dialog that lets you change the visual theme of A-Coder
   CLI.
 
 ### `/tools`
 
 - **Description:** Display a list of tools that are currently available within
-  Gemini CLI.
+  A-Coder CLI.
 - **Usage:** `/tools [desc]`
 - **Sub-commands:**
   - **`desc`** or **`descriptions`**:
@@ -471,7 +471,7 @@ Slash commands provide meta-level control over the CLI itself.
 
 ### `/upgrade`
 
-- **Description:** Open the Gemini Code Assist upgrade page in your browser.
+- **Description:** Open the A-Coder Code Assist upgrade page in your browser.
   This lets you upgrade your tier for higher usage limits.
 - **Note:** This command is only available when logged in with Google.
 
@@ -490,7 +490,7 @@ Slash commands provide meta-level control over the CLI itself.
     `b`, `e`; go to line start/end with `0`, `$`, `^`; go to specific lines with
     `G` (or `gg` for first line)
   - **Persistent setting:** Vim mode preference is saved to
-    `~/.gemini/settings.json` and restored between sessions
+    `~/.a-coder-cli/settings.json` and restored between sessions
   - **Repeat last command:** Use `.` to repeat the last editing operation
   - **Status indicator:** When enabled, shows `[NORMAL]` or `[INSERT]` in the
     footer
@@ -516,7 +516,7 @@ These shortcuts apply directly to the input prompt for text manipulation.
 ## At commands (`@`)
 
 At commands are used to include the content of files or directories as part of
-your prompt to Gemini. These commands include git-aware filtering.
+your prompt to A-Coder. These commands include git-aware filtering.
 
 - **`@<path_to_file_or_directory>`**
   - **Description:** Inject the content of the specified file or files into your
@@ -533,7 +533,7 @@ your prompt to Gemini. These commands include git-aware filtering.
     - Spaces in paths should be escaped with a backslash (for example,
       `@My\ Documents/file.txt`).
     - The command uses the `read_many_files` tool internally. The content is
-      fetched and then inserted into your query before being sent to the Gemini
+      fetched and then inserted into your query before being sent to the A-Coder
       model.
     - **Git-aware filtering:** By default, git-ignored files (like
       `node_modules/`, `dist/`, `.env`, `.git/`) are excluded. This behavior can
@@ -548,13 +548,13 @@ your prompt to Gemini. These commands include git-aware filtering.
 
 - **`@` (Lone at symbol)**
   - **Description:** If you type a lone `@` symbol without a path, the query is
-    passed as-is to the Gemini model. This might be useful if you are
+    passed as-is to the A-Coder model. This might be useful if you are
     specifically talking _about_ the `@` symbol in your prompt.
 
 ### Error handling for `@` commands
 
 - If the path specified after `@` is not found or is invalid, an error message
-  will be displayed, and the query might not be sent to the Gemini model, or it
+  will be displayed, and the query might not be sent to the A-Coder model, or it
   will be sent without the file content.
 - If the `read_many_files` tool encounters an error (for example, permission
   issues), this will also be reported.
@@ -562,7 +562,7 @@ your prompt to Gemini. These commands include git-aware filtering.
 ## Shell mode and passthrough commands (`!`)
 
 The `!` prefix lets you interact with your system's shell directly from within
-Gemini CLI.
+A-Coder CLI.
 
 - **`!<shell_command>`**
   - **Description:** Execute the given `<shell_command>` using `bash` on
@@ -570,8 +570,8 @@ Gemini CLI.
     override `ComSpec`). Any output or errors from the command are displayed in
     the terminal.
   - **Examples:**
-    - `!ls -la` (executes `ls -la` and returns to Gemini CLI)
-    - `!git status` (executes `git status` and returns to Gemini CLI)
+    - `!ls -la` (executes `ls -la` and returns to A-Coder CLI)
+    - `!git status` (executes `git status` and returns to A-Coder CLI)
 
 - **`!` (Toggle shell mode)**
   - **Description:** Typing `!` on its own toggles shell mode.
@@ -581,13 +581,13 @@ Gemini CLI.
       - While in shell mode, text you type is interpreted directly as a shell
         command.
     - **Exiting shell mode:**
-      - When exited, the UI reverts to its standard appearance and normal Gemini
+      - When exited, the UI reverts to its standard appearance and normal A-Coder
         CLI behavior resumes.
 
 - **Caution for all `!` usage:** Commands you execute in shell mode have the
   same permissions and impact as if you ran them directly in your terminal.
 
 - **Environment variable:** When a command is executed via `!` or in shell mode,
-  the `GEMINI_CLI=1` environment variable is set in the subprocess's
+  the `A_CODER_CLI=1` environment variable is set in the subprocess's
   environment. This allows scripts or tools to detect if they are being run from
-  within Gemini CLI.
+  within A-Coder CLI.

@@ -11,11 +11,11 @@ import type {
   ModelPolicyStateMap,
 } from './modelPolicy.js';
 import {
-  DEFAULT_GEMINI_FLASH_LITE_MODEL,
-  DEFAULT_GEMINI_FLASH_MODEL,
-  DEFAULT_GEMINI_MODEL,
-  PREVIEW_GEMINI_FLASH_MODEL,
-  PREVIEW_GEMINI_MODEL,
+  DEFAULT_A_CODER_FLASH_LITE_MODEL,
+  DEFAULT_A_CODER_FLASH_MODEL,
+  DEFAULT_A_CODER_MODEL,
+  PREVIEW_A_CODER_FLASH_MODEL,
+  PREVIEW_A_CODER_MODEL,
   resolveModel,
 } from '../config/models.js';
 import type { UserTierId } from '../code_assist/types.js';
@@ -30,10 +30,10 @@ export interface ModelPolicyOptions {
   previewEnabled: boolean;
   isAutoSelection?: boolean;
   userTier?: UserTierId;
-  useGemini31?: boolean;
-  useGemini31FlashLite?: boolean;
+  useACoder31?: boolean;
+  useACoder31FlashLite?: boolean;
   useCustomToolModel?: boolean;
-  useGemini3_5Flash?: boolean;
+  useACoder3_5Flash?: boolean;
 }
 
 const DEFAULT_ACTIONS: ModelPolicyActionMap = {
@@ -68,15 +68,15 @@ const AUTO_ROUTING_OVERRIDES = {
 
 const FLASH_LITE_CHAIN: ModelPolicyChain = [
   definePolicy({
-    model: DEFAULT_GEMINI_FLASH_LITE_MODEL,
+    model: DEFAULT_A_CODER_FLASH_LITE_MODEL,
     actions: SILENT_ACTIONS,
   }),
   definePolicy({
-    model: DEFAULT_GEMINI_FLASH_MODEL,
+    model: DEFAULT_A_CODER_FLASH_MODEL,
     actions: SILENT_ACTIONS,
   }),
   definePolicy({
-    model: DEFAULT_GEMINI_MODEL,
+    model: DEFAULT_A_CODER_MODEL,
     isLastResort: true,
     actions: SILENT_ACTIONS,
   }),
@@ -92,12 +92,12 @@ export function getModelPolicyChain(
 
   if (options.previewEnabled) {
     const proModel = resolveModel(
-      PREVIEW_GEMINI_MODEL,
-      options.useGemini31,
+      PREVIEW_A_CODER_MODEL,
+      options.useACoder31,
       options.useCustomToolModel,
       true,
       undefined,
-      options.useGemini3_5Flash,
+      options.useACoder3_5Flash,
     );
     return [
       definePolicy({
@@ -111,7 +111,7 @@ export function getModelPolicyChain(
           : {}),
       }),
       definePolicy({
-        model: PREVIEW_GEMINI_FLASH_MODEL,
+        model: PREVIEW_A_CODER_FLASH_MODEL,
         isLastResort: true,
         maxAttempts: 10,
       }),
@@ -120,11 +120,11 @@ export function getModelPolicyChain(
 
   return [
     definePolicy({
-      model: DEFAULT_GEMINI_MODEL,
+      model: DEFAULT_A_CODER_MODEL,
       ...(isAuto ? AUTO_ROUTING_OVERRIDES : {}),
     }),
     definePolicy({
-      model: DEFAULT_GEMINI_FLASH_MODEL,
+      model: DEFAULT_A_CODER_FLASH_MODEL,
       isLastResort: true,
       maxAttempts: 10,
     }),

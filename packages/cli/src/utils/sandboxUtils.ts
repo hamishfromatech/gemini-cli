@@ -8,7 +8,7 @@ import os from 'node:os';
 import fs from 'node:fs';
 import { readFile } from 'node:fs/promises';
 import { quote } from 'shell-quote';
-import { debugLogger, GEMINI_DIR } from '@google/gemini-cli-core';
+import { debugLogger, A_CODER_DIR } from '@the-a-tech-corporation/core';
 
 export const LOCAL_DEV_SANDBOX_IMAGE_NAME = 'gemini-cli-sandbox';
 export const SANDBOX_NETWORK_NAME = 'gemini-cli-sandbox';
@@ -135,7 +135,7 @@ export function entrypoint(workdir: string, cliArgs: string[]): string[] {
     shellCmds.push(`export PYTHONPATH="$PYTHONPATH${pythonPathSuffix}";`);
   }
 
-  const projectSandboxBashrc = `${GEMINI_DIR}/sandbox.bashrc`;
+  const projectSandboxBashrc = `${A_CODER_DIR}/sandbox.bashrc`;
   if (fs.existsSync(projectSandboxBashrc)) {
     shellCmds.push(`source ${getContainerPath(projectSandboxBashrc)};`);
   }

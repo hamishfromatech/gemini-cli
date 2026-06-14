@@ -29,7 +29,7 @@ import {
   writeToStdout,
   getVersion,
   debugLogger,
-} from '@google/gemini-cli-core';
+} from '@the-a-tech-corporation/core';
 import type { InitializationResult } from './core/initializer.js';
 import type { LoadedSettings } from './config/settings.js';
 import { checkForUpdates } from './ui/utils/updateCheck.js';
@@ -197,7 +197,7 @@ export async function startInteractiveUI(
   const cleanupNonResumableCurrentSession = async () => {
     try {
       await config
-        .getGeminiClient()
+        .getACoderClient()
         ?.getChatRecordingService()
         ?.deleteCurrentSessionIfNotResumableAsync();
     } catch (e: unknown) {

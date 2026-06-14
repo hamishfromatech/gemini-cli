@@ -1,24 +1,24 @@
-# Gemini CLI Companion
+# A-Coder CLI Companion
 
-The Gemini CLI Companion extension pairs with
-[Gemini CLI](https://github.com/google-gemini/gemini-cli). This extension is
+The A-Coder CLI Companion extension pairs with
+[A-Coder CLI](https://github.com/hamishfromatech/a-coder-cli). This extension is
 compatible with both VS Code and VS Code forks.
 
 # Features
 
-- Open Editor File Context: Gemini CLI gains awareness of the files you have
+- Open Editor File Context: A-Coder CLI gains awareness of the files you have
   open in your editor, providing it with a richer understanding of your
   project's structure and content.
 
-- Selection Context: Gemini CLI can easily access your cursor's position and
+- Selection Context: A-Coder CLI can easily access your cursor's position and
   selected text within the editor, giving it valuable context directly from your
   current work.
 
 - Native Diffing: Seamlessly view, modify, and accept code changes suggested by
-  Gemini CLI directly within the editor.
+  A-Coder CLI directly within the editor.
 
-- Launch Gemini CLI: Quickly start a new Gemini CLI session from the Command
-  Palette (Cmd+Shift+P or Ctrl+Shift+P) by running the "Gemini CLI: Run"
+- Launch A-Coder CLI: Quickly start a new A-Coder CLI session from the Command
+  Palette (Cmd+Shift+P or Ctrl+Shift+P) by running the "A-Coder CLI: Run"
   command.
 
 # Requirements
@@ -26,9 +26,9 @@ compatible with both VS Code and VS Code forks.
 To use this extension, you'll need:
 
 - VS Code version 1.99.0 or newer
-- Gemini CLI (installed separately) running within the integrated terminal
+- A-Coder CLI (installed separately) running within the integrated terminal
 
 # Terms of Service and Privacy Notice
 
 By installing this extension, you agree to the
-[Terms of Service](https://geminicli.com/docs/resources/tos-privacy/).
+[Terms of Service](https://a-coder-cli.com/docs/resources/tos-privacy/).

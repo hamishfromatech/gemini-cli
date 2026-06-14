@@ -22,12 +22,12 @@ import {
   ApprovalMode,
   PRIORITY_YOLO_ALLOW_ALL,
   createPolicyEngineConfig,
-} from '@google/gemini-cli-core';
+} from '@the-a-tech-corporation/core';
 
 // Mock dependencies
-vi.mock('@google/gemini-cli-core', async (importOriginal) => {
+vi.mock('@the-a-tech-corporation/core', async (importOriginal) => {
   const actual =
-    await importOriginal<typeof import('@google/gemini-cli-core')>();
+    await importOriginal<typeof import('@the-a-tech-corporation/core')>();
   return {
     ...actual,
     PRIORITY_YOLO_ALLOW_ALL: 998,
@@ -102,7 +102,7 @@ describe('loadConfig', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-    vi.stubEnv('GEMINI_API_KEY', 'test-key');
+    vi.stubEnv('OPENAI_API_KEY', 'test-key');
   });
 
   afterEach(() => {
@@ -472,8 +472,8 @@ describe('loadConfig', () => {
     });
 
     describe('YOLO mode', () => {
-      it('should enable YOLO mode and add policy rule when GEMINI_YOLO_MODE is true', async () => {
-        vi.stubEnv('GEMINI_YOLO_MODE', 'true');
+      it('should enable YOLO mode and add policy rule when A_CODER_YOLO_MODE is true', async () => {
+        vi.stubEnv('A_CODER_YOLO_MODE', 'true');
         await loadConfig(mockSettings, mockExtensionLoader, taskId);
         expect(Config).toHaveBeenCalledWith(
           expect.objectContaining({
@@ -492,8 +492,8 @@ describe('loadConfig', () => {
         );
       });
 
-      it('should use default approval mode and load default rules when GEMINI_YOLO_MODE is not true', async () => {
-        vi.stubEnv('GEMINI_YOLO_MODE', 'false');
+      it('should use default approval mode and load default rules when A_CODER_YOLO_MODE is not true', async () => {
+        vi.stubEnv('A_CODER_YOLO_MODE', 'false');
         await loadConfig(mockSettings, mockExtensionLoader, taskId);
         expect(Config).toHaveBeenCalledWith(
           expect.objectContaining({
@@ -529,7 +529,7 @@ describe('loadConfig', () => {
 
       beforeEach(() => {
         vi.stubEnv('USE_CCPA', 'true');
-        vi.stubEnv('GEMINI_API_KEY', '');
+        vi.stubEnv('OPENAI_API_KEY', '');
       });
 
       afterEach(() => {

@@ -19,10 +19,10 @@ import type * as acp from '@agentclientprotocol/sdk';
 import {
   AuthType,
   type Config,
-  GEMINI_MODEL_ALIAS_AUTO,
+  A_CODER_MODEL_ALIAS_AUTO,
   type MessageBus,
   type Storage,
-} from '@google/gemini-cli-core';
+} from '@the-a-tech-corporation/core';
 import type { LoadedSettings } from '../config/settings.js';
 import { loadCliConfig, type CliArgs } from '../config/config.js';
 import { loadSettings } from '../config/settings.js';
@@ -62,7 +62,7 @@ describe('AcpSessionManager', () => {
       getContentGeneratorConfig: vi.fn(),
       getActiveModel: vi.fn().mockReturnValue('gemini-pro'),
       getModel: vi.fn().mockReturnValue('gemini-pro'),
-      getGeminiClient: vi.fn().mockReturnValue({
+      getACoderClient: vi.fn().mockReturnValue({
         startChat: vi.fn().mockResolvedValue({}),
       }),
       getMessageBus: vi.fn().mockReturnValue({
@@ -72,7 +72,7 @@ describe('AcpSessionManager', () => {
       }),
       getApprovalMode: vi.fn().mockReturnValue('default'),
       isPlanEnabled: vi.fn().mockReturnValue(true),
-      getGemini31LaunchedSync: vi.fn().mockReturnValue(false),
+      getACoder31LaunchedSync: vi.fn().mockReturnValue(false),
       getHasAccessToPreviewModel: vi.fn().mockReturnValue(false),
       getCheckpointingEnabled: vi.fn().mockReturnValue(false),
       getDisableAlwaysAllow: vi.fn().mockReturnValue(false),
@@ -149,7 +149,7 @@ describe('AcpSessionManager', () => {
     expect(response.sessionId).toBe('test-session-id');
     expect(loadCliConfig).toHaveBeenCalled();
     expect(mockConfig.initialize).toHaveBeenCalled();
-    expect(mockConfig.getGeminiClient).toHaveBeenCalled();
+    expect(mockConfig.getACoderClient).toHaveBeenCalled();
 
     // Verify deferred call (sendAvailableCommands)
     await vi.runAllTimersAsync();
@@ -197,7 +197,7 @@ describe('AcpSessionManager', () => {
       apiKey: 'test-key',
     });
     mockConfig.getHasAccessToPreviewModel = vi.fn().mockReturnValue(true);
-    mockConfig.getGemini31LaunchedSync = vi.fn().mockReturnValue(true);
+    mockConfig.getACoder31LaunchedSync = vi.fn().mockReturnValue(true);
 
     const response = await manager.newSession(
       {
@@ -210,7 +210,7 @@ describe('AcpSessionManager', () => {
     expect(response.models?.availableModels).toEqual(
       expect.arrayContaining([
         expect.objectContaining({
-          modelId: GEMINI_MODEL_ALIAS_AUTO,
+          modelId: A_CODER_MODEL_ALIAS_AUTO,
           name: expect.stringContaining('Auto'),
         }),
       ]),
@@ -222,7 +222,7 @@ describe('AcpSessionManager', () => {
       apiKey: 'test-key',
     });
     mockConfig.getHasAccessToPreviewModel = vi.fn().mockReturnValue(true);
-    mockConfig.getGemini31LaunchedSync = vi.fn().mockReturnValue(true);
+    mockConfig.getACoder31LaunchedSync = vi.fn().mockReturnValue(true);
 
     const response = await manager.newSession(
       {

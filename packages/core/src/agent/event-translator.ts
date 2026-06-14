@@ -6,16 +6,16 @@
 
 /**
  * @fileoverview Pure, stateless-per-call translation functions that convert
- * ServerGeminiStreamEvent objects into AgentEvent objects.
+ * ServerACoderStreamEvent objects into AgentEvent objects.
  *
  * No side effects, no generators. Each call to `translateEvent` takes an event
  * and mutable TranslationState, returning zero or more AgentEvents.
  */
 
 import type { FinishReason } from '@google/genai';
-import { GeminiEventType } from '../core/turn.js';
+import { ACoderEventType } from '../core/turn.js';
 import type {
-  ServerGeminiStreamEvent,
+  ServerACoderStreamEvent,
   StructuredError,
   GeminiFinishedEventValue,
 } from '../core/turn.js';
@@ -91,23 +91,23 @@ function ensureStreamStart(state: TranslationState, out: AgentEvent[]): void {
 // ---------------------------------------------------------------------------
 
 /**
- * Translates a single ServerGeminiStreamEvent into zero or more AgentEvents.
+ * Translates a single ServerACoderStreamEvent into zero or more AgentEvents.
  * Mutates `state` (counter, flags) as a side effect.
  */
 export function translateEvent(
-  event: ServerGeminiStreamEvent,
+  event: ServerACoderStreamEvent,
   state: TranslationState,
 ): AgentEvent[] {
   const out: AgentEvent[] = [];
 
   switch (event.type) {
-    case GeminiEventType.ModelInfo:
+    case ACoderEventType.ModelInfo:
       state.model = event.value;
       ensureStreamStart(state, out);
       out.push(makeEvent('session_update', state, { model: event.value }));
       break;
 
-    case GeminiEventType.Content:
+    case ACoderEventType.Content:
       ensureStreamStart(state, out);
       out.push(
         makeEvent('message', state, {
@@ -117,7 +117,7 @@ export function translateEvent(
       );
       break;
 
-    case GeminiEventType.Thought:
+    case ACoderEventType.Thought:
       ensureStreamStart(state, out);
       out.push(
         makeEvent('message', state, {
@@ -130,7 +130,7 @@ export function translateEvent(
       );
       break;
 
-    case GeminiEventType.Citation:
+    case ACoderEventType.Citation:
       ensureStreamStart(state, out);
       out.push(
         makeEvent('message', state, {
@@ -141,15 +141,15 @@ export function translateEvent(
       );
       break;
 
-    case GeminiEventType.Finished:
+    case ACoderEventType.Finished:
       handleFinished(event.value, state, out);
       break;
 
-    case GeminiEventType.Error:
+    case ACoderEventType.Error:
       handleError(event.value.error, state, out);
       break;
 
-    case GeminiEventType.UserCancelled:
+    case ACoderEventType.UserCancelled:
       ensureStreamStart(state, out);
       out.push(
         makeEvent('agent_end', state, {
@@ -158,7 +158,7 @@ export function translateEvent(
       );
       break;
 
-    case GeminiEventType.MaxSessionTurns:
+    case ACoderEventType.MaxSessionTurns:
       ensureStreamStart(state, out);
       out.push(
         makeEvent('agent_end', state, {
@@ -170,7 +170,7 @@ export function translateEvent(
       );
       break;
 
-    case GeminiEventType.LoopDetected:
+    case ACoderEventType.LoopDetected:
       ensureStreamStart(state, out);
       out.push(
         makeEvent('error', state, {
@@ -182,7 +182,7 @@ export function translateEvent(
       );
       break;
 
-    case GeminiEventType.ContextWindowWillOverflow:
+    case ACoderEventType.ContextWindowWillOverflow:
       ensureStreamStart(state, out);
       out.push(
         makeEvent('error', state, {
@@ -193,7 +193,7 @@ export function translateEvent(
       );
       break;
 
-    case GeminiEventType.AgentExecutionStopped:
+    case ACoderEventType.AgentExecutionStopped:
       ensureStreamStart(state, out);
       out.push(
         makeEvent('agent_end', state, {
@@ -205,7 +205,7 @@ export function translateEvent(
       );
       break;
 
-    case GeminiEventType.AgentExecutionBlocked:
+    case ACoderEventType.AgentExecutionBlocked:
       ensureStreamStart(state, out);
       out.push(
         makeEvent('error', state, {
@@ -217,7 +217,7 @@ export function translateEvent(
       );
       break;
 
-    case GeminiEventType.InvalidStream:
+    case ACoderEventType.InvalidStream:
       ensureStreamStart(state, out);
       out.push(
         makeEvent('error', state, {
@@ -228,7 +228,7 @@ export function translateEvent(
       );
       break;
 
-    case GeminiEventType.ToolCallRequest:
+    case ACoderEventType.ToolCallRequest:
       ensureStreamStart(state, out);
       state.pendingToolNames.set(event.value.callId, event.value.name);
       out.push(
@@ -241,7 +241,7 @@ export function translateEvent(
       );
       break;
 
-    case GeminiEventType.ToolCallResponse: {
+    case ACoderEventType.ToolCallResponse: {
       ensureStreamStart(state, out);
       const data = buildToolResponseData(event.value);
       const display: ToolDisplay | undefined =
@@ -269,13 +269,13 @@ export function translateEvent(
       break;
     }
 
-    case GeminiEventType.ToolCallConfirmation:
+    case ACoderEventType.ToolCallConfirmation:
       // Elicitations are handled separately by the session layer
       break;
 
     // Internal concerns — no AgentEvent emitted
-    case GeminiEventType.ChatCompressed:
-    case GeminiEventType.Retry:
+    case ACoderEventType.ChatCompressed:
+    case ACoderEventType.Retry:
       break;
 
     default:

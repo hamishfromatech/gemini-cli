@@ -7,7 +7,7 @@
 import { render } from '../../../test-utils/render.js';
 import { describe, it, expect } from 'vitest';
 import { SkillsList } from './SkillsList.js';
-import { type SkillDefinition } from '@google/gemini-cli-core';
+import { type SkillDefinition } from '@the-a-tech-corporation/core';
 import { SKILLS_DOCS_URL } from '../../constants.js';
 
 describe('SkillsList Component', () => {

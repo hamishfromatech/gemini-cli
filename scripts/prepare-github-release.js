@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2025 Google LLC
+ * Copyright 2026 The A-Tech Corporation
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -35,16 +35,16 @@ if (fs.existsSync(sourceBundleDir)) {
 const coreNpmrcPath = path.resolve(rootDir, 'packages/core/.npmrc');
 fs.writeFileSync(
   coreNpmrcPath,
-  '@google-gemini:registry=https://npm.pkg.github.com/',
+  '@the-a-tech-corporation:registry=https://npm.pkg.github.com/',
 );
-console.log('Wrote .npmrc for @google-gemini scope to packages/core/');
+console.log('Wrote .npmrc for @the-a-tech-corporation scope to packages/core/');
 
-// Update @google/gemini-cli
+// Update @the-a-tech-corporation/a-coder-cli
 updatePackageJson('packages/cli/package.json', (pkg) => {
-  pkg.name = '@google-gemini/gemini-cli';
+  pkg.name = '@the-a-tech-corporation/a-coder-cli';
   pkg.files = ['bundle/'];
   pkg.bin = {
-    gemini: 'bundle/gemini.js',
+    'a-coder-cli': 'bundle/a-coder.js',
   };
 
   // Remove fields that are not relevant to the bundled package.
@@ -55,14 +55,14 @@ updatePackageJson('packages/cli/package.json', (pkg) => {
   delete pkg.config; // Deletes the sandboxImageUri
 });
 
-// Update @google/gemini-cli-a2a-server
+// Update @the-a-tech-corporation/a-coder-cli-a2a-server
 updatePackageJson('packages/a2a-server/package.json', (pkg) => {
-  pkg.name = '@google-gemini/gemini-cli-a2a-server';
+  pkg.name = '@hamishfromatech/a-coder-cli-a2a-server';
 });
 
-// Update @google/gemini-cli-core
+// Update @the-a-tech-corporation/core
 updatePackageJson('packages/core/package.json', (pkg) => {
-  pkg.name = '@google-gemini/gemini-cli-core';
+  pkg.name = '@hamishfromatech/a-coder-cli-core';
 });
 
 console.log('Successfully prepared packages for GitHub release.');

@@ -18,7 +18,7 @@ import {
   decodeTagName,
   type MessageActionReturn,
   INITIAL_HISTORY_LENGTH,
-} from '@google/gemini-cli-core';
+} from '@the-a-tech-corporation/core';
 import path from 'node:path';
 import type {
   HistoryItemWithoutId,
@@ -27,7 +27,7 @@ import type {
 } from '../types.js';
 import { MessageType } from '../types.js';
 import { exportHistoryToFile } from '../utils/historyExportUtils.js';
-import { convertToRestPayload } from '@google/gemini-cli-core';
+import { convertToRestPayload } from '@the-a-tech-corporation/core';
 
 const CHECKPOINT_MENU_GROUP = 'checkpoints';
 
@@ -127,7 +127,7 @@ const saveCommand: SlashCommand = {
       }
     }
 
-    const chat = context.services.agentContext?.geminiClient?.getChat();
+    const chat = context.services.agentContext?.aCoderClient?.getChat();
     if (!chat) {
       return {
         type: 'message',
@@ -301,7 +301,7 @@ const shareCommand: SlashCommand = {
       };
     }
 
-    const chat = context.services.agentContext?.geminiClient?.getChat();
+    const chat = context.services.agentContext?.aCoderClient?.getChat();
     if (!chat) {
       return {
         type: 'message',

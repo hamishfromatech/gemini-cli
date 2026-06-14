@@ -9,11 +9,11 @@ import {
   Config,
   type ConfigParameters,
   AuthType,
-  PREVIEW_GEMINI_MODEL_AUTO,
-  GeminiEventType,
+  PREVIEW_A_CODER_MODEL_AUTO,
+  ACoderEventType,
   type ToolCallRequestInfo,
-  type ServerGeminiStreamEvent,
-  type GeminiClient,
+  type ServerACoderStreamEvent,
+  type ACoderClient,
   type Content,
   scheduleAgentTools,
   getAuthTypeFromEnv,
@@ -22,7 +22,7 @@ import {
   ActivateSkillTool,
   type ResumedSessionData,
   PolicyDecision,
-} from '@google/gemini-cli-core';
+} from '@the-a-tech-corporation/core';
 
 import { type Tool, SdkTool } from './tool.js';
 import { SdkAgentFilesystem } from './fs.js';
@@ -36,7 +36,7 @@ import type { SkillReference } from './skills.js';
 import type { GeminiCliAgent } from './agent.js';
 
 /**
- * Represents an interactive conversation session with a Gemini CLI agent.
+ * Represents an interactive conversation session with a A-Coder CLI agent.
  *
  * A session manages the conversation lifecycle: initialization, sending messages
  * via streaming, handling tool calls, and maintaining conversation history.
@@ -50,7 +50,7 @@ export class GeminiCliSession {
   private readonly tools: Array<Tool<any>>;
   private readonly skillRefs: SkillReference[];
   private readonly instructions: SystemInstructions | undefined;
-  private client: GeminiClient | undefined;
+  private client: ACoderClient | undefined;
   private initialized = false;
 
   constructor(
@@ -76,7 +76,7 @@ export class GeminiCliSession {
       targetDir: cwd,
       cwd,
       debugMode: options.debug ?? false,
-      model: options.model || PREVIEW_GEMINI_MODEL_AUTO,
+      model: options.model || PREVIEW_A_CODER_MODEL_AUTO,
       userMemory: initialMemory,
       // Minimal config
       enableHooks: false,
@@ -165,7 +165,7 @@ export class GeminiCliSession {
       registry.registerTool(sdkTool);
     }
 
-    this.client = loopContext2.geminiClient;
+    this.client = loopContext2.aCoderClient;
 
     if (this.resumedData) {
       const history: Content[] = this.resumedData.conversation.messages.map(
@@ -196,13 +196,13 @@ export class GeminiCliSession {
    *
    * @param prompt - The user message to send.
    * @param signal - Optional {@link AbortSignal} to cancel the stream.
-   * @yields {@link ServerGeminiStreamEvent} events as they are received from
+   * @yields {@link ServerACoderStreamEvent} events as they are received from
    *   the model.
    *
    * @example
    * ```typescript
    * for await (const event of session.sendStream('Explain this code')) {
-   *   if (event.type === GeminiEventType.ModelResponse) {
+   *   if (event.type === ACoderEventType.ModelResponse) {
    *     process.stdout.write(event.value);
    *   }
    * }
@@ -211,7 +211,7 @@ export class GeminiCliSession {
   async *sendStream(
     prompt: string,
     signal?: AbortSignal,
-  ): AsyncGenerator<ServerGeminiStreamEvent> {
+  ): AsyncGenerator<ServerACoderStreamEvent> {
     if (!this.initialized || !this.client) {
       await this.initialize();
     }
@@ -222,7 +222,7 @@ export class GeminiCliSession {
     const fs = new SdkAgentFilesystem(this.config);
     const shell = new SdkAgentShell(this.config);
 
-    let request: Parameters<GeminiClient['sendMessageStream']>[0] = [
+    let request: Parameters<ACoderClient['sendMessageStream']>[0] = [
       { text: prompt },
     ];
 
@@ -249,7 +249,7 @@ export class GeminiCliSession {
 
       for await (const event of stream) {
         yield event;
-        if (event.type === GeminiEventType.ToolCallRequest) {
+        if (event.type === ACoderEventType.ToolCallRequest) {
           const toolCall = event.value;
           let args = toolCall.args;
           if (typeof args === 'string') {
@@ -309,7 +309,7 @@ export class GeminiCliSession {
 
       // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion
       request = functionResponses as unknown as Parameters<
-        GeminiClient['sendMessageStream']
+        ACoderClient['sendMessageStream']
       >[0];
     }
   }

@@ -2,19 +2,19 @@
 .env
 .env~
 
-# gemini-cli settings
-# We want to keep the .gemini in the root of the repo and ignore any .gemini
-# in subdirectories. In our root .gemini we want to allow for version control
+# a-coder-cli settings
+# We want to keep the .a-coder in the root of the repo and ignore any .a-coder
+# in subdirectories. In our root .a-coder we want to allow for version control
 # for subcommands.
-**/.gemini/
-!/.gemini/
-.gemini/*
-!.gemini/config.yaml
-!.gemini/commands/
-!.gemini/skills/
-!.gemini/settings.json
+**/.a-coder/
+!/.a-coder/
+.a-coder/*
+!.a-coder/config.yaml
+!.a-coder/commands/
+!.a-coder/skills/
+!.a-coder/settings.json
 
-# Note: .gemini-clipboard/ is NOT in gitignore so Gemini can access pasted images
+# Note: .a-coder-clipboard/ is NOT in gitignore so A-Coder CLI can access pasted images
 
 # Dependency directory
 node_modules
@@ -57,10 +57,10 @@ gha-creds-*.json
 
 # Log files
 patch_output.log
-gemini-debug.log
+a-coder-debug.log
 
 .genkit
-.gemini-clipboard/
+.a-coder-clipboard/
 .eslintcache
 evals/logs/
 

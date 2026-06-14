@@ -8,10 +8,10 @@ import { describe, it, expect, vi } from 'vitest';
 import { render } from '../../../test-utils/render.js';
 import { Text } from 'ink';
 import { McpProgressIndicator, ToolInfo } from './ToolShared.js';
-import { CoreToolCallStatus } from '@google/gemini-cli-core';
+import { CoreToolCallStatus } from '@the-a-tech-corporation/core';
 
-vi.mock('../GeminiRespondingSpinner.js', () => ({
-  GeminiRespondingSpinner: () => <Text>MockSpinner</Text>,
+vi.mock('../ACoderRespondingSpinner.js', () => ({
+  ACoderRespondingSpinner: () => <Text>MockSpinner</Text>,
 }));
 
 describe('McpProgressIndicator', () => {

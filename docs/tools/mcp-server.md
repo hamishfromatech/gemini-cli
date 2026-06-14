@@ -1,16 +1,16 @@
-# MCP servers with Gemini CLI
+# MCP servers with A-Coder CLI
 
 This document provides a guide to configuring and using Model Context Protocol
-(MCP) servers with Gemini CLI.
+(MCP) servers with A-Coder CLI.
 
 ## What is an MCP server?
 
-An MCP server is an application that exposes tools and resources to the Gemini
+An MCP server is an application that exposes tools and resources to the A-Coder
 CLI through the Model Context Protocol, allowing it to interact with external
-systems and data sources. MCP servers act as a bridge between the Gemini model
+systems and data sources. MCP servers act as a bridge between the A-Coder model
 and your local environment or other services like APIs.
 
-An MCP server enables Gemini CLI to:
+An MCP server enables A-Coder CLI to:
 
 - **Discover tools:** List available tools, their descriptions, and parameters
   through standardized schema definitions.
@@ -19,13 +19,13 @@ An MCP server enables Gemini CLI to:
 - **Access resources:** Read data from specific resources that the server
   exposes (files, API payloads, reports, etc.).
 
-With an MCP server, you can extend Gemini CLI's capabilities to perform actions
+With an MCP server, you can extend A-Coder CLI's capabilities to perform actions
 beyond its built-in features, such as interacting with databases, APIs, custom
 scripts, or specialized workflows.
 
 ## Core integration architecture
 
-Gemini CLI integrates with MCP servers through a sophisticated discovery and
+A-Coder CLI integrates with MCP servers through a sophisticated discovery and
 execution system built into the core package (`packages/core/src/tools/`):
 
 ### Discovery Layer (`mcp-client.ts`)
@@ -37,7 +37,7 @@ The discovery process is orchestrated by `discoverMcpTools()`, which:
 2. **Establishes connections** using appropriate transport mechanisms (Stdio,
    SSE, or Streamable HTTP)
 3. **Fetches tool definitions** from each server using the MCP protocol
-4. **Sanitizes and validates** tool schemas for compatibility with the Gemini
+4. **Sanitizes and validates** tool schemas for compatibility with the A-Coder
    API
 5. **Registers tools** in the global tool registry with conflict resolution
 6. **Fetches and registers resources** if the server exposes any
@@ -54,7 +54,7 @@ Each discovered MCP tool is wrapped in a `DiscoveredMCPTool` instance that:
 
 ### Transport mechanisms
 
-Gemini CLI supports three MCP transport types:
+A-Coder CLI supports three MCP transport types:
 
 - **Stdio Transport:** Spawns a subprocess and communicates via stdin/stdout
 - **SSE Transport:** Connects to Server-Sent Events endpoints
@@ -63,7 +63,7 @@ Gemini CLI supports three MCP transport types:
 ## Working with MCP resources
 
 Some MCP servers expose contextual “resources” in addition to the tools and
-prompts. Gemini CLI discovers these automatically and gives you the possibility
+prompts. A-Coder CLI discovers these automatically and gives you the possibility
 to reference them in the chat. For more information on the tools used to
 interact with these resources, see [MCP resource tools](mcp-resources.md).
 
@@ -89,7 +89,7 @@ in the conversation.
 
 ## How to set up your MCP server
 
-Gemini CLI uses the `mcpServers` configuration in your `settings.json` file to
+A-Coder CLI uses the `mcpServers` configuration in your `settings.json` file to
 locate and connect to MCP servers. This configuration supports multiple servers
 with different transport mechanisms.
 
@@ -189,7 +189,7 @@ Each server configuration supports the following properties:
 
 ### Environment variable expansion
 
-Gemini CLI automatically expands environment variables in the `env` block of
+A-Coder CLI automatically expands environment variables in the `env` block of
 your MCP server configuration. This lets you securely reference variables
 defined in your shell or environment without hardcoding sensitive information
 directly in your `settings.json` file.
@@ -215,7 +215,7 @@ string.
 
 ### Security and environment sanitization
 
-To protect your credentials, Gemini CLI performs environment sanitization when
+To protect your credentials, A-Coder CLI performs environment sanitization when
 spawning MCP server processes.
 
 #### Automatic redaction
@@ -226,7 +226,7 @@ leakage of sensitive host environment variables (like AWS keys or GitHub tokens)
 to arbitrary third-party MCP servers that might execute malicious code or log
 your environment. This includes:
 
-- Core project keys: `GEMINI_API_KEY`, `GOOGLE_API_KEY`, etc.
+- Core project keys: `A_CODER_API_KEY`, `GOOGLE_API_KEY`, etc.
 - Variables matching sensitive patterns: `*TOKEN*`, `*SECRET*`, `*PASSWORD*`,
   `*KEY*`, `*AUTH*`, `*CREDENTIAL*`.
 - Certificates and private key patterns.
@@ -270,7 +270,7 @@ specific data with that server.
 
 ### OAuth support for remote MCP servers
 
-Gemini CLI supports OAuth 2.0 authentication for remote MCP servers using SSE or
+A-Coder CLI supports OAuth 2.0 authentication for remote MCP servers using SSE or
 HTTP transports. This enables secure access to MCP servers that require
 authentication.
 
@@ -356,7 +356,7 @@ Use the `/mcp auth` command to manage OAuth authentication:
 
 OAuth tokens are automatically:
 
-- **Stored securely** in `~/.gemini/mcp-oauth-tokens.json`
+- **Stored securely** in `~/.a-coder-cli/mcp-oauth-tokens.json`
 - **Refreshed** when expired (if refresh tokens are available)
 - **Validated** before each connection attempt
 - **Cleaned up** when invalid or expired
@@ -556,7 +556,7 @@ then be used to authenticate with the MCP server.
 
 ## Discovery process deep dive
 
-When Gemini CLI starts, it performs MCP server discovery through the following
+When A-Coder CLI starts, it performs MCP server discovery through the following
 detailed process:
 
 ### 1. Server iteration and connection
@@ -581,7 +581,7 @@ Upon successful connection:
 2. **Schema validation:** Each tool's function declaration is validated
 3. **Tool filtering:** Tools are filtered based on `includeTools` and
    `excludeTools` configuration
-4. **Name sanitization:** Tool names are cleaned to meet Gemini API
+4. **Name sanitization:** Tool names are cleaned to meet A-Coder API
    requirements:
    - Characters other than letters, numbers, underscore (`_`), hyphen (`-`), dot
      (`.`), and colon (`:`) are replaced with underscores
@@ -616,7 +616,7 @@ every discovered MCP tool is assigned a strict namespace.
 
 ### 4. Schema processing
 
-Tool parameter schemas undergo sanitization for Gemini API compatibility:
+Tool parameter schemas undergo sanitization for A-Coder API compatibility:
 
 - **`$schema` properties** are removed
 - **`additionalProperties`** are stripped
@@ -637,7 +637,7 @@ After discovery:
 
 ## Tool execution flow
 
-When the Gemini model decides to use an MCP tool, the following execution flow
+When the A-Coder model decides to use an MCP tool, the following execution flow
 occurs:
 
 ### 1. Tool invocation
@@ -745,7 +745,7 @@ Discovery State: COMPLETED
 
 ### Tool usage
 
-Once discovered, MCP tools are available to the Gemini model like built-in
+Once discovered, MCP tools are available to the A-Coder model like built-in
 tools. The model will automatically:
 
 1. **Select appropriate tools** based on your requests
@@ -763,7 +763,7 @@ The MCP integration tracks several states:
 
 If an MCP server is provided by an extension (for example, the
 `google-workspace` extension), you can still override its settings in your local
-`settings.json`. Gemini CLI merges your local configuration with the extension's
+`settings.json`. A-Coder CLI merges your local configuration with the extension's
 defaults:
 
 - **Tool lists:** Tool lists are merged securely to ensure the most restrictive
@@ -878,7 +878,7 @@ defaults:
 - **Access tokens:** Be security-aware when configuring environment variables
   containing API keys or tokens. See
   [Security and environment sanitization](#security-and-environment-sanitization)
-  for details on how Gemini CLI protects your credentials.
+  for details on how A-Coder CLI protects your credentials.
 - **Sandbox compatibility:** When using sandboxing, ensure MCP servers are
   available within the sandbox environment
 - **Private data:** Using broadly scoped personal access tokens can lead to
@@ -898,14 +898,14 @@ defaults:
 ### Schema compatibility
 
 - **Property stripping:** The system automatically removes certain schema
-  properties (`$schema`, `additionalProperties`) for Gemini API compatibility
+  properties (`$schema`, `additionalProperties`) for A-Coder API compatibility
 - **Name sanitization:** Tool names are automatically sanitized to meet API
   requirements
 - **Conflict resolution:** Tool name conflicts between servers are resolved
   through automatic prefixing
 
 This comprehensive integration makes MCP servers a powerful way to extend the
-Gemini CLI's capabilities while maintaining security, reliability, and ease of
+A-Coder CLI's capabilities while maintaining security, reliability, and ease of
 use.
 
 ## Returning rich content from tools
@@ -925,7 +925,7 @@ To return rich content, your tool's response must adhere to the MCP
 specification for a
 [`CallToolResult`](https://modelcontextprotocol.io/specification/2025-06-18/server/tools#tool-result).
 The `content` field of the result should be an array of `ContentBlock` objects.
-Gemini CLI will correctly process this array, separating text from binary data
+A-Coder CLI will correctly process this array, separating text from binary data
 and packaging it for the model.
 
 You can mix and match different content block types in the `content` array. The
@@ -962,7 +962,7 @@ text description and an image:
 }
 ```
 
-When Gemini CLI receives this response, it will:
+When A-Coder CLI receives this response, it will:
 
 1.  Extract all the text and combine it into a single `functionResponse` part
     for the model.
@@ -971,12 +971,12 @@ When Gemini CLI receives this response, it will:
     and an image were received.
 
 This enables you to build sophisticated tools that can provide rich, multi-modal
-context to the Gemini model.
+context to the A-Coder model.
 
 ## MCP prompts as slash commands
 
 In addition to tools, MCP servers can expose predefined prompts that can be
-executed as slash commands within Gemini CLI. This lets you create shortcuts for
+executed as slash commands within A-Coder CLI. This lets you create shortcuts for
 common or complex queries that can be easily invoked by name.
 
 ### Defining prompts on the server
@@ -1036,39 +1036,39 @@ Once a prompt is discovered, you can invoke it using its name as a slash
 command. The CLI will automatically handle parsing arguments.
 
 ```bash
-/poem-writer --title="Gemini CLI" --mood="reverent"
+/poem-writer --title="A-Coder CLI" --mood="reverent"
 ```
 
 or, using positional arguments:
 
 ```bash
-/poem-writer "Gemini CLI" reverent
+/poem-writer "A-Coder CLI" reverent
 ```
 
-When you run this command, Gemini CLI executes the `prompts/get` method on the
+When you run this command, A-Coder CLI executes the `prompts/get` method on the
 MCP server with the provided arguments. The server is responsible for
 substituting the arguments into the prompt template and returning the final
 prompt text. The CLI then sends this prompt to the model for execution. This
 provides a convenient way to automate and share common workflows.
 
-## Managing MCP servers with `gemini mcp`
+## Managing MCP servers with `a-coder-cli mcp`
 
 While you can always configure MCP servers by manually editing your
-`settings.json` file, Gemini CLI provides a convenient set of commands to manage
+`settings.json` file, A-Coder CLI provides a convenient set of commands to manage
 your server configurations programmatically. These commands streamline the
 process of adding, listing, and removing MCP servers without needing to directly
 edit JSON files.
 
-### Adding a server (`gemini mcp add`)
+### Adding a server (`a-coder-cli mcp add`)
 
 The `add` command configures a new MCP server in your `settings.json`. Based on
 the scope (`-s, --scope`), it will be added to either the user config
-`~/.gemini/settings.json` or the project config `.gemini/settings.json` file.
+`~/.a-coder-cli/settings.json` or the project config `.a-coder-cli/settings.json` file.
 
 **Command:**
 
 ```bash
-gemini mcp add [options] <name> <commandOrUrl> [args...]
+a-coder-cli mcp add [options] <name> <commandOrUrl> [args...]
 ```
 
 - `<name>`: A unique name for the server.
@@ -1095,13 +1095,13 @@ This is the default transport for running local servers.
 
 ```bash
 # Basic syntax
-gemini mcp add [options] <name> <command> [args...]
+a-coder-cli mcp add [options] <name> <command> [args...]
 
 # Example: Adding a local server
-gemini mcp add -e API_KEY=123 -e DEBUG=true my-stdio-server /path/to/server arg1 arg2 arg3
+a-coder-cli mcp add -e API_KEY=123 -e DEBUG=true my-stdio-server /path/to/server arg1 arg2 arg3
 
 # Example: Adding a local python server
-gemini mcp add python-server python server.py -- --server-arg my-value
+a-coder-cli mcp add python-server python server.py -- --server-arg my-value
 ```
 
 #### Adding an HTTP server
@@ -1110,13 +1110,13 @@ This transport is for servers that use the streamable HTTP transport.
 
 ```bash
 # Basic syntax
-gemini mcp add --transport http <name> <url>
+a-coder-cli mcp add --transport http <name> <url>
 
 # Example: Adding an HTTP server
-gemini mcp add --transport http http-server https://api.example.com/mcp/
+a-coder-cli mcp add --transport http http-server https://api.example.com/mcp/
 
 # Example: Adding an HTTP server with an authentication header
-gemini mcp add --transport http --header "Authorization: Bearer abc123" secure-http https://api.example.com/mcp/
+a-coder-cli mcp add --transport http --header "Authorization: Bearer abc123" secure-http https://api.example.com/mcp/
 ```
 
 #### Adding an SSE server
@@ -1125,16 +1125,16 @@ This transport is for servers that use Server-Sent Events (SSE).
 
 ```bash
 # Basic syntax
-gemini mcp add --transport sse <name> <url>
+a-coder-cli mcp add --transport sse <name> <url>
 
 # Example: Adding an SSE server
-gemini mcp add --transport sse sse-server https://api.example.com/sse/
+a-coder-cli mcp add --transport sse sse-server https://api.example.com/sse/
 
 # Example: Adding an SSE server with an authentication header
-gemini mcp add --transport sse --header "Authorization: Bearer abc123" secure-sse https://api.example.com/sse/
+a-coder-cli mcp add --transport sse --header "Authorization: Bearer abc123" secure-sse https://api.example.com/sse/
 ```
 
-### Listing servers (`gemini mcp list`)
+### Listing servers (`a-coder-cli mcp list`)
 
 To view all MCP servers currently configured, use the `list` command. It
 displays each server's name, configuration details, and connection status. This
@@ -1143,7 +1143,7 @@ command has no flags.
 **Command:**
 
 ```bash
-gemini mcp list
+a-coder-cli mcp list
 ```
 
 <!-- prettier-ignore -->
@@ -1151,7 +1151,7 @@ gemini mcp list
 > For security, `stdio` MCP servers (those using the
 > `command` property) are only tested and displayed as "Connected" if the
 > current folder is trusted. If the folder is untrusted, they will show as
-> "Disconnected". Use `gemini trust` to trust the current folder.
+> "Disconnected". Use `a-coder-cli trust` to trust the current folder.
 
 **Example output:**
 
@@ -1175,10 +1175,10 @@ re-enabled when:
 2.  The model attempts to execute a tool from that server.
 3.  You invoke an MCP prompt from that server.
 
-You can also use `gemini mcp list` from your shell to see connection errors for
+You can also use `a-coder-cli mcp list` from your shell to see connection errors for
 all configured servers.
 
-### Removing a server (`gemini mcp remove`)
+### Removing a server (`a-coder-cli mcp remove`)
 
 To delete a server from your configuration, use the `remove` command with the
 server's name.
@@ -1186,7 +1186,7 @@ server's name.
 **Command:**
 
 ```bash
-gemini mcp remove <name>
+a-coder-cli mcp remove <name>
 ```
 
 **Options (flags):**
@@ -1196,13 +1196,13 @@ gemini mcp remove <name>
 **Example:**
 
 ```bash
-gemini mcp remove my-server
+a-coder-cli mcp remove my-server
 ```
 
 This will find and delete the "my-server" entry from the `mcpServers` object in
 the appropriate `settings.json` file based on the scope (`-s, --scope`).
 
-### Enabling/disabling a server (`gemini mcp enable`, `gemini mcp disable`)
+### Enabling/disabling a server (`a-coder-cli mcp enable`, `a-coder-cli mcp disable`)
 
 Temporarily disable an MCP server without removing its configuration, or
 re-enable a previously disabled server.
@@ -1210,8 +1210,8 @@ re-enable a previously disabled server.
 **Commands:**
 
 ```bash
-gemini mcp enable <name> [--session]
-gemini mcp disable <name> [--session]
+a-coder-cli mcp enable <name> [--session]
+a-coder-cli mcp disable <name> [--session]
 ```
 
 **Options (flags):**
@@ -1220,13 +1220,13 @@ gemini mcp disable <name> [--session]
 
 Disabled servers appear in `/mcp` status as "Disabled" but won't connect or
 provide tools. Enablement state is stored in
-`~/.gemini/mcp-server-enablement.json`.
+`~/.a-coder-cli/mcp-server-enablement.json`.
 
 The same commands are available as slash commands during an active session:
 `/mcp enable <name>` and `/mcp disable <name>`.
 
 ## Instructions
 
-Gemini CLI supports
+A-Coder CLI supports
 [MCP server instructions](https://modelcontextprotocol.io/specification/2025-06-18/schema#initializeresult),
 which will be appended to the system instructions.

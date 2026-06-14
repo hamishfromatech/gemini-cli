@@ -1,157 +1,51 @@
 /**
  * @license
- * Copyright 2025 Google LLC
+ * Copyright 2026 Google LLC
  * SPDX-License-Identifier: Apache-2.0
+ *
+ * @license
  */
 
 import type { McpAuthProvider } from './auth-provider.js';
 import type {
-  OAuthClientInformation,
-  OAuthClientInformationFull,
+  OAuthClientInformationMixed,
   OAuthClientMetadata,
   OAuthTokens,
 } from '@modelcontextprotocol/sdk/shared/auth.js';
-import { GoogleAuth } from 'google-auth-library';
 import type { MCPServerConfig } from '../config/config.js';
-import { FIVE_MIN_BUFFER_MS } from './oauth-utils.js';
-import { coreEvents } from '../utils/events.js';
-
-const ALLOWED_HOSTS = [/^.+\.googleapis\.com$/, /^(.*\.)?luci\.app$/];
 
 export class GoogleCredentialProvider implements McpAuthProvider {
-  private readonly auth: GoogleAuth;
-  private cachedToken?: OAuthTokens;
-  private tokenExpiryTime?: number;
-
-  // Properties required by OAuthClientProvider, with no-op values
-  readonly redirectUrl = '';
   readonly clientMetadata: OAuthClientMetadata = {
-    client_name: 'Gemini CLI (Google ADC)',
+    client_name: 'A-Coder CLI',
     redirect_uris: [],
     grant_types: [],
     response_types: [],
     token_endpoint_auth_method: 'none',
   };
-  private _clientInformation?: OAuthClientInformationFull;
 
-  constructor(private readonly config?: MCPServerConfig) {
-    const url = this.config?.url || this.config?.httpUrl;
-    if (!url) {
-      throw new Error(
-        'URL must be provided in the config for Google Credentials provider',
-      );
-    }
+  constructor(private readonly _config?: MCPServerConfig) {}
 
-    const hostname = new URL(url).hostname;
-    if (!ALLOWED_HOSTS.some((pattern) => pattern.test(hostname))) {
-      throw new Error(
-        `Host "${hostname}" is not an allowed host for Google Credential provider.`,
-      );
-    }
-
-    const scopes = this.config?.oauth?.scopes;
-    if (!scopes || scopes.length === 0) {
-      throw new Error(
-        'Scopes must be provided in the oauth config for Google Credentials provider',
-      );
-    }
-    this.auth = new GoogleAuth({
-      scopes,
-    });
+  get redirectUrl(): string | URL | undefined {
+    return undefined;
   }
 
-  clientInformation(): OAuthClientInformation | undefined {
-    return this._clientInformation;
+  clientInformation(): OAuthClientInformationMixed | undefined {
+    return undefined;
   }
 
-  saveClientInformation(clientInformation: OAuthClientInformationFull): void {
-    this._clientInformation = clientInformation;
-  }
+  saveClientInformation(_clientInformation: OAuthClientInformationMixed): void {}
 
   async tokens(): Promise<OAuthTokens | undefined> {
-    // check for a valid, non-expired cached token.
-    if (
-      this.cachedToken &&
-      this.tokenExpiryTime &&
-      Date.now() < this.tokenExpiryTime - FIVE_MIN_BUFFER_MS
-    ) {
-      return this.cachedToken;
-    }
-
-    // Clear invalid/expired cache.
-    this.cachedToken = undefined;
-    this.tokenExpiryTime = undefined;
-
-    const client = await this.auth.getClient();
-    const accessTokenResponse = await client.getAccessToken();
-
-    if (!accessTokenResponse.token) {
-      coreEvents.emitFeedback(
-        'error',
-        'Failed to get access token from Google ADC',
-      );
-      return undefined;
-    }
-
-    const newToken: OAuthTokens = {
-      access_token: accessTokenResponse.token,
-      token_type: 'Bearer',
-    };
-
-    const expiryTime = client.credentials?.expiry_date;
-    if (expiryTime) {
-      this.tokenExpiryTime = expiryTime;
-      this.cachedToken = newToken;
-    }
-
-    return newToken;
+    return undefined;
   }
 
-  saveTokens(_tokens: OAuthTokens): void {
-    // No-op, ADC manages tokens.
-  }
+  async saveTokens(_tokens: OAuthTokens): Promise<void> {}
 
-  redirectToAuthorization(_authorizationUrl: URL): void {
-    // No-op
-  }
+  async redirectToAuthorization(_authorizationUrl: URL): Promise<void> {}
 
-  saveCodeVerifier(_codeVerifier: string): void {
-    // No-op
-  }
+  async saveCodeVerifier(_codeVerifier: string): Promise<void> {}
 
-  codeVerifier(): string {
-    // No-op
+  async codeVerifier(): Promise<string> {
     return '';
-  }
-  /**
-   * Returns the project ID used for quota.
-   */
-  async getQuotaProjectId(): Promise<string | undefined> {
-    const client = await this.auth.getClient();
-    return client.quotaProjectId;
-  }
-
-  /**
-   * Returns custom headers to be added to the request.
-   */
-  async getRequestHeaders(): Promise<Record<string, string>> {
-    const headers: Record<string, string> = {};
-    const configHeaders = this.config?.headers ?? {};
-    const userProjectHeaderKey = Object.keys(configHeaders).find(
-      (key) => key.toLowerCase() === 'x-goog-user-project',
-    );
-
-    // If the header is present in the config (case-insensitive check), use the
-    // config's key and value. This prevents duplicate headers (e.g.
-    // 'x-goog-user-project' and 'X-Goog-User-Project') which can cause errors.
-    if (userProjectHeaderKey) {
-      headers[userProjectHeaderKey] = configHeaders[userProjectHeaderKey];
-    } else {
-      const quotaProjectId = await this.getQuotaProjectId();
-      if (quotaProjectId) {
-        headers['X-Goog-User-Project'] = quotaProjectId;
-      }
-    }
-    return headers;
   }
 }

@@ -21,7 +21,7 @@ describe('Core System Prompt Substitution', () => {
   let mockConfig: Config;
   beforeEach(() => {
     vi.resetAllMocks();
-    vi.stubEnv('GEMINI_SYSTEM_MD', 'true');
+    vi.stubEnv('A_CODER_SYSTEM_MD', 'true');
     mockConfig = {
       get config() {
         return this;
@@ -64,7 +64,7 @@ describe('Core System Prompt Substitution', () => {
       isTrackerEnabled: vi.fn().mockReturnValue(false),
       isModelSteeringEnabled: vi.fn().mockReturnValue(false),
       getHasAccessToPreviewModel: vi.fn().mockReturnValue(true),
-      getGemini31LaunchedSync: vi.fn().mockReturnValue(true),
+      getACoder31LaunchedSync: vi.fn().mockReturnValue(true),
     } as unknown as Config;
   });
 

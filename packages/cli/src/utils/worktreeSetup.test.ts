@@ -6,12 +6,12 @@
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { setupWorktree } from './worktreeSetup.js';
-import * as coreFunctions from '@google/gemini-cli-core';
+import * as coreFunctions from '@the-a-tech-corporation/core';
 
 // Mock dependencies
-vi.mock('@google/gemini-cli-core', async (importOriginal) => {
+vi.mock('@the-a-tech-corporation/core', async (importOriginal) => {
   const actual =
-    await importOriginal<typeof import('@google/gemini-cli-core')>();
+    await importOriginal<typeof import('@the-a-tech-corporation/core')>();
   return {
     ...actual,
     getProjectRootForWorktree: vi.fn(),
@@ -55,7 +55,7 @@ describe('setupWorktree', () => {
     );
     mockService.setup.mockResolvedValue({
       name: 'my-feature',
-      path: '/mock/project/.gemini/worktrees/my-feature',
+      path: '/mock/project/.a-coder/worktrees/my-feature',
       baseSha: 'base-sha',
     });
   });
@@ -77,15 +77,15 @@ describe('setupWorktree', () => {
     );
     expect(mockService.setup).toHaveBeenCalledWith('my-feature');
     expect(process.chdir).toHaveBeenCalledWith(
-      '/mock/project/.gemini/worktrees/my-feature',
+      '/mock/project/.a-coder/worktrees/my-feature',
     );
-    expect(process.env['GEMINI_CLI_WORKTREE_HANDLED']).toBe('1');
+    expect(process.env['A_CODER_CLI_WORKTREE_HANDLED']).toBe('1');
   });
 
   it('should generate a name if worktreeName is undefined', async () => {
     mockService.setup.mockResolvedValue({
       name: 'generated-name',
-      path: '/mock/project/.gemini/worktrees/generated-name',
+      path: '/mock/project/.a-coder/worktrees/generated-name',
       baseSha: 'base-sha',
     });
 
@@ -94,8 +94,8 @@ describe('setupWorktree', () => {
     expect(mockService.setup).toHaveBeenCalledWith(undefined);
   });
 
-  it('should skip worktree creation if GEMINI_CLI_WORKTREE_HANDLED is set', async () => {
-    process.env['GEMINI_CLI_WORKTREE_HANDLED'] = '1';
+  it('should skip worktree creation if A_CODER_CLI_WORKTREE_HANDLED is set', async () => {
+    process.env['A_CODER_CLI_WORKTREE_HANDLED'] = '1';
 
     await setupWorktree('my-feature');
 

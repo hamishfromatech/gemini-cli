@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2025 Google LLC
+ * Copyright 2026 The A-Tech Corporation
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -25,7 +25,7 @@ import os from 'node:os';
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
 import dotenv from 'dotenv';
-import { GEMINI_DIR } from '@google/gemini-cli-core';
+import { A_CODER_DIR } from '@the-a-tech-corporation/core';
 
 const argv = yargs(hideBin(process.argv)).option('q', {
   alias: 'quiet',
@@ -33,12 +33,12 @@ const argv = yargs(hideBin(process.argv)).option('q', {
   default: false,
 }).argv;
 
-const homedir = () => process.env['GEMINI_CLI_HOME'] || os.homedir();
+const homedir = () => process.env['A_CODER_CLI_HOME'] || os.homedir();
 
-let geminiSandbox = process.env.GEMINI_SANDBOX;
+let geminiSandbox = process.env.A_CODER_SANDBOX;
 
 if (!geminiSandbox) {
-  const userSettingsFile = join(homedir(), GEMINI_DIR, 'settings.json');
+  const userSettingsFile = join(homedir(), A_CODER_DIR, 'settings.json');
   if (existsSync(userSettingsFile)) {
     const settings = JSON.parse(
       stripJsonComments(readFileSync(userSettingsFile, 'utf-8')),
@@ -52,7 +52,7 @@ if (!geminiSandbox) {
 if (!geminiSandbox) {
   let currentDir = process.cwd();
   while (true) {
-    const geminiEnv = join(currentDir, GEMINI_DIR, '.env');
+    const geminiEnv = join(currentDir, A_CODER_DIR, '.env');
     const regularEnv = join(currentDir, '.env');
     if (existsSync(geminiEnv)) {
       dotenv.config({ path: geminiEnv, quiet: true });
@@ -67,7 +67,7 @@ if (!geminiSandbox) {
     }
     currentDir = parentDir;
   }
-  geminiSandbox = process.env.GEMINI_SANDBOX;
+  geminiSandbox = process.env.A_CODER_SANDBOX;
 }
 
 geminiSandbox = (geminiSandbox || '').toLowerCase();
@@ -98,7 +98,7 @@ if (['1', 'true'].includes(geminiSandbox)) {
     command = 'podman';
   } else {
     console.error(
-      'ERROR: install docker or podman or specify command in GEMINI_SANDBOX',
+      'ERROR: install docker or podman or specify command in A_CODER_SANDBOX',
     );
     process.exit(1);
   }
@@ -107,7 +107,7 @@ if (['1', 'true'].includes(geminiSandbox)) {
     command = geminiSandbox;
   } else {
     console.error(
-      `ERROR: missing sandbox command '${geminiSandbox}' (from GEMINI_SANDBOX)`,
+      `ERROR: missing sandbox command '${geminiSandbox}' (from A_CODER_SANDBOX)`,
     );
     process.exit(1);
   }

@@ -16,7 +16,7 @@ import {
   unlinkSync,
 } from 'node:fs';
 import { join, dirname } from 'node:path';
-import { GEMINI_DIR } from '@google/gemini-cli-core';
+import { A_CODER_DIR } from '@the-a-tech-corporation/core';
 import * as pty from '@lydell/node-pty';
 import { fileURLToPath } from 'node:url';
 
@@ -58,7 +58,7 @@ describe.skipIf(skipFlaky)(
 
       const realExtPath = join(rig.testDir!, 'real-extension');
       mkdirSync(realExtPath);
-      writeFileSync(join(realExtPath, 'gemini-extension.json'), extension);
+      writeFileSync(join(realExtPath, 'a-coder-extension.json'), extension);
 
       const maliciousExtPath = join(
         os.tmpdir(),
@@ -66,7 +66,7 @@ describe.skipIf(skipFlaky)(
       );
       mkdirSync(maliciousExtPath);
       writeFileSync(
-        join(maliciousExtPath, 'gemini-extension.json'),
+        join(maliciousExtPath, 'a-coder-extension.json'),
         otherExtension,
       );
 
@@ -82,9 +82,9 @@ describe.skipIf(skipFlaky)(
           cwd: rig.testDir!,
           env: {
             ...process.env,
-            GEMINI_CLI_HOME: rig.homeDir!,
-            GEMINI_CLI_INTEGRATION_TEST: 'true',
-            GEMINI_PTY_INFO: 'node-pty',
+            A_CODER_CLI_HOME: rig.homeDir!,
+            A_CODER_CLI_INTEGRATION_TEST: 'true',
+            A_CODER_PTY_INFO: 'node-pty',
           },
         });
         return new InteractiveRun(ptyProcess);
@@ -104,7 +104,7 @@ describe.skipIf(skipFlaky)(
       // 2. Verify trustedFolders.json contains the REAL path, not the symlink path
       const trustedFoldersPath = join(
         rig.homeDir!,
-        GEMINI_DIR,
+        A_CODER_DIR,
         'trustedFolders.json',
       );
       // Wait for file to be written

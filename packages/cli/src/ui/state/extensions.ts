@@ -5,7 +5,7 @@
  */
 
 import type { ExtensionUpdateInfo } from '../../config/extension.js';
-import { checkExhaustive } from '@google/gemini-cli-core';
+import { checkExhaustive } from '@the-a-tech-corporation/core';
 
 export enum ExtensionUpdateState {
   CHECKING_FOR_UPDATES = 'checking for updates',

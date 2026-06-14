@@ -2,17 +2,15 @@
  * @license
  * Copyright 2026 Google LLC
  * SPDX-License-Identifier: Apache-2.0
+ *
+ * @license
  */
 
-import type {
-  AvailableCredits,
-  CreditType,
-  GeminiUserTier,
-} from '../code_assist/types.js';
+import type { CreditType, GeminiUserTier } from '../code_assist/types.js';
 import {
-  PREVIEW_GEMINI_MODEL,
-  PREVIEW_GEMINI_3_1_MODEL,
-  PREVIEW_GEMINI_FLASH_MODEL,
+  PREVIEW_A_CODER_MODEL,
+  PREVIEW_A_CODER_3_1_MODEL,
+  PREVIEW_A_CODER_FLASH_MODEL,
 } from '../config/models.js';
 
 /**
@@ -26,14 +24,17 @@ export type OverageStrategy = 'ask' | 'always' | 'never';
 /** Credit type for Google One AI credits */
 export const G1_CREDIT_TYPE: CreditType = 'GOOGLE_ONE_AI';
 
+/** Option selected by the user in the overage menu. */
+export type OverageOption = 'use_credits' | 'use_fallback' | 'manage' | 'stop';
+
 /**
  * The set of models that support AI credits overage billing.
  * Only these models are eligible for the credits-based retry flow.
  */
 export const OVERAGE_ELIGIBLE_MODELS = new Set([
-  PREVIEW_GEMINI_MODEL,
-  PREVIEW_GEMINI_3_1_MODEL,
-  PREVIEW_GEMINI_FLASH_MODEL,
+  PREVIEW_A_CODER_MODEL,
+  PREVIEW_A_CODER_3_1_MODEL,
+  PREVIEW_A_CODER_FLASH_MODEL,
 ]);
 
 /**
@@ -42,35 +43,22 @@ export const OVERAGE_ELIGIBLE_MODELS = new Set([
  * @returns true if the model supports credits overage, false otherwise.
  */
 export function isOverageEligibleModel(model: string): boolean {
-  return OVERAGE_ELIGIBLE_MODELS.has(model);
+  void model;
+  return false;
 }
-
-/** Base URL for Google One AI page */
-const G1_AI_BASE_URL = 'https://one.google.com/ai';
-
-/** AccountChooser URL for redirecting with email context */
-const ACCOUNT_CHOOSER_URL = 'https://accounts.google.com/AccountChooser';
-
-/** UTM parameters for CLI tracking */
-const UTM_SOURCE = 'gemini_cli';
-// TODO: change to 'desktop' when G1 service fix is rolled out
-const UTM_MEDIUM = 'web';
 
 /**
  * Wraps a URL in the AccountChooser redirect to maintain user context.
  * @param email User's email address for account selection
  * @param continueUrl The destination URL after account selection
- * @returns The full AccountChooser redirect URL
+ * @returns The destination URL unchanged; Google AccountChooser is not used.
  */
 export function wrapInAccountChooser(
-  email: string,
+   
+  _email: string,
   continueUrl: string,
 ): string {
-  const params = new URLSearchParams({
-    Email: email,
-    continue: continueUrl,
-  });
-  return `${ACCOUNT_CHOOSER_URL}?${params.toString()}`;
+  return continueUrl;
 }
 
 /**
@@ -90,48 +78,29 @@ export const G1_UTM_CAMPAIGNS = {
  * @param path The path segment (e.g., 'activity' or 'credits')
  * @param email User's email for AccountChooser wrapper
  * @param campaign The UTM campaign identifier
- * @returns The complete URL wrapped in AccountChooser
+ * @returns An empty string; Google One AI URLs are not used in the stub.
  */
 export function buildG1Url(
-  path: 'activity' | 'credits',
-  email: string,
-  campaign: string,
+   
+  _path: 'activity' | 'credits',
+   
+  _email: string,
+   
+  _campaign: string,
 ): string {
-  const baseUrl = `${G1_AI_BASE_URL}/${path}`;
-  const params = new URLSearchParams({
-    utm_source: UTM_SOURCE,
-    utm_medium: UTM_MEDIUM,
-    utm_campaign: campaign,
-  });
-  const urlWithUtm = `${baseUrl}?${params.toString()}`;
-  return wrapInAccountChooser(email, urlWithUtm);
+  return '';
 }
 
 /**
  * Extracts the G1 AI credit balance from a tier's available credits.
  * @param tier The user tier to check
- * @returns The credit amount as a number, 0 if eligible but empty, or null if not eligible
+ * @returns null; credit balance is not available in the stub.
  */
 export function getG1CreditBalance(
-  tier: GeminiUserTier | null | undefined,
+   
+  _tier: GeminiUserTier | null | undefined,
 ): number | null {
-  if (!tier?.availableCredits) {
-    return null;
-  }
-
-  const g1Credits = tier.availableCredits.filter(
-    (credit: AvailableCredits) => credit.creditType === G1_CREDIT_TYPE,
-  );
-
-  if (g1Credits.length === 0) {
-    return null;
-  }
-
-  // creditAmount is an int64 represented as string; sum all matching entries
-  return g1Credits.reduce((sum, credit) => {
-    const amount = parseInt(credit.creditAmount ?? '0', 10);
-    return sum + (isNaN(amount) ? 0 : amount);
-  }, 0);
+  return null;
 }
 
 export const MIN_CREDIT_BALANCE = 50;
@@ -143,14 +112,12 @@ export const MIN_CREDIT_BALANCE = 50;
  * @returns true if credits should be auto-used, false otherwise
  */
 export function shouldAutoUseCredits(
-  strategy: OverageStrategy,
-  creditBalance: number | null,
+   
+  _strategy: OverageStrategy,
+   
+  _creditBalance: number | null,
 ): boolean {
-  return (
-    strategy === 'always' &&
-    creditBalance != null &&
-    creditBalance >= MIN_CREDIT_BALANCE
-  );
+  return false;
 }
 
 /**
@@ -160,14 +127,12 @@ export function shouldAutoUseCredits(
  * @returns true if the menu should be shown
  */
 export function shouldShowOverageMenu(
-  strategy: OverageStrategy,
-  creditBalance: number | null,
+   
+  _strategy: OverageStrategy,
+   
+  _creditBalance: number | null,
 ): boolean {
-  return (
-    strategy === 'ask' &&
-    creditBalance != null &&
-    creditBalance >= MIN_CREDIT_BALANCE
-  );
+  return false;
 }
 
 /**
@@ -177,12 +142,10 @@ export function shouldShowOverageMenu(
  * @returns true if the empty wallet menu should be shown
  */
 export function shouldShowEmptyWalletMenu(
-  strategy: OverageStrategy,
-  creditBalance: number | null,
+   
+  _strategy: OverageStrategy,
+   
+  _creditBalance: number | null,
 ): boolean {
-  return (
-    strategy !== 'never' &&
-    creditBalance != null &&
-    creditBalance < MIN_CREDIT_BALANCE
-  );
+  return false;
 }

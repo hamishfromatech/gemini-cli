@@ -48,8 +48,14 @@ export class SkillManager {
   }
 
   /**
-   * Discovers skills from standard user and workspace locations, as well as extensions.
-   * Precedence: Extensions (lowest) -> User -> Workspace (highest).
+   * Discovers skills from standard user and workspace locations, plus
+   * compatibility folders for Claude (.claude/skills) and OpenCode
+   * (.opencode/skills). Also loads extension and built-in skills.
+   *
+   * Precedence (lowest to highest):
+   * Built-in -> Extension -> User (.a-coder/skills, .agents/skills,
+   * .claude/skills, .opencode/skills) -> Workspace (.a-coder/skills,
+   * .agents/skills, .claude/skills, .opencode/skills).
    */
   async discoverSkills(
     storage: Storage,
@@ -78,6 +84,17 @@ export class SkillManager {
     );
     this.addSkillsWithPrecedence(userAgentSkills);
 
+    // 3.2 User skills from Claude / OpenCode compatibility folders
+    const userClaudeSkills = await loadSkillsFromDir(
+      Storage.getUserClaudeSkillsDir(),
+    );
+    this.addSkillsWithPrecedence(userClaudeSkills);
+
+    const userOpencodeSkills = await loadSkillsFromDir(
+      Storage.getUserOpencodeSkillsDir(),
+    );
+    this.addSkillsWithPrecedence(userOpencodeSkills);
+
     // 4. Workspace skills (highest precedence)
     if (!isTrusted) {
       debugLogger.debug(
@@ -96,6 +113,17 @@ export class SkillManager {
       storage.getProjectAgentSkillsDir(),
     );
     this.addSkillsWithPrecedence(projectAgentSkills);
+
+    // 4.2 Workspace skills from Claude / OpenCode compatibility folders
+    const projectClaudeSkills = await loadSkillsFromDir(
+      storage.getProjectClaudeSkillsDir(),
+    );
+    this.addSkillsWithPrecedence(projectClaudeSkills);
+
+    const projectOpencodeSkills = await loadSkillsFromDir(
+      storage.getProjectOpencodeSkillsDir(),
+    );
+    this.addSkillsWithPrecedence(projectOpencodeSkills);
   }
 
   /**

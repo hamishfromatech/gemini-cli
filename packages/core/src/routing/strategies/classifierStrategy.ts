@@ -12,7 +12,7 @@ import type {
   RoutingDecision,
   RoutingStrategy,
 } from '../routingStrategy.js';
-import { resolveClassifierModel, isGemini3Model } from '../../config/models.js';
+import { resolveClassifierModel, isACoder3Model } from '../../config/models.js';
 import { createUserContent, Type } from '@google/genai';
 import type { Config } from '../../config/config.js';
 import {
@@ -140,7 +140,7 @@ export class ClassifierStrategy implements RoutingStrategy {
       const model = context.requestedModel ?? config.getModel();
       if (
         (await config.getNumericalRoutingEnabled()) &&
-        isGemini3Model(model, config)
+        isACoder3Model(model, config)
       ) {
         return null;
       }
@@ -186,7 +186,7 @@ export class ClassifierStrategy implements RoutingStrategy {
         config.getGemini31Launched(),
         config.getUseCustomToolModel(),
       ]);
-      const useGemini3_5Flash = config.hasGemini35FlashGAAccess?.() ?? false;
+      const useACoder3_5Flash = config.hasACoder35FlashGAAccess?.() ?? false;
       const selectedModel = normalizeModelId(
         resolveClassifierModel(
           normalizeModelId(model),
@@ -195,7 +195,7 @@ export class ClassifierStrategy implements RoutingStrategy {
           useCustomToolModel,
           config.getHasAccessToPreviewModel?.() ?? true,
           config,
-          useGemini3_5Flash,
+          useACoder3_5Flash,
         ),
       );
 

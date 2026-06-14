@@ -5,11 +5,11 @@
  */
 
 import {
-  GeminiEventType,
+  ACoderEventType,
   ApprovalMode,
   type Config,
   type ToolCallConfirmationDetails,
-} from '@google/gemini-cli-core';
+} from '@the-a-tech-corporation/core';
 import type {
   TaskStatusUpdateEvent,
   SendStreamingMessageSuccessResponse,
@@ -36,7 +36,7 @@ import {
   createMockConfig,
 } from '../utils/testing_utils.js';
 // Import MockTool from specific path to avoid vitest dependency in main core bundle
-import { MockTool } from '@google/gemini-cli-core/src/test-utils/mock-tool.js';
+import { MockTool } from '@the-a-tech-corporation/core/src/test-utils/mock-tool.js';
 import type { Command, CommandContext } from '../commands/types.js';
 
 const mockToolConfirmationFn = async () =>
@@ -92,13 +92,13 @@ vi.mock('../config/config.js', async () => {
   };
 });
 
-// Mock the GeminiClient to avoid actual API calls
+// Mock the ACoderClient to avoid actual API calls
 const sendMessageStreamSpy = vi.fn();
-vi.mock('@google/gemini-cli-core', async () => {
-  const actual = await vi.importActual('@google/gemini-cli-core');
+vi.mock('@the-a-tech-corporation/core', async () => {
+  const actual = await vi.importActual('@the-a-tech-corporation/core');
   return {
     ...actual,
-    GeminiClient: vi.fn().mockImplementation(() => ({
+    ACoderClient: vi.fn().mockImplementation(() => ({
       sendMessageStream: sendMessageStreamSpy,
       getUserTier: vi.fn().mockReturnValue('free'),
       initialize: vi.fn(),
@@ -175,7 +175,7 @@ describe('E2E Tests', () => {
     sendMessageStreamSpy.mockImplementationOnce(async function* () {
       yield* [
         {
-          type: GeminiEventType.ToolCallRequest,
+          type: ACoderEventType.ToolCallRequest,
           value: {
             callId: 'test-call-id',
             name: 'test-tool',
@@ -259,7 +259,7 @@ describe('E2E Tests', () => {
     sendMessageStreamSpy.mockImplementationOnce(async function* () {
       yield* [
         {
-          type: GeminiEventType.ToolCallRequest,
+          type: ACoderEventType.ToolCallRequest,
           value: {
             callId: 'test-call-id-1',
             name: 'test-tool-1',
@@ -267,7 +267,7 @@ describe('E2E Tests', () => {
           },
         },
         {
-          type: GeminiEventType.ToolCallRequest,
+          type: ACoderEventType.ToolCallRequest,
           value: {
             callId: 'test-call-id-2',
             name: 'test-tool-2',
@@ -426,7 +426,7 @@ describe('E2E Tests', () => {
     sendMessageStreamSpy.mockImplementationOnce(async function* () {
       yield* [
         {
-          type: GeminiEventType.ToolCallRequest,
+          type: ACoderEventType.ToolCallRequest,
           value: {
             callId: 'test-call-id-1',
             name: 'test-tool-1',
@@ -434,7 +434,7 @@ describe('E2E Tests', () => {
           },
         },
         {
-          type: GeminiEventType.ToolCallRequest,
+          type: ACoderEventType.ToolCallRequest,
           value: {
             callId: 'test-call-id-2',
             name: 'test-tool-2',
@@ -568,7 +568,7 @@ describe('E2E Tests', () => {
     sendMessageStreamSpy.mockImplementationOnce(async function* () {
       yield* [
         {
-          type: GeminiEventType.ToolCallRequest,
+          type: ACoderEventType.ToolCallRequest,
           value: {
             callId: 'test-call-id-no-approval',
             name: 'test-tool-no-approval',
@@ -710,7 +710,7 @@ describe('E2E Tests', () => {
     sendMessageStreamSpy.mockImplementationOnce(async function* () {
       yield* [
         {
-          type: GeminiEventType.ToolCallRequest,
+          type: ACoderEventType.ToolCallRequest,
           value: {
             callId: 'test-call-id-yolo',
             name: 'test-tool-yolo',

@@ -17,16 +17,16 @@ import { SimpleExtensionLoader } from './extensionLoader.js';
 import { PolicyDecision } from '../policy/types.js';
 import type { Config, GeminiCLIExtension } from '../config/config.js';
 import { type McpClientManager } from '../tools/mcp-client-manager.js';
-import type { GeminiClient } from '../core/client.js';
+import type { ACoderClient } from '../core/a-coder-client.js';
 
 describe('SimpleExtensionLoader', () => {
   let mockConfig: Config;
   let extensionReloadingEnabled: boolean;
   let mockMcpClientManager: McpClientManager;
-  let mockGeminiClientSetTools: MockInstance<
-    typeof GeminiClient.prototype.setTools
+  let mockACoderClientSetTools: MockInstance<
+    typeof ACoderClient.prototype.setTools
   >;
-  let mockGeminiClientUpdateSystemInstruction: MockInstance;
+  let mockACoderClientUpdateSystemInstruction: MockInstance;
   let mockMemoryRefresh: MockInstance;
   let mockHookSystemInit: MockInstance;
   let mockAgentRegistryReload: MockInstance;
@@ -77,8 +77,8 @@ describe('SimpleExtensionLoader', () => {
       stopExtension: vi.fn(),
     } as unknown as McpClientManager;
     extensionReloadingEnabled = false;
-    mockGeminiClientSetTools = vi.fn();
-    mockGeminiClientUpdateSystemInstruction = vi.fn();
+    mockACoderClientSetTools = vi.fn();
+    mockACoderClientUpdateSystemInstruction = vi.fn();
     mockMemoryRefresh = vi.fn();
     mockHookSystemInit = vi.fn();
     mockAgentRegistryReload = vi.fn();
@@ -92,15 +92,15 @@ describe('SimpleExtensionLoader', () => {
     mockConfig = {
       getMcpClientManager: () => mockMcpClientManager,
       getEnableExtensionReloading: () => extensionReloadingEnabled,
-      geminiClient: {
+      aCoderClient: {
         isInitialized: () => true,
-        setTools: mockGeminiClientSetTools,
-        updateSystemInstruction: mockGeminiClientUpdateSystemInstruction,
+        setTools: mockACoderClientSetTools,
+        updateSystemInstruction: mockACoderClientUpdateSystemInstruction,
       },
-      getGeminiClient: vi.fn(() => ({
+      getACoderClient: vi.fn(() => ({
         isInitialized: () => true,
-        setTools: mockGeminiClientSetTools,
-        updateSystemInstruction: mockGeminiClientUpdateSystemInstruction,
+        setTools: mockACoderClientSetTools,
+        updateSystemInstruction: mockACoderClientUpdateSystemInstruction,
       })),
       getMemoryContextManager: vi.fn(() => ({
         refresh: mockMemoryRefresh,
@@ -194,27 +194,27 @@ describe('SimpleExtensionLoader', () => {
             ).toHaveBeenCalledExactlyOnceWith(activeExtension);
             expect(mockMemoryRefresh).toHaveBeenCalledOnce();
             expect(
-              mockGeminiClientUpdateSystemInstruction,
+              mockACoderClientUpdateSystemInstruction,
             ).toHaveBeenCalledOnce();
             expect(mockHookSystemInit).toHaveBeenCalledOnce();
-            expect(mockGeminiClientSetTools).toHaveBeenCalledOnce();
+            expect(mockACoderClientSetTools).toHaveBeenCalledOnce();
             expect(mockAgentRegistryReload).toHaveBeenCalledOnce();
             expect(mockSkillsReload).toHaveBeenCalledOnce();
           } else {
             expect(mockMcpClientManager.startExtension).not.toHaveBeenCalled();
             expect(mockMemoryRefresh).not.toHaveBeenCalled();
             expect(
-              mockGeminiClientUpdateSystemInstruction,
+              mockACoderClientUpdateSystemInstruction,
             ).not.toHaveBeenCalled();
             expect(mockHookSystemInit).not.toHaveBeenCalled();
-            expect(mockGeminiClientSetTools).not.toHaveBeenCalledOnce();
+            expect(mockACoderClientSetTools).not.toHaveBeenCalledOnce();
             expect(mockAgentRegistryReload).not.toHaveBeenCalled();
             expect(mockSkillsReload).not.toHaveBeenCalled();
           }
           mockMemoryRefresh.mockClear();
-          mockGeminiClientUpdateSystemInstruction.mockClear();
+          mockACoderClientUpdateSystemInstruction.mockClear();
           mockHookSystemInit.mockClear();
-          mockGeminiClientSetTools.mockClear();
+          mockACoderClientSetTools.mockClear();
           mockAgentRegistryReload.mockClear();
           mockSkillsReload.mockClear();
 
@@ -225,20 +225,20 @@ describe('SimpleExtensionLoader', () => {
             ).toHaveBeenCalledExactlyOnceWith(activeExtension);
             expect(mockMemoryRefresh).toHaveBeenCalledOnce();
             expect(
-              mockGeminiClientUpdateSystemInstruction,
+              mockACoderClientUpdateSystemInstruction,
             ).toHaveBeenCalledOnce();
             expect(mockHookSystemInit).toHaveBeenCalledOnce();
-            expect(mockGeminiClientSetTools).toHaveBeenCalledOnce();
+            expect(mockACoderClientSetTools).toHaveBeenCalledOnce();
             expect(mockAgentRegistryReload).toHaveBeenCalledOnce();
             expect(mockSkillsReload).toHaveBeenCalledOnce();
           } else {
             expect(mockMcpClientManager.stopExtension).not.toHaveBeenCalled();
             expect(mockMemoryRefresh).not.toHaveBeenCalled();
             expect(
-              mockGeminiClientUpdateSystemInstruction,
+              mockACoderClientUpdateSystemInstruction,
             ).not.toHaveBeenCalled();
             expect(mockHookSystemInit).not.toHaveBeenCalled();
-            expect(mockGeminiClientSetTools).not.toHaveBeenCalledOnce();
+            expect(mockACoderClientSetTools).not.toHaveBeenCalledOnce();
             expect(mockAgentRegistryReload).not.toHaveBeenCalled();
             expect(mockSkillsReload).not.toHaveBeenCalled();
           }
@@ -261,7 +261,7 @@ describe('SimpleExtensionLoader', () => {
             ]);
             expect(mockMemoryRefresh).toHaveBeenCalledOnce();
             expect(
-              mockGeminiClientUpdateSystemInstruction,
+              mockACoderClientUpdateSystemInstruction,
             ).toHaveBeenCalledOnce();
             expect(mockHookSystemInit).toHaveBeenCalledOnce();
             expect(mockAgentRegistryReload).toHaveBeenCalledOnce();

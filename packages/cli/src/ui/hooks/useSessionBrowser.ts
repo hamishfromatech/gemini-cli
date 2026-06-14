@@ -12,12 +12,12 @@ import {
   convertSessionToClientHistory,
   uiTelemetryService,
   loadConversationRecord,
-} from '@google/gemini-cli-core';
+} from '@the-a-tech-corporation/core';
 import type {
   HistoryTurn,
   Config,
   ResumedSessionData,
-} from '@google/gemini-cli-core';
+} from '@the-a-tech-corporation/core';
 import {
   convertSessionToHistoryFormats,
   type SessionInfo,
@@ -112,7 +112,7 @@ export const useSessionBrowser = (
         // (without the ".json" extension), not the full session UUID.
         try {
           const chatRecordingService = config
-            .getGeminiClient()
+            .getACoderClient()
             ?.getChatRecordingService();
           if (chatRecordingService) {
             await chatRecordingService.deleteSession(session.file);

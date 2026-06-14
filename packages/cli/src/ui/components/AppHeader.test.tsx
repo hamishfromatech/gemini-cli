@@ -11,7 +11,7 @@ import {
 import type { LoadedSettings } from '../../config/settings.js';
 import { AppHeader } from './AppHeader.js';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { makeFakeConfig } from '@google/gemini-cli-core';
+import { makeFakeConfig } from '@the-a-tech-corporation/core';
 import crypto from 'node:crypto';
 import { _clearSessionBannersForTest } from '../hooks/useBanner.js';
 
@@ -248,7 +248,7 @@ describe('<AppHeader />', () => {
     session2.unmount();
   });
 
-  it('should render the full logo when logged out', async () => {
+  it('should render the A-Coder CLI mark when logged out', async () => {
     const mockConfig = makeFakeConfig();
     vi.spyOn(mockConfig, 'getContentGeneratorConfig').mockReturnValue({
       authType: undefined,
@@ -265,8 +265,8 @@ describe('<AppHeader />', () => {
     );
     await waitUntilReady();
 
-    // Check for block characters from the logo
-    expect(lastFrame()).toContain('▗█▀▀▜▙');
+    // Check for the unique slanted A-Coder CLI block mark
+    expect(lastFrame()).toContain('▝▜▄');
     expect(lastFrame()).toMatchSnapshot();
     unmount();
   });

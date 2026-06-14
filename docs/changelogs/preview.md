@@ -8,7 +8,7 @@ release may not be as stable as our [latest weekly release](latest.md).
 To install the preview release:
 
 ```
-npm install -g @google/gemini-cli@preview
+npm install -g @the-a-tech-corporation/a-coder-cli@preview
 ```
 
 ## Highlights
@@ -26,21 +26,21 @@ npm install -g @google/gemini-cli@preview
 ## What's Changed
 
 - fix(core): harden PTY resize against native crashes by @scidomino in
-  [#27496](https://github.com/google-gemini/gemini-cli/pull/27496)
-- Changelog for v0.45.0-preview.0 by @gemini-cli-robot in
-  [#27495](https://github.com/google-gemini/gemini-cli/pull/27495)
-- Changelog for v0.44.0 by @gemini-cli-robot in
-  [#27569](https://github.com/google-gemini/gemini-cli/pull/27569)
+  [#27496](https://github.com/google-a-coder-cli/a-coder-cli-cli/pull/27496)
+- Changelog for v0.45.0-preview.0 by @a-coder-cli-cli-robot in
+  [#27495](https://github.com/google-a-coder-cli/a-coder-cli-cli/pull/27495)
+- Changelog for v0.44.0 by @a-coder-cli-cli-robot in
+  [#27569](https://github.com/google-a-coder-cli/a-coder-cli-cli/pull/27569)
 - fix(cli): prevent spam loop when preferredEditor is invalid by @Niralisj in
-  [#25324](https://github.com/google-gemini/gemini-cli/pull/25324)
+  [#25324](https://github.com/google-a-coder-cli/a-coder-cli-cli/pull/25324)
 - Adding quote by @scidomino in
-  [#27571](https://github.com/google-gemini/gemini-cli/pull/27571)
+  [#27571](https://github.com/google-a-coder-cli/a-coder-cli-cli/pull/27571)
 - Transition to flash GA model when experiment flag is present. by @DavidAPierce
-  in [#27570](https://github.com/google-gemini/gemini-cli/pull/27570)
+  in [#27570](https://github.com/google-a-coder-cli/a-coder-cli-cli/pull/27570)
 - chore(ci): add optimized PR size labeler and batch workflows by @sripasg in
-  [#27616](https://github.com/google-gemini/gemini-cli/pull/27616)
+  [#27616](https://github.com/google-a-coder-cli/a-coder-cli-cli/pull/27616)
 - fix(ci): use pull_request_target trigger to grant write access on fork PRs by
-  @sripasg in [#27637](https://github.com/google-gemini/gemini-cli/pull/27637)
+  @sripasg in [#27637](https://github.com/google-a-coder-cli/a-coder-cli-cli/pull/27637)
 
 **Full Changelog**:
-https://github.com/google-gemini/gemini-cli/compare/v0.45.0-preview.1...v0.46.0-preview.0
+https://github.com/google-a-coder-cli/a-coder-cli-cli/compare/v0.45.0-preview.1...v0.46.0-preview.0

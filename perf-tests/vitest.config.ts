@@ -21,7 +21,7 @@ export default defineConfig({
       },
     },
     env: {
-      GEMINI_TEST_TYPE: 'perf',
+      A_CODER_TEST_TYPE: 'perf',
     },
   },
 });

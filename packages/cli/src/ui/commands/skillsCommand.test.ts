@@ -9,7 +9,7 @@ import { skillsCommand } from './skillsCommand.js';
 import { MessageType, type HistoryItemSkillsList } from '../types.js';
 import { createMockCommandContext } from '../../test-utils/mockCommandContext.js';
 import type { CommandContext } from './types.js';
-import type { Config, SkillDefinition } from '@google/gemini-cli-core';
+import type { Config, SkillDefinition } from '@the-a-tech-corporation/core';
 import {
   SettingScope,
   type LoadedSettings,
@@ -264,7 +264,7 @@ describe('skillsCommand', () => {
           expect(requestConsent).toBeDefined();
           await requestConsent!(
             [{ name: 'test-skill', location: '/path' } as SkillDefinition],
-            '/workspace/.gemini/skills',
+            '/workspace/.a-coder/skills',
           );
           return [{ name: 'test-skill', location: '/path' }];
         },

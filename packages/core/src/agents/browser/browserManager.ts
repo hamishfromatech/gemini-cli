@@ -35,7 +35,7 @@ import { logBrowserAgentConnection } from '../../telemetry/loggers.js';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Default browser profile directory name within ~/.gemini/
+// Default browser profile directory name within ~/.a-coder/
 const BROWSER_PROFILE_DIR = 'cli-browser-profile';
 
 /**
@@ -608,7 +608,7 @@ export class BrowserManager {
 
     // Session mode determines how the browser is managed:
     // - "isolated": Temp profile, cleaned up after session (--isolated)
-    // - "persistent": Persistent profile at ~/.gemini/cli-browser-profile/ (default)
+    // - "persistent": Persistent profile at ~/.a-coder/cli-browser-profile/ (default)
     // - "existing": Connect to already-running Chrome (--autoConnect, requires
     //   remote debugging enabled at chrome://inspect/#remote-debugging)
     if (sessionMode === 'isolated') {
@@ -657,9 +657,9 @@ export class BrowserManager {
     if (browserConfig.customConfig.profilePath) {
       mcpArgs.push('--userDataDir', browserConfig.customConfig.profilePath);
     } else if (sessionMode === 'persistent') {
-      // Default persistent profile lives under ~/.gemini/cli-browser-profile
+      // Default persistent profile lives under ~/.a-coder/cli-browser-profile
       const defaultProfilePath = path.join(
-        Storage.getGlobalGeminiDir(),
+        Storage.getGlobalACoderDir(),
         BROWSER_PROFILE_DIR,
       );
       mcpArgs.push('--userDataDir', defaultProfilePath);

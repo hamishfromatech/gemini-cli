@@ -79,8 +79,8 @@ runs:
       working-directory: '${{ inputs.working-directory }}'
       shell: 'bash'
       run: |
-        git config user.name "gemini-cli-robot"
-        git config user.email "gemini-cli-robot@google.com"
+        git config user.name "a-coder-cli-robot"
+        git config user.email "noreply@example.com"
 
     - name: '🌿 Create and switch to a release branch'
       working-directory: '${{ inputs.working-directory }}'
@@ -256,7 +256,7 @@ runs:
         npm-package: '${{ inputs.cli-package-name }}@${{ inputs.release-version }}'
         expected-version: '${{ inputs.release-version }}'
         working-directory: '${{ inputs.working-directory }}'
-        gemini_api_key: '${{ inputs.gemini_api_key }}'
+        gemini_api_key: '${{ inputs.a-coder_api_key }}'
         github-token: '${{ inputs.github-token }}'
         npm-registry-url: '${{ inputs.npm-registry-url }}'
         npm-registry-scope: '${{ inputs.npm-registry-scope }}'
@@ -286,16 +286,16 @@ runs:
         INPUTS_PREVIOUS_TAG: '${{ inputs.previous-tag }}'
       shell: 'bash'
       run: |
-        rm -f gemini-cli-bundle.zip
-        (cd bundle && chmod +x gemini.js && zip -r ../gemini-cli-bundle.zip .)
+        rm -f a-coder-cli-bundle.zip
+        (cd bundle && chmod +x a-coder.js && zip -r ../a-coder-cli-bundle.zip .)
 
         echo "Testing the generated bundle archive..."
         rm -rf test-bundle
         mkdir -p test-bundle
-        unzip -q gemini-cli-bundle.zip -d test-bundle
+        unzip -q a-coder-cli-bundle.zip -d test-bundle
 
         # Verify it runs and outputs a version
-        BUNDLE_VERSION=$(node test-bundle/gemini.js --version | xargs)
+        BUNDLE_VERSION=$(node test-bundle/a-coder.js --version | xargs)
         echo "Bundle version output: ${BUNDLE_VERSION}"
         if [[ -z "${BUNDLE_VERSION}" ]]; then
           echo "Error: Bundle failed to execute or return version."
@@ -303,7 +303,7 @@ runs:
         fi
         rm -rf test-bundle
 
-        RELEASE_ASSETS=("gemini-cli-bundle.zip")
+        RELEASE_ASSETS=("a-coder-cli-bundle.zip")
 
         # Check for and prepare macOS binaries if they exist
         for arch in arm64 x64; do

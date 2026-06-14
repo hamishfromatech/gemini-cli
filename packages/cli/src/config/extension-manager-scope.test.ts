@@ -10,17 +10,17 @@ import * as path from 'node:path';
 import * as os from 'node:os';
 import { ExtensionManager } from './extension-manager.js';
 import { createTestMergedSettings } from './settings.js';
-import { cleanupTmpDir } from '@google/gemini-cli-test-utils';
+import { cleanupTmpDir } from '@the-a-tech-corporation/test-utils';
 import {
   loadAgentsFromDirectory,
   loadSkillsFromDir,
-} from '@google/gemini-cli-core';
+} from '@the-a-tech-corporation/core';
 
 let currentTempHome = '';
 
-vi.mock('@google/gemini-cli-core', async (importOriginal) => {
+vi.mock('@the-a-tech-corporation/core', async (importOriginal) => {
   const actual =
-    await importOriginal<typeof import('@google/gemini-cli-core')>();
+    await importOriginal<typeof import('@the-a-tech-corporation/core')>();
   return {
     ...actual,
     homedir: () => currentTempHome,
@@ -55,12 +55,12 @@ describe('ExtensionManager Settings Scope', () => {
     tempWorkspace = fs.mkdtempSync(
       path.join(os.tmpdir(), 'gemini-cli-test-workspace-'),
     );
-    extensionsDir = path.join(currentTempHome, '.gemini', 'extensions');
+    extensionsDir = path.join(currentTempHome, '.a-coder', 'extensions');
     extensionDir = path.join(extensionsDir, extensionName);
 
     fs.mkdirSync(extensionDir, { recursive: true });
 
-    // Create gemini-extension.json
+    // Create a-coder-extension.json
     const extensionConfig = {
       name: extensionName,
       version: '1.0.0',
@@ -73,7 +73,7 @@ describe('ExtensionManager Settings Scope', () => {
       ],
     };
     fs.writeFileSync(
-      path.join(extensionDir, 'gemini-extension.json'),
+      path.join(extensionDir, 'a-coder-extension.json'),
       JSON.stringify(extensionConfig),
     );
 

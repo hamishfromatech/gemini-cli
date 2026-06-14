@@ -33,7 +33,7 @@ describe('pathCorrector', () => {
       getFileService: () => new FileDiscoveryService(rootDir),
       getFileFilteringOptions: () => ({
         respectGitIgnore: true,
-        respectGeminiIgnore: true,
+        respectACoderIgnore: true,
       }),
     } as unknown as Config;
   });

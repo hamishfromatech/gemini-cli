@@ -51,14 +51,14 @@ const MAX_CHILD_PROCESS_BUFFER_SIZE = 16 * 1024 * 1024; // 16MB
 /**
  * An environment variable that is set for shell executions. This can be used
  * by downstream executables and scripts to identify that they were executed
- * from within Gemini CLI.
+ * from within A-Coder CLI.
  */
-export const GEMINI_CLI_IDENTIFICATION_ENV_VAR = 'GEMINI_CLI';
+export const A_CODER_CLI_IDENTIFICATION_ENV_VAR = 'A_CODER_CLI';
 
 /**
- * The value of {@link GEMINI_CLI_IDENTIFICATION_ENV_VAR}
+ * The value of {@link A_CODER_CLI_IDENTIFICATION_ENV_VAR}
  */
-export const GEMINI_CLI_IDENTIFICATION_ENV_VAR_VALUE = '1';
+export const A_CODER_CLI_IDENTIFICATION_ENV_VAR_VALUE = '1';
 
 // We want to allow shell outputs that are close to the context window in size.
 // 300,000 lines is roughly equivalent to a large context window, ensuring
@@ -483,8 +483,8 @@ export class ShellExecutionService {
 
     const baseEnv: Record<string, string | undefined> = {
       ...sanitizedEnv,
-      [GEMINI_CLI_IDENTIFICATION_ENV_VAR]:
-        GEMINI_CLI_IDENTIFICATION_ENV_VAR_VALUE,
+      [A_CODER_CLI_IDENTIFICATION_ENV_VAR]:
+        A_CODER_CLI_IDENTIFICATION_ENV_VAR_VALUE,
       TERM: 'xterm-256color',
       PAGER: shellExecutionConfig.pager ?? 'cat',
       GIT_PAGER: shellExecutionConfig.pager ?? 'cat',
@@ -739,7 +739,7 @@ export class ShellExecutionService {
 
         let combinedOutput = state.output;
         if (state.truncated) {
-          const truncationMessage = `\n[GEMINI_CLI_WARNING: Output truncated. The buffer is limited to ${
+          const truncationMessage = `\n[A_CODER_CLI_WARNING: Output truncated. The buffer is limited to ${
             MAX_CHILD_PROCESS_BUFFER_SIZE / (1024 * 1024)
           }MB.]`;
           combinedOutput += truncationMessage;
@@ -1348,7 +1348,7 @@ export class ShellExecutionService {
         onOutputEvent({
           type: 'data',
           chunk:
-            '[GEMINI_CLI_WARNING] PTY execution failed, falling back to child_process. This may be due to sandbox restrictions.\n',
+            '[A_CODER_CLI_WARNING] PTY execution failed, falling back to child_process. This may be due to sandbox restrictions.\n',
         });
         throw e;
       } else {

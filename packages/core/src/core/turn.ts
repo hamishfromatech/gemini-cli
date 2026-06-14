@@ -26,7 +26,7 @@ import {
   UnauthorizedError,
   toFriendlyError,
 } from '../utils/errors.js';
-import { InvalidStreamError, type GeminiChat } from './geminiChat.js';
+import { InvalidACoderStreamError, type ACoderChat } from './geminiChat.js';
 import { parseThought, type ThoughtSummary } from '../utils/thoughtUtils.js';
 import type { ModelConfigKey } from '../services/modelConfigService.js';
 import { getCitations } from '../utils/generateContentResponseUtilities.js';
@@ -52,7 +52,7 @@ export interface ServerTool {
   ): Promise<ToolCallConfirmationDetails | false>;
 }
 
-export enum GeminiEventType {
+export enum ACoderEventType {
   Content = 'content',
   ToolCallRequest = 'tool_call_request',
   ToolCallResponse = 'tool_call_response',
@@ -73,12 +73,12 @@ export enum GeminiEventType {
   AgentExecutionBlocked = 'agent_execution_blocked',
 }
 
-export type ServerGeminiRetryEvent = {
-  type: GeminiEventType.Retry;
+export type ServerACoderRetryEvent = {
+  type: ACoderEventType.Retry;
 };
 
-export type ServerGeminiAgentExecutionStoppedEvent = {
-  type: GeminiEventType.AgentExecutionStopped;
+export type ServerACoderAgentExecutionStoppedEvent = {
+  type: ACoderEventType.AgentExecutionStopped;
   value: {
     reason: string;
     systemMessage?: string;
@@ -86,8 +86,8 @@ export type ServerGeminiAgentExecutionStoppedEvent = {
   };
 };
 
-export type ServerGeminiAgentExecutionBlockedEvent = {
-  type: GeminiEventType.AgentExecutionBlocked;
+export type ServerACoderAgentExecutionBlockedEvent = {
+  type: ACoderEventType.AgentExecutionBlocked;
   value: {
     reason: string;
     systemMessage?: string;
@@ -95,20 +95,20 @@ export type ServerGeminiAgentExecutionBlockedEvent = {
   };
 };
 
-export type ServerGeminiContextWindowWillOverflowEvent = {
-  type: GeminiEventType.ContextWindowWillOverflow;
+export type ServerACoderContextWindowWillOverflowEvent = {
+  type: ACoderEventType.ContextWindowWillOverflow;
   value: {
     estimatedRequestTokenCount: number;
     remainingTokenCount: number;
   };
 };
 
-export type ServerGeminiInvalidStreamEvent = {
-  type: GeminiEventType.InvalidStream;
+export type ServerACoderInvalidStreamEvent = {
+  type: ACoderEventType.InvalidStream;
 };
 
-export type ServerGeminiModelInfoEvent = {
-  type: GeminiEventType.ModelInfo;
+export type ServerACoderModelInfoEvent = {
+  type: ACoderEventType.ModelInfo;
   value: string;
 };
 
@@ -117,7 +117,7 @@ export interface StructuredError {
   status?: number;
 }
 
-export interface GeminiErrorEventValue {
+export interface ACoderErrorEventValue {
   error: unknown;
 }
 
@@ -131,40 +131,40 @@ export interface ServerToolCallConfirmationDetails {
   details: ToolCallConfirmationDetails;
 }
 
-export type ServerGeminiContentEvent = {
-  type: GeminiEventType.Content;
+export type ServerACoderContentEvent = {
+  type: ACoderEventType.Content;
   value: string;
   traceId?: string;
 };
 
-export type ServerGeminiThoughtEvent = {
-  type: GeminiEventType.Thought;
+export type ServerACoderThoughtEvent = {
+  type: ACoderEventType.Thought;
   value: ThoughtSummary;
   traceId?: string;
 };
 
-export type ServerGeminiToolCallRequestEvent = {
-  type: GeminiEventType.ToolCallRequest;
+export type ServerACoderToolCallRequestEvent = {
+  type: ACoderEventType.ToolCallRequest;
   value: ToolCallRequestInfo;
 };
 
-export type ServerGeminiToolCallResponseEvent = {
-  type: GeminiEventType.ToolCallResponse;
+export type ServerACoderToolCallResponseEvent = {
+  type: ACoderEventType.ToolCallResponse;
   value: ToolCallResponseInfo;
 };
 
-export type ServerGeminiToolCallConfirmationEvent = {
-  type: GeminiEventType.ToolCallConfirmation;
+export type ServerACoderToolCallConfirmationEvent = {
+  type: ACoderEventType.ToolCallConfirmation;
   value: ServerToolCallConfirmationDetails;
 };
 
-export type ServerGeminiUserCancelledEvent = {
-  type: GeminiEventType.UserCancelled;
+export type ServerACoderUserCancelledEvent = {
+  type: ACoderEventType.UserCancelled;
 };
 
-export type ServerGeminiErrorEvent = {
-  type: GeminiEventType.Error;
-  value: GeminiErrorEventValue;
+export type ServerACoderErrorEvent = {
+  type: ACoderEventType.Error;
+  value: ACoderErrorEventValue;
 };
 
 export enum CompressionStatus {
@@ -193,49 +193,49 @@ export interface ChatCompressionInfo {
   compressionStatus: CompressionStatus;
 }
 
-export type ServerGeminiChatCompressedEvent = {
-  type: GeminiEventType.ChatCompressed;
+export type ServerACoderChatCompressedEvent = {
+  type: ACoderEventType.ChatCompressed;
   value: ChatCompressionInfo | null;
 };
 
-export type ServerGeminiMaxSessionTurnsEvent = {
-  type: GeminiEventType.MaxSessionTurns;
+export type ServerACoderMaxSessionTurnsEvent = {
+  type: ACoderEventType.MaxSessionTurns;
 };
 
-export type ServerGeminiFinishedEvent = {
-  type: GeminiEventType.Finished;
+export type ServerACoderFinishedEvent = {
+  type: ACoderEventType.Finished;
   value: GeminiFinishedEventValue;
 };
 
-export type ServerGeminiLoopDetectedEvent = {
-  type: GeminiEventType.LoopDetected;
+export type ServerACoderLoopDetectedEvent = {
+  type: ACoderEventType.LoopDetected;
 };
 
-export type ServerGeminiCitationEvent = {
-  type: GeminiEventType.Citation;
+export type ServerACoderCitationEvent = {
+  type: ACoderEventType.Citation;
   value: string;
 };
 
 // The original union type, now composed of the individual types
-export type ServerGeminiStreamEvent =
-  | ServerGeminiChatCompressedEvent
-  | ServerGeminiCitationEvent
-  | ServerGeminiContentEvent
-  | ServerGeminiErrorEvent
-  | ServerGeminiFinishedEvent
-  | ServerGeminiLoopDetectedEvent
-  | ServerGeminiMaxSessionTurnsEvent
-  | ServerGeminiThoughtEvent
-  | ServerGeminiToolCallConfirmationEvent
-  | ServerGeminiToolCallRequestEvent
-  | ServerGeminiToolCallResponseEvent
-  | ServerGeminiUserCancelledEvent
-  | ServerGeminiRetryEvent
-  | ServerGeminiContextWindowWillOverflowEvent
-  | ServerGeminiInvalidStreamEvent
-  | ServerGeminiModelInfoEvent
-  | ServerGeminiAgentExecutionStoppedEvent
-  | ServerGeminiAgentExecutionBlockedEvent;
+export type ServerACoderStreamEvent =
+  | ServerACoderChatCompressedEvent
+  | ServerACoderCitationEvent
+  | ServerACoderContentEvent
+  | ServerACoderErrorEvent
+  | ServerACoderFinishedEvent
+  | ServerACoderLoopDetectedEvent
+  | ServerACoderMaxSessionTurnsEvent
+  | ServerACoderThoughtEvent
+  | ServerACoderToolCallConfirmationEvent
+  | ServerACoderToolCallRequestEvent
+  | ServerACoderToolCallResponseEvent
+  | ServerACoderUserCancelledEvent
+  | ServerACoderRetryEvent
+  | ServerACoderContextWindowWillOverflowEvent
+  | ServerACoderInvalidStreamEvent
+  | ServerACoderModelInfoEvent
+  | ServerACoderAgentExecutionStoppedEvent
+  | ServerACoderAgentExecutionBlockedEvent;
 
 // A turn manages the agentic loop turn within the server context.
 export class Turn {
@@ -249,7 +249,7 @@ export class Turn {
   private hasLoggedRagTrace = false;
 
   constructor(
-    private readonly chat: GeminiChat,
+    private readonly chat: ACoderChat,
     private readonly prompt_id: string,
   ) {}
 
@@ -263,7 +263,7 @@ export class Turn {
       role?: LlmRole;
       apiHistoryOverride?: Content[];
     } = {},
-  ): AsyncGenerator<ServerGeminiStreamEvent> {
+  ): AsyncGenerator<ServerACoderStreamEvent> {
     const { displayContent, role = LlmRole.MAIN, apiHistoryOverride } = options;
     try {
       // Note: This assumes `sendMessageStream` yields events like
@@ -280,19 +280,19 @@ export class Turn {
 
       for await (const streamEvent of responseStream) {
         if (signal?.aborted) {
-          yield { type: GeminiEventType.UserCancelled };
+          yield { type: ACoderEventType.UserCancelled };
           return;
         }
 
         // Handle the new RETRY event
         if (streamEvent.type === 'retry') {
-          yield { type: GeminiEventType.Retry };
+          yield { type: ACoderEventType.Retry };
           continue; // Skip to the next event in the stream
         }
 
         if (streamEvent.type === 'agent_execution_stopped') {
           yield {
-            type: GeminiEventType.AgentExecutionStopped,
+            type: ACoderEventType.AgentExecutionStopped,
             value: { reason: streamEvent.reason },
           };
           return;
@@ -300,7 +300,7 @@ export class Turn {
 
         if (streamEvent.type === 'agent_execution_blocked') {
           yield {
-            type: GeminiEventType.AgentExecutionBlocked,
+            type: ACoderEventType.AgentExecutionBlocked,
             value: { reason: streamEvent.reason },
           };
           continue;
@@ -352,7 +352,7 @@ export class Turn {
           if (part.thought) {
             const thought = parseThought(part.text ?? '');
             yield {
-              type: GeminiEventType.Thought,
+              type: ACoderEventType.Thought,
               value: thought,
               traceId,
             };
@@ -361,7 +361,7 @@ export class Turn {
 
         const text = getResponseText(resp);
         if (text) {
-          yield { type: GeminiEventType.Content, value: text, traceId };
+          yield { type: ACoderEventType.Content, value: text, traceId };
         }
 
         // Handle function calls (requesting tool execution)
@@ -384,7 +384,7 @@ export class Turn {
         if (finishReason) {
           if (this.pendingCitations.size > 0) {
             yield {
-              type: GeminiEventType.Citation,
+              type: ACoderEventType.Citation,
               value: `Citations:\n${[...this.pendingCitations].sort().join('\n')}`,
             };
             this.pendingCitations.clear();
@@ -392,7 +392,7 @@ export class Turn {
 
           this.finishReason = finishReason;
           yield {
-            type: GeminiEventType.Finished,
+            type: ACoderEventType.Finished,
             value: {
               reason: finishReason,
               usageMetadata: resp.usageMetadata,
@@ -402,13 +402,13 @@ export class Turn {
       }
     } catch (e) {
       if (signal.aborted) {
-        yield { type: GeminiEventType.UserCancelled };
+        yield { type: ACoderEventType.UserCancelled };
         // Regular cancellation error, fail gracefully.
         return;
       }
 
-      if (e instanceof InvalidStreamError) {
-        yield { type: GeminiEventType.InvalidStream };
+      if (e instanceof InvalidACoderStreamError) {
+        yield { type: ACoderEventType.InvalidStream };
         return;
       }
 
@@ -440,7 +440,7 @@ export class Turn {
         status,
       };
       await this.chat.maybeIncludeSchemaDepthContext(structuredError);
-      yield { type: GeminiEventType.Error, value: { error: structuredError } };
+      yield { type: ACoderEventType.Error, value: { error: structuredError } };
       return;
     }
   }
@@ -448,7 +448,7 @@ export class Turn {
   private handlePendingFunctionCall(
     fnCall: FunctionCall,
     traceId?: string,
-  ): ServerGeminiStreamEvent | null {
+  ): ServerACoderStreamEvent | null {
     const name = fnCall.name?.trim() || 'generic_tool';
     // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion
     const args = (fnCall.args as Record<string, unknown>) || {};
@@ -499,7 +499,7 @@ export class Turn {
     this.pendingToolCalls.push(toolCallRequest);
 
     // Yield a request for the tool call, not the pending/confirming status
-    return { type: GeminiEventType.ToolCallRequest, value: toolCallRequest };
+    return { type: ACoderEventType.ToolCallRequest, value: toolCallRequest };
   }
 
   getDebugResponses(): GenerateContentResponse[] {

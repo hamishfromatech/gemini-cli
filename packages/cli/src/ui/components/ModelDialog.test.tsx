@@ -11,27 +11,27 @@ import { renderWithProviders } from '../../test-utils/render.js';
 import { waitFor } from '../../test-utils/async.js';
 import { createMockSettings } from '../../test-utils/settings.js';
 import {
-  DEFAULT_GEMINI_MODEL,
-  GEMINI_MODEL_ALIAS_AUTO,
-  DEFAULT_GEMINI_FLASH_MODEL,
-  DEFAULT_GEMINI_FLASH_LITE_MODEL,
-  PREVIEW_GEMINI_MODEL,
-  PREVIEW_GEMINI_3_1_MODEL,
-  PREVIEW_GEMINI_3_1_CUSTOM_TOOLS_MODEL,
-  PREVIEW_GEMINI_FLASH_MODEL,
-  PREVIEW_GEMINI_FLASH_LITE_MODEL,
+  DEFAULT_A_CODER_MODEL,
+  A_CODER_MODEL_ALIAS_AUTO,
+  DEFAULT_A_CODER_FLASH_MODEL,
+  DEFAULT_A_CODER_FLASH_LITE_MODEL,
+  PREVIEW_A_CODER_MODEL,
+  PREVIEW_A_CODER_3_1_MODEL,
+  PREVIEW_A_CODER_3_1_CUSTOM_TOOLS_MODEL,
+  PREVIEW_A_CODER_FLASH_MODEL,
+  PREVIEW_A_CODER_FLASH_LITE_MODEL,
   AuthType,
-} from '@google/gemini-cli-core';
-import type { Config, ModelSlashCommandEvent } from '@google/gemini-cli-core';
+} from '@the-a-tech-corporation/core';
+import type { Config, ModelSlashCommandEvent } from '@the-a-tech-corporation/core';
 
 // Mock dependencies
 const mockGetDisplayString = vi.fn();
 const mockLogModelSlashCommand = vi.fn();
 const mockModelSlashCommandEvent = vi.fn();
 
-vi.mock('@google/gemini-cli-core', async (importOriginal) => {
+vi.mock('@the-a-tech-corporation/core', async (importOriginal) => {
   const actual =
-    await importOriginal<typeof import('@google/gemini-cli-core')>();
+    await importOriginal<typeof import('@the-a-tech-corporation/core')>();
   return {
     ...actual,
     getAutoModelDescription: (
@@ -47,7 +47,7 @@ vi.mock('@google/gemini-cli-core', async (importOriginal) => {
         mockModelSlashCommandEvent(model);
       }
     },
-    PREVIEW_GEMINI_FLASH_LITE_MODEL: 'none',
+    PREVIEW_A_CODER_FLASH_LITE_MODEL: 'none',
   };
 });
 
@@ -66,7 +66,7 @@ describe('<ModelDialog />', () => {
     getModel: () => string;
     getHasAccessToPreviewModel: () => boolean;
     getIdeMode: () => boolean;
-    getGemini31LaunchedSync: () => boolean;
+    getACoder31LaunchedSync: () => boolean;
     getProModelNoAccess: () => Promise<boolean>;
     getProModelNoAccessSync: () => boolean;
     getExperimentalGemma: () => boolean;
@@ -86,7 +86,7 @@ describe('<ModelDialog />', () => {
     getModel: mockGetModel,
     getHasAccessToPreviewModel: mockGetHasAccessToPreviewModel,
     getIdeMode: () => false,
-    getGemini31LaunchedSync: mockGetGemini31LaunchedSync,
+    getACoder31LaunchedSync: mockGetGemini31LaunchedSync,
     getProModelNoAccess: mockGetProModelNoAccess,
     getProModelNoAccessSync: mockGetProModelNoAccessSync,
     getExperimentalGemma: () => false,
@@ -96,7 +96,7 @@ describe('<ModelDialog />', () => {
 
   beforeEach(() => {
     vi.resetAllMocks();
-    mockGetModel.mockReturnValue(GEMINI_MODEL_ALIAS_AUTO);
+    mockGetModel.mockReturnValue(A_CODER_MODEL_ALIAS_AUTO);
     mockGetHasAccessToPreviewModel.mockReturnValue(false);
     mockGetGemini31LaunchedSync.mockReturnValue(false);
     mockGetProModelNoAccess.mockResolvedValue(false);
@@ -151,13 +151,13 @@ describe('<ModelDialog />', () => {
 
     const output = lastFrame();
     expect(output).toContain('Select Model');
-    expect(output).not.toContain(DEFAULT_GEMINI_MODEL);
-    expect(output).not.toContain(PREVIEW_GEMINI_MODEL);
+    expect(output).not.toContain(DEFAULT_A_CODER_MODEL);
+    expect(output).not.toContain(PREVIEW_A_CODER_MODEL);
 
     // Verify order: Flash Preview -> Flash Lite (Preview/Default) -> Flash
-    const flashPreviewIdx = output.indexOf(PREVIEW_GEMINI_FLASH_MODEL);
-    const flashLiteIdx = output.indexOf(DEFAULT_GEMINI_FLASH_LITE_MODEL);
-    const flashIdx = output.indexOf(DEFAULT_GEMINI_FLASH_MODEL);
+    const flashPreviewIdx = output.indexOf(PREVIEW_A_CODER_FLASH_MODEL);
+    const flashLiteIdx = output.indexOf(DEFAULT_A_CODER_FLASH_LITE_MODEL);
+    const flashIdx = output.indexOf(DEFAULT_A_CODER_FLASH_MODEL);
 
     expect(flashPreviewIdx).toBeLessThan(flashLiteIdx);
     expect(flashLiteIdx).toBeLessThan(flashIdx);
@@ -187,9 +187,9 @@ describe('<ModelDialog />', () => {
 
   it('switches to "manual" view when "Manual" is selected and uses getDisplayString for models', async () => {
     mockGetDisplayString.mockImplementation((val: string) => {
-      if (val === DEFAULT_GEMINI_MODEL) return 'Formatted Pro Model';
-      if (val === DEFAULT_GEMINI_FLASH_MODEL) return 'Formatted Flash Model';
-      if (val === DEFAULT_GEMINI_FLASH_LITE_MODEL)
+      if (val === DEFAULT_A_CODER_MODEL) return 'Formatted Pro Model';
+      if (val === DEFAULT_A_CODER_FLASH_MODEL) return 'Formatted Flash Model';
+      if (val === DEFAULT_A_CODER_FLASH_LITE_MODEL)
         return 'Formatted Lite Model';
       return val;
     });
@@ -231,7 +231,7 @@ describe('<ModelDialog />', () => {
 
     await waitFor(() => {
       expect(mockSetModel).toHaveBeenCalledWith(
-        GEMINI_MODEL_ALIAS_AUTO,
+        A_CODER_MODEL_ALIAS_AUTO,
         true, // Session only by default
       );
       expect(mockOnClose).toHaveBeenCalled();
@@ -252,14 +252,14 @@ describe('<ModelDialog />', () => {
     });
     await waitUntilReady();
 
-    // Now in manual view. Default selection is first item (DEFAULT_GEMINI_MODEL)
+    // Now in manual view. Default selection is first item (DEFAULT_A_CODER_MODEL)
     await act(async () => {
       stdin.write('\r');
     });
     await waitUntilReady();
 
     await waitFor(() => {
-      expect(mockSetModel).toHaveBeenCalledWith(DEFAULT_GEMINI_MODEL, true);
+      expect(mockSetModel).toHaveBeenCalledWith(DEFAULT_A_CODER_MODEL, true);
       expect(mockOnClose).toHaveBeenCalled();
     });
     unmount();
@@ -289,7 +289,7 @@ describe('<ModelDialog />', () => {
 
     await waitFor(() => {
       expect(mockSetModel).toHaveBeenCalledWith(
-        GEMINI_MODEL_ALIAS_AUTO,
+        A_CODER_MODEL_ALIAS_AUTO,
         false, // Persist enabled
       );
       expect(mockOnClose).toHaveBeenCalled();
@@ -329,7 +329,7 @@ describe('<ModelDialog />', () => {
     await waitUntilReady();
 
     await waitFor(() => {
-      expect(lastFrame()).toContain(DEFAULT_GEMINI_MODEL);
+      expect(lastFrame()).toContain(DEFAULT_A_CODER_MODEL);
     });
 
     // Press Escape
@@ -349,9 +349,9 @@ describe('<ModelDialog />', () => {
   });
 
   it('shows the preferred manual model in the main view option using getDisplayString', async () => {
-    mockGetModel.mockReturnValue(DEFAULT_GEMINI_MODEL);
+    mockGetModel.mockReturnValue(DEFAULT_A_CODER_MODEL);
     mockGetDisplayString.mockImplementation((val: string) => {
-      if (val === DEFAULT_GEMINI_MODEL) return 'My Custom Model Display';
+      if (val === DEFAULT_A_CODER_MODEL) return 'My Custom Model Display';
       if (val === 'auto') return 'Auto';
       return val;
     });
@@ -388,8 +388,8 @@ describe('<ModelDialog />', () => {
       await waitUntilReady();
 
       const output = lastFrame();
-      expect(output).toContain(PREVIEW_GEMINI_MODEL);
-      expect(output).toContain(PREVIEW_GEMINI_FLASH_MODEL);
+      expect(output).toContain(PREVIEW_A_CODER_MODEL);
+      expect(output).toContain(PREVIEW_A_CODER_FLASH_MODEL);
       unmount();
     });
 
@@ -409,8 +409,8 @@ describe('<ModelDialog />', () => {
       await waitUntilReady();
 
       const output = lastFrame();
-      expect(output).toContain(PREVIEW_GEMINI_3_1_MODEL);
-      expect(output).toContain(PREVIEW_GEMINI_FLASH_MODEL);
+      expect(output).toContain(PREVIEW_A_CODER_3_1_MODEL);
+      expect(output).toContain(PREVIEW_A_CODER_FLASH_MODEL);
       unmount();
     });
 
@@ -439,7 +439,7 @@ describe('<ModelDialog />', () => {
 
       await waitFor(() => {
         expect(mockSetModel).toHaveBeenCalledWith(
-          PREVIEW_GEMINI_3_1_CUSTOM_TOOLS_MODEL,
+          PREVIEW_A_CODER_3_1_CUSTOM_TOOLS_MODEL,
           true,
         );
       });
@@ -465,8 +465,8 @@ describe('<ModelDialog />', () => {
       await waitUntilReady();
 
       const output = lastFrame();
-      expect(output).not.toContain(PREVIEW_GEMINI_FLASH_LITE_MODEL);
-      expect(output).toContain(DEFAULT_GEMINI_FLASH_LITE_MODEL);
+      expect(output).not.toContain(PREVIEW_A_CODER_FLASH_LITE_MODEL);
+      expect(output).toContain(DEFAULT_A_CODER_FLASH_LITE_MODEL);
       unmount();
     });
   });

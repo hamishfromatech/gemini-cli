@@ -1,8 +1,8 @@
-# `gemini gemma` — Automated Local Model Routing Setup
+# `a-coder-cli gemma` — Automated Local Model Routing Setup
 
 Local model routing uses a local Gemma 3 1B model running on your machine to
 classify and route user requests. It routes simple requests (like file reads) to
-Gemini Flash and complex requests (like architecture discussions) to Gemini Pro.
+A-Coder Flash and complex requests (like architecture discussions) to A-Coder Pro.
 
 <!-- prettier-ignore -->
 > [!NOTE]
@@ -19,7 +19,7 @@ models.
 
 ```bash
 # One command does everything: downloads runtime, pulls model, configures settings, starts server
-gemini gemma setup
+a-coder-cli gemma setup
 ```
 
 You'll be prompted to accept the Gemma Terms of Use. The model is ~1 GB.
@@ -31,18 +31,18 @@ every request.
 
 | Command               | What it does                                                   |
 | --------------------- | -------------------------------------------------------------- |
-| `gemini gemma setup`  | Full install (binary + model + settings + server start)        |
-| `gemini gemma status` | Health check — shows what's installed and running              |
-| `gemini gemma start`  | Start the LiteRT server (auto-starts on CLI launch by default) |
-| `gemini gemma stop`   | Stop the LiteRT server                                         |
-| `gemini gemma logs`   | Tail the server logs to see routing requests live              |
+| `a-coder-cli gemma setup`  | Full install (binary + model + settings + server start)        |
+| `a-coder-cli gemma status` | Health check — shows what's installed and running              |
+| `a-coder-cli gemma start`  | Start the LiteRT server (auto-starts on CLI launch by default) |
+| `a-coder-cli gemma stop`   | Stop the LiteRT server                                         |
+| `a-coder-cli gemma logs`   | Tail the server logs to see routing requests live              |
 | `/gemma`              | In-session status check (type it inside the CLI)               |
 
 ## Verifying it works
 
-1. Run `gemini gemma status` — all checks should show green
+1. Run `a-coder-cli gemma status` — all checks should show green
 2. Open two terminals:
-   - Terminal 1: `gemini gemma logs` (watch for incoming requests)
+   - Terminal 1: `a-coder-cli gemma logs` (watch for incoming requests)
    - Terminal 2: use the CLI normally
 3. You should see classification requests appear in the logs as you interact
    with the CLI
@@ -51,10 +51,10 @@ every request.
 ## Setup flags
 
 ```bash
-gemini gemma setup --port 8080      # custom port
-gemini gemma setup --no-start       # don't start server after install
-gemini gemma setup --force           # re-download everything
-gemini gemma setup --skip-model     # binary only, skip the 1GB model download
+a-coder-cli gemma setup --port 8080      # custom port
+a-coder-cli gemma setup --no-start       # don't start server after install
+a-coder-cli gemma setup --force           # re-download everything
+a-coder-cli gemma setup --skip-model     # binary only, skip the 1GB model download
 ```
 
 ## How it works under the hood
@@ -66,7 +66,7 @@ gemini gemma setup --skip-model     # binary only, skip the 1GB model download
 
 ## Disabling
 
-Set `enabled: false` in settings or just run `gemini gemma stop` to turn off the
+Set `enabled: false` in settings or just run `a-coder-cli gemma stop` to turn off the
 server:
 
 ```json
@@ -75,7 +75,7 @@ server:
 
 ## Advanced setup
 
-If you are in an environment where the `gemini gemma setup` command cannot
+If you are in an environment where the `a-coder-cli gemma setup` command cannot
 automatically download binaries (for example, behind a strict corporate
 firewall), you can perform the setup manually.
 

@@ -1,6 +1,6 @@
-# Gemini CLI planning tools
+# A-Coder CLI planning tools
 
-Planning tools let Gemini CLI switch into a safe, read-only "Plan Mode" for
+Planning tools let A-Coder CLI switch into a safe, read-only "Plan Mode" for
 researching and planning complex changes, and to signal the finalization of a
 plan to the user.
 
@@ -42,7 +42,7 @@ chat regarding the proposed strategy BEFORE calling this tool.
 - **Parameters:**
   - `plan_path` (string, required): The path to the finalized Markdown plan
     file. This file MUST be located within the project's temporary plans
-    directory (for example, `~/.gemini/tmp/<project>/plans/`).
+    directory (for example, `~/.a-coder-cli/tmp/<project>/plans/`).
 - **Behavior:**
   - Validates that the `plan_path` is within the allowed directory and that the
     file exists and has content.

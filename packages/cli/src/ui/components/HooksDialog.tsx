@@ -152,7 +152,7 @@ export const HooksDialog: React.FC<HooksDialogProps> = ({
             <Text wrap="wrap">
               Learn more:{' '}
               <Text color={theme.text.link}>
-                https://geminicli.com/docs/hooks
+                https://a-coder-cli.com/docs/hooks
               </Text>
             </Text>
           </Box>

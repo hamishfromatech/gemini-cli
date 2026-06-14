@@ -11,7 +11,7 @@ import { StatusDisplay } from './StatusDisplay.js';
 import { UIStateContext, type UIState } from '../contexts/UIStateContext.js';
 import { ConfigContext } from '../contexts/ConfigContext.js';
 import { SettingsContext } from '../contexts/SettingsContext.js';
-import type { Config } from '@google/gemini-cli-core';
+import type { Config } from '@the-a-tech-corporation/core';
 import type { LoadedSettings } from '../../config/settings.js';
 import { createMockSettings } from '../../test-utils/settings.js';
 import type { TextBuffer } from './shared/text-buffer.js';
@@ -89,7 +89,7 @@ const renderStatusDisplay = async (
 
 describe('StatusDisplay', () => {
   beforeEach(() => {
-    vi.stubEnv('GEMINI_SYSTEM_MD', '');
+    vi.stubEnv('A_CODER_SYSTEM_MD', '');
   });
 
   afterEach(() => {
@@ -112,7 +112,7 @@ describe('StatusDisplay', () => {
   });
 
   it('renders system md indicator if env var is set', async () => {
-    vi.stubEnv('GEMINI_SYSTEM_MD', 'true');
+    vi.stubEnv('A_CODER_SYSTEM_MD', 'true');
     const { lastFrame, unmount } = await renderStatusDisplay();
     expect(lastFrame()).toMatchSnapshot();
     unmount();

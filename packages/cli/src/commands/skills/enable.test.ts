@@ -19,9 +19,9 @@ const { emitConsoleLog, debugLogger } = await vi.hoisted(async () => {
   return createMockDebugLogger({ stripAnsi: true });
 });
 
-vi.mock('@google/gemini-cli-core', async (importOriginal) => {
+vi.mock('@the-a-tech-corporation/core', async (importOriginal) => {
   const actual =
-    await importOriginal<typeof import('@google/gemini-cli-core')>();
+    await importOriginal<typeof import('@the-a-tech-corporation/core')>();
   return {
     ...actual,
     debugLogger,

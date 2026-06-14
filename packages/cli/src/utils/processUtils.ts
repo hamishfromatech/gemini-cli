@@ -82,7 +82,7 @@ export function getSpawnConfig(
   const isBinary = isSeaEnvironment();
   const newEnv: NodeJS.ProcessEnv = {
     ...process.env,
-    GEMINI_CLI_NO_RELAUNCH: 'true',
+    A_CODER_CLI_NO_RELAUNCH: 'true',
   };
 
   const finalSpawnArgs: string[] = [];

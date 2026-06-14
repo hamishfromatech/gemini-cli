@@ -11,43 +11,43 @@ import {
   validateModelPolicyChain,
 } from './policyCatalog.js';
 import {
-  DEFAULT_GEMINI_MODEL,
-  PREVIEW_GEMINI_3_1_CUSTOM_TOOLS_MODEL,
-  PREVIEW_GEMINI_3_1_MODEL,
-  PREVIEW_GEMINI_MODEL,
+  DEFAULT_A_CODER_MODEL,
+  PREVIEW_A_CODER_3_1_CUSTOM_TOOLS_MODEL,
+  PREVIEW_A_CODER_3_1_MODEL,
+  PREVIEW_A_CODER_MODEL,
 } from '../config/models.js';
 
 describe('policyCatalog', () => {
   it('returns preview chain when preview enabled', () => {
     const chain = getModelPolicyChain({ previewEnabled: true });
-    expect(chain[0]?.model).toBe(PREVIEW_GEMINI_MODEL);
+    expect(chain[0]?.model).toBe(PREVIEW_A_CODER_MODEL);
     expect(chain).toHaveLength(2);
   });
 
-  it('returns Gemini 3.1 chain when useGemini31 is true', () => {
+  it('returns Gemini 3.1 chain when useACoder31 is true', () => {
     const chain = getModelPolicyChain({
       previewEnabled: true,
-      useGemini31: true,
+      useACoder31: true,
     });
-    expect(chain[0]?.model).toBe(PREVIEW_GEMINI_3_1_MODEL);
+    expect(chain[0]?.model).toBe(PREVIEW_A_CODER_3_1_MODEL);
     expect(chain).toHaveLength(2);
     expect(chain[1]?.model).toBe('gemini-3-flash-preview');
   });
 
-  it('returns Gemini 3.1 Custom Tools chain when useGemini31 and useCustomToolModel are true', () => {
+  it('returns Gemini 3.1 Custom Tools chain when useACoder31 and useCustomToolModel are true', () => {
     const chain = getModelPolicyChain({
       previewEnabled: true,
-      useGemini31: true,
+      useACoder31: true,
       useCustomToolModel: true,
     });
-    expect(chain[0]?.model).toBe(PREVIEW_GEMINI_3_1_CUSTOM_TOOLS_MODEL);
+    expect(chain[0]?.model).toBe(PREVIEW_A_CODER_3_1_CUSTOM_TOOLS_MODEL);
     expect(chain).toHaveLength(2);
     expect(chain[1]?.model).toBe('gemini-3-flash-preview');
   });
 
   it('returns default chain when preview disabled', () => {
     const chain = getModelPolicyChain({ previewEnabled: false });
-    expect(chain[0]?.model).toBe(DEFAULT_GEMINI_MODEL);
+    expect(chain[0]?.model).toBe(DEFAULT_A_CODER_MODEL);
     expect(chain).toHaveLength(2);
   });
 
@@ -56,7 +56,7 @@ describe('policyCatalog', () => {
       previewEnabled: true,
       isAutoSelection: true,
     });
-    expect(previewPolicy.model).toBe(PREVIEW_GEMINI_MODEL);
+    expect(previewPolicy.model).toBe(PREVIEW_A_CODER_MODEL);
     expect(previewPolicy.stateTransitions.transient).toBe('sticky_retry');
   });
 

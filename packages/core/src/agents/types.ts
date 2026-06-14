@@ -16,7 +16,7 @@ import type { AnySchema } from 'ajv';
 import type { AgentCard } from '@a2a-js/sdk';
 import type { A2AAuthConfig } from './auth-provider/types.js';
 import type { MCPServerConfig } from '../config/config.js';
-import type { GeminiChat } from '../core/geminiChat.js';
+import type { ACoderChat } from '../core/geminiChat.js';
 
 /**
  * Describes the possible termination modes for an agent.
@@ -273,13 +273,13 @@ export interface LocalAgentDefinition<
 
   /**
    * Optional hook invoked before each model call. Receives the active
-   * {@link GeminiChat} instance and may modify chat history (e.g., to
+   * {@link ACoderChat} instance and may modify chat history (e.g., to
    * supersede stale tool outputs and reclaim context-window tokens).
    *
    * Runs immediately after chat compression in the agent loop.
    */
   onBeforeTurn?: (
-    chat: GeminiChat,
+    chat: ACoderChat,
     signal?: AbortSignal,
   ) => Promise<void> | void;
 }

@@ -13,7 +13,7 @@ import {
   type ExtensionInstallMetadata,
   type GeminiCLIExtension,
   coreEvents,
-} from '@google/gemini-cli-core';
+} from '@the-a-tech-corporation/core';
 import { ExtensionManager } from '../extension-manager.js';
 import { createTestMergedSettings } from '../settings.js';
 import { isWorkspaceTrusted } from '../trustedFolders.js';
@@ -42,9 +42,9 @@ vi.mock('node:fs', async (importOriginal) => {
   };
 });
 
-vi.mock('@google/gemini-cli-core', async (importOriginal) => {
+vi.mock('@the-a-tech-corporation/core', async (importOriginal) => {
   const actual =
-    await importOriginal<typeof import('@google/gemini-cli-core')>();
+    await importOriginal<typeof import('@the-a-tech-corporation/core')>();
   return {
     ...actual,
     KeychainTokenStorage: vi.fn(),
@@ -253,7 +253,7 @@ describe('extensionUpdates', () => {
       expect(coreEvents.emitFeedback).toHaveBeenCalledWith(
         'warning',
         expect.stringContaining(
-          'Please run "gemini extensions config test-ext [setting-name]"',
+          'Please run "a-coder-cli extensions config test-ext [setting-name]"',
         ),
       );
     });

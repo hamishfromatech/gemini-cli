@@ -21,11 +21,11 @@ import {
   SILENT_ACTIONS,
 } from './policyCatalog.js';
 import {
-  DEFAULT_GEMINI_FLASH_LITE_MODEL,
-  DEFAULT_GEMINI_MODEL,
-  PREVIEW_GEMINI_MODEL_AUTO,
+  DEFAULT_A_CODER_FLASH_LITE_MODEL,
+  DEFAULT_A_CODER_MODEL,
+  PREVIEW_A_CODER_MODEL_AUTO,
   isAutoModel,
-  isGemini3Model,
+  isACoder3Model,
   resolveModel,
 } from '../config/models.js';
 import { normalizeModelId } from '../utils/modelUtils.js';
@@ -51,22 +51,22 @@ export function resolvePolicyChain(
   const configuredModel = normalizeModelId(config.getModel());
 
   let chain: ModelPolicyChain | undefined;
-  const useGemini31 = config.getGemini31LaunchedSync?.() ?? false;
+  const useACoder31 = config.getACoder31LaunchedSync?.() ?? false;
   const useCustomToolModel = config.getUseCustomToolModelSync?.() ?? false;
   const hasAccessToPreview = config.getHasAccessToPreviewModel?.() ?? false;
-  const useGemini3_5Flash = config.hasGemini35FlashGAAccess?.() ?? false;
+  const useACoder3_5Flash = config.hasACoder35FlashGAAccess?.() ?? false;
 
   // Capture the original family intent before any normalization or early downgrade.
-  const isOriginallyGemini3 = isGemini3Model(modelFromConfig, config);
+  const isOriginallyGemini3 = isACoder3Model(modelFromConfig, config);
 
   const resolvedModel = normalizeModelId(
     resolveModel(
       modelFromConfig,
-      useGemini31,
+      useACoder31,
       useCustomToolModel,
       hasAccessToPreview,
       config,
-      useGemini3_5Flash,
+      useACoder3_5Flash,
     ),
   );
   const isAutoPreferred = normalizedPreferredModel
@@ -82,12 +82,12 @@ export function resolvePolicyChain(
   // --- DYNAMIC PATH ---
   if (config.getExperimentalDynamicModelConfiguration?.() === true) {
     const context = {
-      useGemini3_1: useGemini31,
+      useGemini3_1: useACoder31,
       useCustomTools: useCustomToolModel,
-      useGemini3_5Flash,
+      useACoder3_5Flash,
     };
 
-    if (resolvedModel === DEFAULT_GEMINI_FLASH_LITE_MODEL) {
+    if (resolvedModel === DEFAULT_A_CODER_FLASH_LITE_MODEL) {
       chain = config.modelConfigService.resolveChain('lite', context);
     } else if (isOriginallyGemini3 || isAutoPreferred || isAutoConfigured) {
       // 1. Try to find a chain specifically for the current configured alias
@@ -105,9 +105,9 @@ export function resolvePolicyChain(
         const isAutoSelection = isAutoPreferred || isAutoConfigured;
         const previewEnabled =
           hasAccessToPreview &&
-          (isGemini3Model(resolvedModel, config) ||
-            normalizedPreferredModel === PREVIEW_GEMINI_MODEL_AUTO ||
-            configuredModel === PREVIEW_GEMINI_MODEL_AUTO);
+          (isACoder3Model(resolvedModel, config) ||
+            normalizedPreferredModel === PREVIEW_A_CODER_MODEL_AUTO ||
+            configuredModel === PREVIEW_A_CODER_MODEL_AUTO);
         const autoPrefix = isAutoSelection ? 'auto-' : '';
         const chainKey = previewEnabled ? 'preview' : 'default';
         chain = config.modelConfigService.resolveChain(
@@ -124,22 +124,22 @@ export function resolvePolicyChain(
   } else {
     // --- LEGACY PATH ---
 
-    if (resolvedModel === DEFAULT_GEMINI_FLASH_LITE_MODEL) {
+    if (resolvedModel === DEFAULT_A_CODER_FLASH_LITE_MODEL) {
       chain = getFlashLitePolicyChain();
     } else if (isOriginallyGemini3 || isAutoPreferred || isAutoConfigured) {
       const isAutoSelection = isAutoPreferred || isAutoConfigured;
       if (hasAccessToPreview) {
         const previewEnabled =
           isOriginallyGemini3 ||
-          normalizedPreferredModel === PREVIEW_GEMINI_MODEL_AUTO ||
-          configuredModel === PREVIEW_GEMINI_MODEL_AUTO;
+          normalizedPreferredModel === PREVIEW_A_CODER_MODEL_AUTO ||
+          configuredModel === PREVIEW_A_CODER_MODEL_AUTO;
         chain = getModelPolicyChain({
           previewEnabled,
           isAutoSelection,
           userTier: config.getUserTier(),
-          useGemini31,
+          useACoder31,
           useCustomToolModel,
-          useGemini3_5Flash,
+          useACoder3_5Flash,
         });
       } else {
         // User requested Gemini 3 but has no access. Proactively downgrade
@@ -148,9 +148,9 @@ export function resolvePolicyChain(
           previewEnabled: false,
           isAutoSelection,
           userTier: config.getUserTier(),
-          useGemini31,
+          useACoder31,
           useCustomToolModel,
-          useGemini3_5Flash,
+          useACoder3_5Flash,
         });
       }
     } else {
@@ -271,7 +271,7 @@ export function selectModelForAvailability(
   if (selection.selectedModel) return selection;
 
   const backupModel =
-    chain.find((p) => p.isLastResort)?.model ?? DEFAULT_GEMINI_MODEL;
+    chain.find((p) => p.isLastResort)?.model ?? DEFAULT_A_CODER_MODEL;
 
   return { selectedModel: backupModel, skipped: [] };
 }

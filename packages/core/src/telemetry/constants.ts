@@ -1,15 +1,15 @@
 /**
  * @license
- * Copyright 2025 Google LLC
+ * Copyright 2026 Google LLC
  * SPDX-License-Identifier: Apache-2.0
+ *
+ * @license
  */
 
-export const SERVICE_NAME = 'gemini-cli';
+export const SERVICE_NAME = 'a-coder-cli';
 export const SERVICE_DESCRIPTION =
-  'Gemini CLI is an open-source AI agent that brings the power of Gemini directly into your terminal. It is designed to be a terminal-first, extensible, and powerful tool for developers, engineers, SREs, and beyond.';
+  'A-Coder CLI is an open-source AI agent that brings local and OpenAI-compatible models directly into your terminal.';
 
-// Gemini CLI specific semantic conventions
-// https://opentelemetry.io/docs/specs/semconv/registry/attributes/gen-ai/#genai-attributes
 export const GEN_AI_OPERATION_NAME = 'gen_ai.operation.name';
 export const GEN_AI_AGENT_NAME = 'gen_ai.agent.name';
 export const GEN_AI_AGENT_DESCRIPTION = 'gen_ai.agent.description';
@@ -27,8 +27,7 @@ export const GEN_AI_SYSTEM_INSTRUCTIONS = 'gen_ai.system_instructions';
 export const GEN_AI_TOOL_DEFINITIONS = 'gen_ai.tool.definitions';
 export const GEN_AI_CONVERSATION_ID = 'gen_ai.conversation.id';
 
-// Gemini CLI specific operations
-export enum GeminiCliOperation {
+export enum ACoderCliOperation {
   ToolCall = 'tool_call',
   LLMCall = 'llm_call',
   UserPrompt = 'user_prompt',
@@ -36,3 +35,6 @@ export enum GeminiCliOperation {
   AgentCall = 'agent_call',
   ScheduleToolCalls = 'schedule_tool_calls',
 }
+
+/** @deprecated Use ACoderCliOperation. */
+export const GeminiCliOperation = ACoderCliOperation;

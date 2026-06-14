@@ -23,7 +23,7 @@ import {
   type CustomTheme,
   type SandboxConfig,
   type VertexAiRoutingConfig,
-} from '@google/gemini-cli-core';
+} from '@the-a-tech-corporation/core';
 import type { SessionRetentionSettings } from './settings.js';
 import { DEFAULT_MIN_RETENTION } from '../utils/sessionCleanup.js';
 
@@ -573,7 +573,7 @@ const SETTINGS_SCHEMA = {
         requiresRestart: false,
         default: false,
         description:
-          'Show Gemini CLI model thoughts in the terminal window title during the working phase',
+          'Show A-Coder CLI model thoughts in the terminal window title during the working phase',
         showInDialog: true,
       },
       dynamicWindowTitle: {
@@ -583,7 +583,7 @@ const SETTINGS_SCHEMA = {
         requiresRestart: false,
         default: true,
         description:
-          'Update the terminal window title with current status icons (Ready: ◇, Action Required: ✋, Working: ✦)',
+          'Update the terminal window title with current status icons (Ready: ◇, Action Required: ✋, Working: ▝▜▄)',
         showInDialog: true,
       },
       showHomeDirectoryWarning: {
@@ -593,7 +593,7 @@ const SETTINGS_SCHEMA = {
         requiresRestart: true,
         default: true,
         description:
-          'Show a warning when running Gemini CLI in the home directory.',
+          'Show a warning when running A-Coder CLI in the home directory.',
         showInDialog: true,
       },
       showCompatibilityWarnings: {
@@ -659,7 +659,7 @@ const SETTINGS_SCHEMA = {
         requiresRestart: false,
         default: false,
         description:
-          'Hide the context summary (GEMINI.md, MCP servers) above the input.',
+          'Hide the context summary (A_CODER.md, MCP servers) above the input.',
         showInDialog: true,
       },
       footer: {
@@ -1019,21 +1019,21 @@ const SETTINGS_SCHEMA = {
       },
       vertexAi: {
         type: 'object',
-        label: 'Vertex AI',
+        label: 'Custom Provider (Legacy Vertex)',
         category: 'Advanced',
         requiresRestart: true,
         default: undefined as VertexAiRoutingConfig | undefined,
-        description: 'Vertex AI request routing settings.',
+        description: 'Custom provider request routing settings (legacy Vertex AI shape).',
         showInDialog: false,
         properties: {
           requestType: {
             type: 'enum',
-            label: 'Vertex AI Request Type',
+            label: 'Custom Provider Request Type',
             category: 'Advanced',
             requiresRestart: true,
             default: undefined as VertexAiRoutingConfig['requestType'],
             description:
-              'Sets the X-Vertex-AI-LLM-Request-Type header for Vertex AI requests.',
+              'Sets the X-Provider-Request-Type header for custom provider requests.',
             showInDialog: false,
             options: [
               { value: 'dedicated', label: 'Dedicated' },
@@ -1042,12 +1042,12 @@ const SETTINGS_SCHEMA = {
           },
           sharedRequestType: {
             type: 'enum',
-            label: 'Vertex AI Shared Request Type',
+            label: 'Custom Provider Shared Request Type',
             category: 'Advanced',
             requiresRestart: true,
             default: undefined as VertexAiRoutingConfig['sharedRequestType'],
             description:
-              'Sets the X-Vertex-AI-LLM-Shared-Request-Type header for Vertex AI requests.',
+              'Sets the X-Provider-Shared-Request-Type header for custom provider requests.',
             showInDialog: false,
             options: [
               { value: 'priority', label: 'Priority' },
@@ -1055,6 +1055,28 @@ const SETTINGS_SCHEMA = {
             ],
           },
         },
+      },
+    },
+  },
+
+  provider: {
+    type: 'object',
+    label: 'Provider',
+    category: 'Model',
+    requiresRestart: false,
+    default: {},
+    description: 'OpenAI-compatible provider configuration.',
+    showInDialog: false,
+    properties: {
+      baseUrl: {
+        type: 'string',
+        label: 'Base URL',
+        category: 'Model',
+        requiresRestart: false,
+        default: undefined as string | undefined,
+        description:
+          'The base URL of an OpenAI-compatible API endpoint (e.g. http://localhost:11434 or https://api.openai.com). The path /v1 will be appended automatically.',
+        showInDialog: false,
       },
     },
   },
@@ -1074,7 +1096,7 @@ const SETTINGS_SCHEMA = {
         category: 'Model',
         requiresRestart: false,
         default: undefined as string | undefined,
-        description: 'The Gemini model to use for conversations.',
+        description: 'The model to use for conversations.',
         showInDialog: true,
       },
       maxSessionTurns: {
@@ -1438,7 +1460,7 @@ const SETTINGS_SCHEMA = {
         requiresRestart: true,
         default: ['.git'] as string[],
         description:
-          'File or directory names that mark the boundary for GEMINI.md discovery. ' +
+          'File or directory names that mark the boundary for A_CODER.md discovery. ' +
           'The upward traversal stops at the first directory containing any of these markers. ' +
           'An empty array disables parent traversal.',
         showInDialog: false,
@@ -1465,7 +1487,7 @@ const SETTINGS_SCHEMA = {
         requiresRestart: false,
         default: false,
         description: oneLine`
-          Controls how /memory reload loads GEMINI.md files.
+          Controls how /memory reload loads A_CODER.md files.
           When true, include directories are scanned; when false, only the current directory is used.
         `,
         showInDialog: true,
@@ -1488,13 +1510,13 @@ const SETTINGS_SCHEMA = {
             description: 'Respect .gitignore files when searching.',
             showInDialog: true,
           },
-          respectGeminiIgnore: {
+          respectACoderIgnore: {
             type: 'boolean',
-            label: 'Respect .geminiignore',
+            label: 'Respect .a-coder-ignore',
             category: 'Context',
             requiresRestart: true,
             default: true,
-            description: 'Respect .geminiignore files when searching.',
+            description: 'Respect .a-coder-ignore files when searching.',
             showInDialog: true,
           },
           enableFileWatcher: {
@@ -1535,7 +1557,7 @@ const SETTINGS_SCHEMA = {
             requiresRestart: true,
             default: [] as string[],
             description:
-              'Additional ignore file paths to respect. These files take precedence over .geminiignore and .gitignore. Files earlier in the array take precedence over files later in the array, e.g. the first file takes precedence over the second one.',
+              'Additional ignore file paths to respect. These files take precedence over .a-coder-ignore and .gitignore. Files earlier in the array take precedence over files later in the array, e.g. the first file takes precedence over the second one.',
             showInDialog: true,
             items: { type: 'string' },
             mergeStrategy: MergeStrategy.UNION,
@@ -2094,7 +2116,7 @@ const SETTINGS_SCHEMA = {
         category: 'Experimental',
         requiresRestart: true,
         default: true,
-        description: 'Enable access to Gemma 4 models via Gemini API.',
+        description: 'Enable access to Gemma 4 models via the configured API.',
         showInDialog: true,
       },
       voiceMode: {
@@ -2134,15 +2156,13 @@ const SETTINGS_SCHEMA = {
             label: 'Voice Transcription Backend',
             category: 'Experimental',
             requiresRestart: false,
-            default: 'gemini-live',
+            default: 'whisper',
             description: oneLine`
-              The backend to use for voice transcription. Note: When using the
-              Gemini Live backend, voice recordings are sent to Google Cloud for
-              transcription.
+              The backend to use for voice transcription.
             `,
             showInDialog: true,
             options: [
-              { value: 'gemini-live', label: 'Gemini Live API (Cloud)' },
+              { value: 'openai-whisper', label: 'OpenAI Whisper API' },
               { value: 'whisper', label: 'Whisper (Local)' },
             ],
           },
@@ -2273,7 +2293,7 @@ const SETTINGS_SCHEMA = {
         label: 'Extension Registry URI',
         category: 'Experimental',
         requiresRestart: true,
-        default: 'https://geminicli.com/extensions.json',
+        default: 'https://a-coder-cli.com/extensions.json',
         description:
           'The URI (web URL or local file path) of the extension registry.',
         showInDialog: false,
@@ -2363,7 +2383,7 @@ const SETTINGS_SCHEMA = {
             requiresRestart: true,
             default: false,
             description:
-              'Enable the Gemma Model Router (experimental). Requires a local endpoint serving Gemma via the Gemini API using LiteRT-LM shim.',
+              'Enable the Gemma Model Router (experimental). Requires a local endpoint serving Gemma via a compatible API.',
             showInDialog: true,
           },
           autoStartServer: {
@@ -2373,7 +2393,7 @@ const SETTINGS_SCHEMA = {
             requiresRestart: true,
             default: false,
             description:
-              'Automatically start the LiteRT-LM server when Gemini CLI starts and the Gemma router is enabled.',
+              'Automatically start the LiteRT-LM server when A-Coder CLI starts and the Gemma router is enabled.',
             showInDialog: true,
           },
           binaryPath: {
@@ -2383,7 +2403,7 @@ const SETTINGS_SCHEMA = {
             requiresRestart: true,
             default: '',
             description:
-              'Custom path to the LiteRT-LM binary. Leave empty to use the default location (~/.gemini/bin/litert/).',
+              'Custom path to the LiteRT-LM binary. Leave empty to use the default location (~/.a-coder/bin/litert/).',
             showInDialog: false,
           },
           classifier: {
@@ -3111,7 +3131,7 @@ export const SETTINGS_SCHEMA_DEFINITIONS: Record<
       extension: {
         type: 'object',
         description:
-          'Metadata describing the Gemini CLI extension that owns this MCP server.',
+          'Metadata describing the A-Coder CLI extension that owns this MCP server.',
         additionalProperties: { type: ['string', 'boolean', 'number'] },
       },
       oauth: {
@@ -3204,7 +3224,7 @@ export const SETTINGS_SCHEMA_DEFINITIONS: Record<
   },
   TelemetrySettings: {
     type: 'object',
-    description: 'Telemetry configuration for Gemini CLI.',
+    description: 'Telemetry configuration for A-Coder CLI.',
     additionalProperties: false,
     properties: {
       enabled: {
@@ -3308,7 +3328,7 @@ export const SETTINGS_SCHEMA_DEFINITIONS: Record<
   CustomTheme: {
     type: 'object',
     description:
-      'Custom theme definition used for styling Gemini CLI output. Colors are provided as hex strings or named ANSI colors.',
+      'Custom theme definition used for styling A-Coder CLI output. Colors are provided as hex strings or named ANSI colors.',
     additionalProperties: false,
     properties: {
       type: {
@@ -3523,8 +3543,8 @@ export const SETTINGS_SCHEMA_DEFINITIONS: Record<
             condition: {
               type: 'object',
               properties: {
-                useGemini3_1: { type: 'boolean' },
-                useGemini3_1FlashLite: { type: 'boolean' },
+                useACoder3_1: { type: 'boolean' },
+                useACoder3_1FlashLite: { type: 'boolean' },
                 useCustomTools: { type: 'boolean' },
                 hasAccessToPreview: { type: 'boolean' },
                 requestedModels: {

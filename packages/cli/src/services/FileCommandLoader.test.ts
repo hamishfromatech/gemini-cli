@@ -7,11 +7,11 @@
 import * as glob from 'glob';
 import * as path from 'node:path';
 import {
-  GEMINI_DIR,
+  A_CODER_DIR,
   Storage,
   type Config,
   homedir,
-} from '@google/gemini-cli-core';
+} from '@the-a-tech-corporation/core';
 import mock from 'mock-fs';
 import { FileCommandLoader } from './FileCommandLoader.js';
 import { assert, vi } from 'vitest';
@@ -62,9 +62,9 @@ vi.mock('./prompt-processors/argumentProcessor.js', async (importOriginal) => {
       .mockImplementation(() => new original.DefaultArgumentProcessor()),
   };
 });
-vi.mock('@google/gemini-cli-core', async (importOriginal) => {
+vi.mock('@the-a-tech-corporation/core', async (importOriginal) => {
   const original =
-    await importOriginal<typeof import('@google/gemini-cli-core')>();
+    await importOriginal<typeof import('@the-a-tech-corporation/core')>();
   return {
     ...original,
     Storage: original.Storage,
@@ -569,7 +569,7 @@ describe('FileCommandLoader', () => {
       ).getProjectCommandsDir();
       const extensionDir = path.join(
         process.cwd(),
-        GEMINI_DIR,
+        A_CODER_DIR,
         'extensions',
         'test-ext',
       );
@@ -582,7 +582,7 @@ describe('FileCommandLoader', () => {
           'project.toml': 'prompt = "Project command"',
         },
         [extensionDir]: {
-          'gemini-extension.json': JSON.stringify({
+          'a-coder-extension.json': JSON.stringify({
             name: 'test-ext',
             version: '1.0.0',
           }),
@@ -624,14 +624,14 @@ describe('FileCommandLoader', () => {
       ).getProjectCommandsDir();
       const extensionDir = path.join(
         process.cwd(),
-        GEMINI_DIR,
+        A_CODER_DIR,
         'extensions',
         'test-ext',
       );
 
       mock({
         [extensionDir]: {
-          'gemini-extension.json': JSON.stringify({
+          'a-coder-extension.json': JSON.stringify({
             name: 'test-ext',
             version: '1.0.0',
           }),
@@ -722,20 +722,20 @@ describe('FileCommandLoader', () => {
     it('only loads commands from active extensions', async () => {
       const extensionDir1 = path.join(
         process.cwd(),
-        GEMINI_DIR,
+        A_CODER_DIR,
         'extensions',
         'active-ext',
       );
       const extensionDir2 = path.join(
         process.cwd(),
-        GEMINI_DIR,
+        A_CODER_DIR,
         'extensions',
         'inactive-ext',
       );
 
       mock({
         [extensionDir1]: {
-          'gemini-extension.json': JSON.stringify({
+          'a-coder-extension.json': JSON.stringify({
             name: 'active-ext',
             version: '1.0.0',
           }),
@@ -744,7 +744,7 @@ describe('FileCommandLoader', () => {
           },
         },
         [extensionDir2]: {
-          'gemini-extension.json': JSON.stringify({
+          'a-coder-extension.json': JSON.stringify({
             name: 'inactive-ext',
             version: '1.0.0',
           }),
@@ -785,14 +785,14 @@ describe('FileCommandLoader', () => {
     it('handles missing extension commands directory gracefully', async () => {
       const extensionDir = path.join(
         process.cwd(),
-        GEMINI_DIR,
+        A_CODER_DIR,
         'extensions',
         'no-commands',
       );
 
       mock({
         [extensionDir]: {
-          'gemini-extension.json': JSON.stringify({
+          'a-coder-extension.json': JSON.stringify({
             name: 'no-commands',
             version: '1.0.0',
           }),
@@ -821,14 +821,14 @@ describe('FileCommandLoader', () => {
     it('handles nested command structure in extensions', async () => {
       const extensionDir = path.join(
         process.cwd(),
-        GEMINI_DIR,
+        A_CODER_DIR,
         'extensions',
         'a',
       );
 
       mock({
         [extensionDir]: {
-          'gemini-extension.json': JSON.stringify({
+          'a-coder-extension.json': JSON.stringify({
             name: 'a',
             version: '1.0.0',
           }),
@@ -887,14 +887,14 @@ describe('FileCommandLoader', () => {
       const extensionId = 'my-test-ext-id-123';
       const extensionDir = path.join(
         process.cwd(),
-        GEMINI_DIR,
+        A_CODER_DIR,
         'extensions',
         'my-test-ext',
       );
 
       mock({
         [extensionDir]: {
-          'gemini-extension.json': JSON.stringify({
+          'a-coder-extension.json': JSON.stringify({
             name: 'my-test-ext',
             id: extensionId,
             version: '1.0.0',

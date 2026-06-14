@@ -266,8 +266,8 @@ export function normalizeInboxMemoryPatchPath(
  * - `private` is rooted at the project memory directory, then narrowed to
  *   direct memory markdown documents by `isAllowedPrivateMemoryDocumentPath`.
  * - `global` is intentionally a single-file allowlist: the only writeable
- *   global file is the personal `~/.gemini/GEMINI.md`. Other files under
- *   `~/.gemini/` (settings, credentials, oauth, keybindings, etc.) are off-limits.
+ *   global file is the personal `~/.a-coder/A_CODER.md`. Other files under
+ *   `~/.a-coder/` (settings, credentials, oauth, keybindings, etc.) are off-limits.
  */
 export function getAllowedMemoryPatchRoots(
   config: Config,

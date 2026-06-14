@@ -197,7 +197,7 @@ export interface SandboxManager {
  */
 export const GOVERNANCE_FILES = [
   { path: '.gitignore', isDirectory: false },
-  { path: '.geminiignore', isDirectory: false },
+  { path: '.a-coder-ignore', isDirectory: false },
   { path: '.git', isDirectory: true },
 ] as const;
 

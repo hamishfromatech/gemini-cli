@@ -29,7 +29,7 @@ import {
   createMockSettings,
   type MockSettingsFile,
 } from '../../test-utils/settings.js';
-import { makeFakeConfig } from '@google/gemini-cli-core';
+import { makeFakeConfig } from '@the-a-tech-corporation/core';
 import { act } from 'react';
 import { TEST_ONLY } from '../../utils/settingsUtils.js';
 import {
@@ -655,7 +655,7 @@ describe('SettingsDialog', () => {
 
     it('should not offer a read-only home-directory workspace as an editable target', async () => {
       const settings = createMockSettings({
-        user: createSettingsFile('/mock/home/.gemini/settings.json'),
+        user: createSettingsFile('/mock/home/.a-coder/settings.json'),
         system: createSettingsFile('/mock/system/settings.json', {}, true),
         systemDefaults: createSettingsFile(
           '/mock/system-defaults/settings.json',
@@ -698,7 +698,7 @@ describe('SettingsDialog', () => {
       const settings = createMockSettings({
         user: createSettingsFile('', {}, true),
         system: createSettingsFile('', {}, true),
-        workspace: createSettingsFile('/mock/workspace/.gemini/settings.json'),
+        workspace: createSettingsFile('/mock/workspace/.a-coder/settings.json'),
       });
       const setValueSpy = vi.spyOn(settings, 'setValue');
       const onSelect = vi.fn();
@@ -731,7 +731,7 @@ describe('SettingsDialog', () => {
         user: createSettingsFile('', {}, true),
         system: createSettingsFile('', {}, true),
         workspace: createSettingsFile(
-          '/mock/workspace/.gemini/settings.json',
+          '/mock/workspace/.a-coder/settings.json',
           {},
           true,
         ),
@@ -1752,7 +1752,7 @@ describe('SettingsDialog', () => {
             loadMemoryFromIncludeDirectories: true,
             fileFiltering: {
               respectGitIgnore: true,
-              respectGeminiIgnore: true,
+              respectACoderIgnore: true,
               enableRecursiveFileSearch: true,
               enableFuzzySearch: true,
             },
@@ -1837,7 +1837,7 @@ describe('SettingsDialog', () => {
           context: {
             fileFiltering: {
               respectGitIgnore: false,
-              respectGeminiIgnore: true,
+              respectACoderIgnore: true,
               enableRecursiveFileSearch: false,
               enableFuzzySearch: false,
             },
@@ -1897,7 +1897,7 @@ describe('SettingsDialog', () => {
             loadMemoryFromIncludeDirectories: false,
             fileFiltering: {
               respectGitIgnore: false,
-              respectGeminiIgnore: false,
+              respectACoderIgnore: false,
               enableRecursiveFileSearch: false,
               enableFuzzySearch: true,
             },

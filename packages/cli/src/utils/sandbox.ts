@@ -18,14 +18,14 @@ import os from 'node:os';
 import { fileURLToPath } from 'node:url';
 import { quote, parse } from 'shell-quote';
 import { promisify } from 'node:util';
-import type { Config, SandboxConfig } from '@google/gemini-cli-core';
+import type { Config, SandboxConfig } from '@the-a-tech-corporation/core';
 import {
   coreEvents,
   debugLogger,
   FatalSandboxError,
-  GEMINI_DIR,
+  A_CODER_DIR,
   homedir,
-} from '@google/gemini-cli-core';
+} from '@the-a-tech-corporation/core';
 import { ConsolePatcher } from '../ui/utils/ConsolePatcher.js';
 import { randomBytes } from 'node:crypto';
 import {
@@ -70,14 +70,14 @@ export async function start_sandbox(
       let profileFile = fileURLToPath(
         new URL(`sandbox-macos-${profile}.sb`, import.meta.url),
       );
-      // if profile name is not recognized, look in user-level ~/.gemini first,
-      // then fall back to project-level .gemini. path.basename() strips any
+      // if profile name is not recognized, look in user-level ~/.a-coder first,
+      // then fall back to project-level .a-coder. path.basename() strips any
       // directory separators to prevent path traversal via SEATBELT_PROFILE.
       if (!BUILTIN_SEATBELT_PROFILES.includes(profile)) {
         const safeProfile = path.basename(profile);
         const fileName = `sandbox-macos-${safeProfile}.sb`;
-        const userProfileFile = path.join(homedir(), GEMINI_DIR, fileName);
-        const projectProfileFile = path.join(GEMINI_DIR, fileName);
+        const userProfileFile = path.join(homedir(), A_CODER_DIR, fileName);
+        const projectProfileFile = path.join(A_CODER_DIR, fileName);
         profileFile = fs.existsSync(userProfileFile)
           ? userProfileFile
           : projectProfileFile;
@@ -163,8 +163,8 @@ export async function start_sandbox(
           ...finalArgv.map((arg) => quote([arg])),
         ].join(' '),
       );
-      // start and set up proxy if GEMINI_SANDBOX_PROXY_COMMAND is set
-      const proxyCommand = process.env['GEMINI_SANDBOX_PROXY_COMMAND'];
+      // start and set up proxy if A_CODER_SANDBOX_PROXY_COMMAND is set
+      const proxyCommand = process.env['A_CODER_SANDBOX_PROXY_COMMAND'];
       let proxyProcess: ChildProcess | undefined = undefined;
       let sandboxProcess: ChildProcess | undefined = undefined;
       const sandboxEnv = { ...process.env };
@@ -252,7 +252,7 @@ export async function start_sandbox(
     const gcPath = process.argv[1] ? fs.realpathSync(process.argv[1]) : '';
 
     const projectSandboxDockerfile = path.join(
-      GEMINI_DIR,
+      A_CODER_DIR,
       'sandbox.Dockerfile',
     );
     const isCustomProjectSandbox = fs.existsSync(projectSandboxDockerfile);
@@ -279,7 +279,7 @@ export async function start_sandbox(
         // if project folder has sandbox.Dockerfile under project settings folder, use that
         let buildArgs = '';
         const projectSandboxDockerfile = path.join(
-          GEMINI_DIR,
+          A_CODER_DIR,
           'sandbox.Dockerfile',
         );
         if (isCustomProjectSandbox) {
@@ -292,7 +292,7 @@ export async function start_sandbox(
             stdio: 'inherit',
             env: {
               ...process.env,
-              GEMINI_SANDBOX: command, // in case sandbox is enabled via flags (see config.ts under cli package)
+              A_CODER_SANDBOX: command, // in case sandbox is enabled via flags (see config.ts under cli package)
             },
           },
         );
@@ -347,12 +347,12 @@ export async function start_sandbox(
     // note user/home changes inside sandbox and we mount at BOTH paths for consistency
     const userHomeDirOnHost = homedir();
     const userSettingsDirInSandbox = getContainerPath(
-      `/home/node/${GEMINI_DIR}`,
+      `/home/node/${A_CODER_DIR}`,
     );
     if (!fs.existsSync(userHomeDirOnHost)) {
       fs.mkdirSync(userHomeDirOnHost, { recursive: true });
     }
-    const userSettingsDirOnHost = path.join(userHomeDirOnHost, GEMINI_DIR);
+    const userSettingsDirOnHost = path.join(userHomeDirOnHost, A_CODER_DIR);
     if (!fs.existsSync(userSettingsDirOnHost)) {
       fs.mkdirSync(userSettingsDirOnHost, { recursive: true });
     }
@@ -451,8 +451,8 @@ export async function start_sandbox(
 
     // copy proxy environment variables, replacing localhost with SANDBOX_PROXY_NAME
     // copy as both upper-case and lower-case as is required by some utilities
-    // GEMINI_SANDBOX_PROXY_COMMAND implies HTTPS_PROXY unless HTTP_PROXY is set
-    const proxyCommand = process.env['GEMINI_SANDBOX_PROXY_COMMAND'];
+    // A_CODER_SANDBOX_PROXY_COMMAND implies HTTPS_PROXY unless HTTP_PROXY is set
+    const proxyCommand = process.env['A_CODER_SANDBOX_PROXY_COMMAND'];
 
     if (proxyCommand) {
       let proxy =
@@ -501,7 +501,7 @@ export async function start_sandbox(
     // CLI starts cannot race on the same sequential name.
     const imageName = parseImageName(image);
     const isIntegrationTest =
-      process.env['GEMINI_CLI_INTEGRATION_TEST'] === 'true';
+      process.env['A_CODER_CLI_INTEGRATION_TEST'] === 'true';
     const containerNamePrefix = isIntegrationTest
       ? 'gemini-cli-integration-test'
       : imageName;
@@ -511,27 +511,27 @@ export async function start_sandbox(
     debugLogger.log(`ContainerName: ${containerName}`);
     args.push('--name', containerName, '--hostname', containerName);
 
-    // copy GEMINI_CLI_TEST_VAR for integration tests
-    if (process.env['GEMINI_CLI_TEST_VAR']) {
+    // copy A_CODER_CLI_TEST_VAR for integration tests
+    if (process.env['A_CODER_CLI_TEST_VAR']) {
       args.push(
         '--env',
-        `GEMINI_CLI_TEST_VAR=${process.env['GEMINI_CLI_TEST_VAR']}`,
+        `A_CODER_CLI_TEST_VAR=${process.env['A_CODER_CLI_TEST_VAR']}`,
       );
     }
 
-    // copy GEMINI_API_KEY(s)
-    if (process.env['GEMINI_API_KEY']) {
-      args.push('--env', `GEMINI_API_KEY=${process.env['GEMINI_API_KEY']}`);
+    // copy OPENAI_API_KEY(s)
+    if (process.env['OPENAI_API_KEY']) {
+      args.push('--env', `OPENAI_API_KEY=${process.env['OPENAI_API_KEY']}`);
     }
     if (process.env['GOOGLE_API_KEY']) {
       args.push('--env', `GOOGLE_API_KEY=${process.env['GOOGLE_API_KEY']}`);
     }
 
-    // copy GOOGLE_GEMINI_BASE_URL and GOOGLE_VERTEX_BASE_URL
-    if (process.env['GOOGLE_GEMINI_BASE_URL']) {
+    // copy A_CODER_BASE_URL and GOOGLE_VERTEX_BASE_URL
+    if (process.env['A_CODER_BASE_URL']) {
       args.push(
         '--env',
-        `GOOGLE_GEMINI_BASE_URL=${process.env['GOOGLE_GEMINI_BASE_URL']}`,
+        `A_CODER_BASE_URL=${process.env['A_CODER_BASE_URL']}`,
       );
     }
     if (process.env['GOOGLE_VERTEX_BASE_URL']) {
@@ -573,9 +573,9 @@ export async function start_sandbox(
       );
     }
 
-    // copy GEMINI_MODEL
-    if (process.env['GEMINI_MODEL']) {
-      args.push('--env', `GEMINI_MODEL=${process.env['GEMINI_MODEL']}`);
+    // copy A_CODER_MODEL
+    if (process.env['A_CODER_MODEL']) {
+      args.push('--env', `A_CODER_MODEL=${process.env['A_CODER_MODEL']}`);
     }
 
     // copy TERM and COLORTERM to try to maintain terminal setup
@@ -588,8 +588,8 @@ export async function start_sandbox(
 
     // Pass through IDE mode environment variables
     for (const envVar of [
-      'GEMINI_CLI_IDE_SERVER_PORT',
-      'GEMINI_CLI_IDE_WORKSPACE_PATH',
+      'A_CODER_CLI_IDE_SERVER_PORT',
+      'A_CODER_CLI_IDE_WORKSPACE_PATH',
       'TERM_PROGRAM',
     ]) {
       if (process.env[envVar]) {
@@ -606,7 +606,7 @@ export async function start_sandbox(
         ?.toLowerCase()
         .startsWith(workdir.toLowerCase())
     ) {
-      const sandboxVenvPath = path.resolve(GEMINI_DIR, 'sandbox.venv');
+      const sandboxVenvPath = path.resolve(A_CODER_DIR, 'sandbox.venv');
       if (!fs.existsSync(sandboxVenvPath)) {
         fs.mkdirSync(sandboxVenvPath, { recursive: true });
       }
@@ -662,7 +662,7 @@ export async function start_sandbox(
     let userFlag = '';
     const finalEntrypoint = entrypoint(workdir, cliArgs);
 
-    if (process.env['GEMINI_CLI_INTEGRATION_TEST'] === 'true') {
+    if (process.env['A_CODER_CLI_INTEGRATION_TEST'] === 'true') {
       args.push('--user', 'root');
       userFlag = '--user root';
     } else if (await shouldUseCurrentUserInSandbox()) {
@@ -721,7 +721,7 @@ export async function start_sandbox(
     // push container entrypoint (including args)
     args.push(...finalEntrypoint);
 
-    // start and set up proxy if GEMINI_SANDBOX_PROXY_COMMAND is set
+    // start and set up proxy if A_CODER_SANDBOX_PROXY_COMMAND is set
     let proxyProcess: ChildProcess | undefined = undefined;
     let sandboxProcess: ChildProcess | undefined = undefined;
 
@@ -984,20 +984,20 @@ async function start_lxc_sandbox(
     // Build the environment variable arguments for `lxc exec`.
     const envArgs: string[] = [];
     const envVarsToForward: Record<string, string | undefined> = {
-      GEMINI_API_KEY: process.env['GEMINI_API_KEY'],
+      OPENAI_API_KEY: process.env['OPENAI_API_KEY'],
       GOOGLE_API_KEY: process.env['GOOGLE_API_KEY'],
-      GOOGLE_GEMINI_BASE_URL: process.env['GOOGLE_GEMINI_BASE_URL'],
+      A_CODER_BASE_URL: process.env['A_CODER_BASE_URL'],
       GOOGLE_VERTEX_BASE_URL: process.env['GOOGLE_VERTEX_BASE_URL'],
       GOOGLE_GENAI_USE_VERTEXAI: process.env['GOOGLE_GENAI_USE_VERTEXAI'],
       GOOGLE_GENAI_USE_GCA: process.env['GOOGLE_GENAI_USE_GCA'],
       GOOGLE_CLOUD_PROJECT: process.env['GOOGLE_CLOUD_PROJECT'],
       GOOGLE_CLOUD_LOCATION: process.env['GOOGLE_CLOUD_LOCATION'],
-      GEMINI_MODEL: process.env['GEMINI_MODEL'],
+      A_CODER_MODEL: process.env['A_CODER_MODEL'],
       TERM: process.env['TERM'],
       COLORTERM: process.env['COLORTERM'],
-      GEMINI_CLI_IDE_SERVER_PORT: process.env['GEMINI_CLI_IDE_SERVER_PORT'],
-      GEMINI_CLI_IDE_WORKSPACE_PATH:
-        process.env['GEMINI_CLI_IDE_WORKSPACE_PATH'],
+      A_CODER_CLI_IDE_SERVER_PORT: process.env['A_CODER_CLI_IDE_SERVER_PORT'],
+      A_CODER_CLI_IDE_WORKSPACE_PATH:
+        process.env['A_CODER_CLI_IDE_WORKSPACE_PATH'],
       TERM_PROGRAM: process.env['TERM_PROGRAM'],
     };
     for (const [key, value] of Object.entries(envVarsToForward)) {

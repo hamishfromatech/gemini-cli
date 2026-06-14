@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { debugLogger } from '@google/gemini-cli-core';
+import { debugLogger } from '@the-a-tech-corporation/core';
 import { execSync } from 'node:child_process';
 import { ProxyAgent } from 'undici';
 
@@ -59,7 +59,7 @@ export const getLatestGitHubRelease = async (
   try {
     const controller = new AbortController();
 
-    const endpoint = `https://api.github.com/repos/google-github-actions/run-gemini-cli/releases/latest`;
+    const endpoint = `https://api.github.com/repos/the-a-tech-corporation/run-a-coder-cli/releases/latest`;
 
     const response = await fetch(endpoint, {
       method: 'GET',

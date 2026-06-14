@@ -7,7 +7,7 @@
 import type { CommandModule } from 'yargs';
 import fs from 'node:fs';
 import { spawn, type ChildProcess } from 'node:child_process';
-import { debugLogger } from '@google/gemini-cli-core';
+import { debugLogger } from '@the-a-tech-corporation/core';
 import { exitCli } from '../utils.js';
 import { getLogFilePath } from './constants.js';
 
@@ -144,7 +144,7 @@ export const logsCommand: CommandModule<object, LogsArgs> = {
     } catch {
       debugLogger.log(`No log file found at ${logPath}`);
       debugLogger.log(
-        'Is the LiteRT server running? Start it with: gemini gemma start',
+        'Is the LiteRT server running? Start it with: a-coder-cli gemma start',
       );
       await exitCli(1);
       return;

@@ -2,7 +2,7 @@
 
 /**
  * @license
- * Copyright 2026 Google LLC
+ * Copyright 2026 The A-Tech Corporation
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -17,15 +17,15 @@
  *
  * The script will:
  *   1. Initialize Storage for the current working directory.
- *   2. Compute <projectMemoryDir> = ~/.gemini/tmp/<projectId>/memory/.
+ *   2. Compute <projectMemoryDir> = ~/.a-coder/tmp/<projectId>/memory/.
  *   3. Seed `MEMORY.md` and TWO canonical inbox patches:
  *        - .inbox/private/extraction.patch  (multi-hunk: update MEMORY.md
  *          + create verify-workflow.md + add MEMORY.md pointer to it)
- *        - .inbox/global/extraction.patch   (creates ~/.gemini/GEMINI.md)
+ *        - .inbox/global/extraction.patch   (creates ~/.a-coder/A_CODER.md)
  *   4. Print a verification checklist + the launch command.
  *
  * To clean up later, delete `<projectMemoryDir>/.inbox/` and the seeded
- * MEMORY.md / GEMINI.md files.
+ * MEMORY.md / A_CODER.md files.
  */
 
 import * as fs from 'node:fs/promises';
@@ -56,7 +56,7 @@ const memoryDir = storage.getProjectMemoryTempDir();
 const inboxPrivate = path.join(memoryDir, '.inbox', 'private');
 const inboxGlobal = path.join(memoryDir, '.inbox', 'global');
 const homeDir = os.homedir();
-const globalGeminiMd = path.join(homeDir, '.gemini', 'GEMINI.md');
+const globalGeminiMd = path.join(homeDir, '.a-coder', 'A_CODER.md');
 
 console.log(`\n🔧 Seeding inbox for cwd: ${cwd}`);
 console.log(`   memoryDir = ${memoryDir}\n`);
@@ -104,7 +104,7 @@ await seed(
     `+# Verify Workflow`,
     `+`,
     `+- Run \`npm run typecheck\` after editing any *.ts file.`,
-    `+- Run \`npm run build --workspace @google/gemini-cli-core\` before testing CLI changes.`,
+    `+- Run \`npm run build --workspace @the-a-tech-corporation/core\` before testing CLI changes.`,
     `+- Inbox patches are guarded by /memory inbox.`,
     ``,
   ].join('\n'),
@@ -112,7 +112,7 @@ await seed(
 );
 
 // --- 3. Canonical GLOBAL extraction.patch ---
-//     Creates ~/.gemini/GEMINI.md. Backs up any existing one first.
+//     Creates ~/.a-coder/A_CODER.md. Backs up any existing one first.
 let existingGlobalGemini = null;
 try {
   existingGlobalGemini = await fs.readFile(globalGeminiMd, 'utf-8');
@@ -139,7 +139,7 @@ await seed(
     `+- Prefer concise architecture summaries.`,
     ``,
   ].join('\n'),
-  'canonical GLOBAL extraction.patch (creates ~/.gemini/GEMINI.md)',
+  'canonical GLOBAL extraction.patch (creates ~/.a-coder/A_CODER.md)',
 );
 
 // --- Summary ---
@@ -155,13 +155,13 @@ console.log('━━━━━━━━━━━━━━━━━━━━━━�
 console.log(`
 1. Enable autoMemory in your settings (the inbox command requires it):
 
-     ~/.gemini/settings.json should contain:
+     ~/.a-coder/settings.json should contain:
      {
        "experimental": { "autoMemory": true }
      }
 
    Or run this to set it:
-     node -e "const fs=require('fs'),p=require('os').homedir()+'/.gemini/settings.json';let s={};try{s=JSON.parse(fs.readFileSync(p,'utf-8'))}catch{}s.experimental=s.experimental||{};s.experimental.autoMemory=true;fs.mkdirSync(require('path').dirname(p),{recursive:true});fs.writeFileSync(p,JSON.stringify(s,null,2))"
+     node -e "const fs=require('fs'),p=require('os').homedir()+'/.a-coder/settings.json';let s={};try{s=JSON.parse(fs.readFileSync(p,'utf-8'))}catch{}s.experimental=s.experimental||{};s.experimental.autoMemory=true;fs.mkdirSync(require('path').dirname(p),{recursive:true});fs.writeFileSync(p,JSON.stringify(s,null,2))"
 
 2. Launch the just-built CLI from THIS REPO ONLY. Do NOT use any globally
    installed "gemini" binary — it will be a stale build that doesn't know
@@ -169,7 +169,7 @@ console.log(`
 
      npm run start
 
-   (or, equivalently: node ${path.relative(cwd, REPO_ROOT)}/bundle/gemini.js)
+   (or, equivalently: node ${path.relative(cwd, REPO_ROOT)}/bundle/a-coder.js)
 
    Sanity check before launching:
      node ${path.relative(cwd, path.join(REPO_ROOT, 'scripts/check-inbox.js'))}
@@ -206,7 +206,7 @@ console.log(`
    │                  │          │ MEMORY.md updated; verify-workflow.md │
    │                  │          │ created.                              │
    │ Global memory    │ Apply    │ "Applied all 1 global memory patch."  │
-   │                  │          │ ~/.gemini/GEMINI.md created.          │
+   │                  │          │ ~/.a-coder/A_CODER.md created.          │
    └──────────────────┴──────────┴───────────────────────────────────────┘
 
 7. Verify final state on disk:

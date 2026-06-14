@@ -2,7 +2,7 @@
 
 /**
  * @license
- * Copyright 2025 Google LLC
+ * Copyright 2026 The A-Tech Corporation
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -39,9 +39,9 @@ function getArgs() {
     })
     .option('cli-package-name', {
       description:
-        'fully qualified package name with scope (e.g @google/gemini-cli)',
+        'fully qualified package name with scope (e.g @the-a-tech-corporation/a-coder-cli)',
       string: true,
-      default: '@google/gemini-cli',
+      default: '@the-a-tech-corporation/a-coder-cli',
     })
     .option('preview_version_override', {
       description: 'Override the calculated preview version.',

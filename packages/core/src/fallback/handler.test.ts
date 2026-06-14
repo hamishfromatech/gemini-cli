@@ -20,12 +20,12 @@ import type { ModelAvailabilityService } from '../availability/modelAvailability
 import { createAvailabilityServiceMock } from '../availability/testUtils.js';
 import { AuthType } from '../core/contentGenerator.js';
 import {
-  DEFAULT_GEMINI_FLASH_MODEL,
-  DEFAULT_GEMINI_MODEL,
-  DEFAULT_GEMINI_MODEL_AUTO,
-  PREVIEW_GEMINI_FLASH_MODEL,
-  PREVIEW_GEMINI_MODEL,
-  PREVIEW_GEMINI_MODEL_AUTO,
+  DEFAULT_A_CODER_FLASH_MODEL,
+  DEFAULT_A_CODER_MODEL,
+  DEFAULT_A_CODER_MODEL_AUTO,
+  PREVIEW_A_CODER_FLASH_MODEL,
+  PREVIEW_A_CODER_MODEL,
+  PREVIEW_A_CODER_MODEL_AUTO,
 } from '../config/models.js';
 import type { FallbackModelHandler } from './types.js';
 import { openBrowserSecurely } from '../utils/secure-browser-launcher.js';
@@ -56,8 +56,8 @@ vi.mock('../utils/debugLogger.js', () => ({
   },
 }));
 
-const MOCK_PRO_MODEL = DEFAULT_GEMINI_MODEL;
-const FALLBACK_MODEL = DEFAULT_GEMINI_FLASH_MODEL;
+const MOCK_PRO_MODEL = DEFAULT_A_CODER_MODEL;
+const FALLBACK_MODEL = DEFAULT_A_CODER_FLASH_MODEL;
 const AUTH_OAUTH = AuthType.LOGIN_WITH_GOOGLE;
 
 const createMockConfig = (overrides: Partial<Config> = {}): Config =>
@@ -114,7 +114,7 @@ describe('handleFallback', () => {
     beforeEach(() => {
       vi.clearAllMocks();
       availability = createAvailabilityServiceMock({
-        selectedModel: DEFAULT_GEMINI_FLASH_MODEL,
+        selectedModel: DEFAULT_A_CODER_FLASH_MODEL,
         skipped: [],
       });
       policyHandler = vi.fn().mockResolvedValue('retry_once');
@@ -132,19 +132,19 @@ describe('handleFallback', () => {
     it('uses availability selection with correct candidates when enabled', async () => {
       // Direct mock manipulation since it's already a vi.fn()
       vi.mocked(policyConfig.getModel).mockReturnValue(
-        DEFAULT_GEMINI_MODEL_AUTO,
+        DEFAULT_A_CODER_MODEL_AUTO,
       );
 
-      await handleFallback(policyConfig, DEFAULT_GEMINI_MODEL, AUTH_OAUTH);
+      await handleFallback(policyConfig, DEFAULT_A_CODER_MODEL, AUTH_OAUTH);
 
       expect(availability.selectFirstAvailable).toHaveBeenCalledWith([
-        DEFAULT_GEMINI_FLASH_MODEL,
+        DEFAULT_A_CODER_FLASH_MODEL,
       ]);
     });
 
     it('falls back to last resort when availability returns null', async () => {
       vi.mocked(policyConfig.getModel).mockReturnValue(
-        DEFAULT_GEMINI_MODEL_AUTO,
+        DEFAULT_A_CODER_MODEL_AUTO,
       );
       availability.selectFirstAvailable = vi
         .fn()
@@ -155,14 +155,14 @@ describe('handleFallback', () => {
 
       expect(policyHandler).toHaveBeenCalledWith(
         MOCK_PRO_MODEL,
-        DEFAULT_GEMINI_FLASH_MODEL,
+        DEFAULT_A_CODER_FLASH_MODEL,
         undefined,
       );
     });
 
     it('executes silent policy action without invoking UI handler', async () => {
       const proPolicy = createDefaultPolicy(MOCK_PRO_MODEL);
-      const flashPolicy = createDefaultPolicy(DEFAULT_GEMINI_FLASH_MODEL);
+      const flashPolicy = createDefaultPolicy(DEFAULT_A_CODER_FLASH_MODEL);
       flashPolicy.actions = {
         ...flashPolicy.actions,
         terminal: 'silent',
@@ -177,7 +177,7 @@ describe('handleFallback', () => {
 
       try {
         availability.selectFirstAvailable = vi.fn().mockReturnValue({
-          selectedModel: DEFAULT_GEMINI_FLASH_MODEL,
+          selectedModel: DEFAULT_A_CODER_FLASH_MODEL,
           skipped: [],
         });
 
@@ -190,7 +190,7 @@ describe('handleFallback', () => {
         expect(result).toBe(true);
         expect(policyConfig.getFallbackModelHandler).not.toHaveBeenCalled();
         expect(policyConfig.activateFallbackMode).toHaveBeenCalledWith(
-          DEFAULT_GEMINI_FLASH_MODEL,
+          DEFAULT_A_CODER_FLASH_MODEL,
           undefined,
         );
       } finally {
@@ -201,7 +201,7 @@ describe('handleFallback', () => {
     it('does not wrap around to upgrade candidates if the current model was selected at the end (e.g. by router)', async () => {
       // Last-resort failure (Flash) in [Preview, Pro, Flash] checks Preview then Pro (all upstream).
       vi.mocked(policyConfig.getModel).mockReturnValue(
-        DEFAULT_GEMINI_MODEL_AUTO,
+        DEFAULT_A_CODER_MODEL_AUTO,
       );
 
       availability.selectFirstAvailable = vi.fn().mockReturnValue({
@@ -215,41 +215,41 @@ describe('handleFallback', () => {
 
       await handleFallback(
         policyConfig,
-        DEFAULT_GEMINI_FLASH_MODEL,
+        DEFAULT_A_CODER_FLASH_MODEL,
         AUTH_OAUTH,
       );
 
       expect(availability.selectFirstAvailable).not.toHaveBeenCalled();
       expect(policyHandler).toHaveBeenCalledWith(
-        DEFAULT_GEMINI_FLASH_MODEL,
-        DEFAULT_GEMINI_FLASH_MODEL,
+        DEFAULT_A_CODER_FLASH_MODEL,
+        DEFAULT_A_CODER_FLASH_MODEL,
         undefined,
       );
     });
 
     it('successfully follows expected availability response for Preview Chain', async () => {
       availability.selectFirstAvailable = vi.fn().mockReturnValue({
-        selectedModel: PREVIEW_GEMINI_FLASH_MODEL,
+        selectedModel: PREVIEW_A_CODER_FLASH_MODEL,
         skipped: [],
       });
       policyHandler.mockResolvedValue('retry_once');
       vi.mocked(policyConfig.getActiveModel).mockReturnValue(
-        PREVIEW_GEMINI_MODEL,
+        PREVIEW_A_CODER_MODEL,
       );
       vi.mocked(policyConfig.getModel).mockReturnValue(
-        PREVIEW_GEMINI_MODEL_AUTO,
+        PREVIEW_A_CODER_MODEL_AUTO,
       );
       vi.mocked(policyConfig.getHasAccessToPreviewModel).mockReturnValue(true);
 
       const result = await handleFallback(
         policyConfig,
-        PREVIEW_GEMINI_MODEL,
+        PREVIEW_A_CODER_MODEL,
         AUTH_OAUTH,
       );
 
       expect(result).toBe(true);
       expect(availability.selectFirstAvailable).toHaveBeenCalledWith([
-        PREVIEW_GEMINI_FLASH_MODEL,
+        PREVIEW_A_CODER_FLASH_MODEL,
       ]);
     });
 
@@ -265,7 +265,7 @@ describe('handleFallback', () => {
 
       expect(result).toBe(false);
       expect(openBrowserSecurely).toHaveBeenCalledWith(
-        'https://goo.gle/set-up-gemini-code-assist',
+        'https://the-a-tech-corporation.com/a-coder-cli/upgrade',
       );
       expect(policyConfig.activateFallbackMode).not.toHaveBeenCalled();
     });
@@ -300,7 +300,7 @@ describe('handleFallback', () => {
       );
       policyHandler.mockResolvedValue('retry_always');
       vi.mocked(policyConfig.getModel).mockReturnValue(
-        DEFAULT_GEMINI_MODEL_AUTO,
+        DEFAULT_A_CODER_MODEL_AUTO,
       );
 
       await handleFallback(
@@ -312,7 +312,7 @@ describe('handleFallback', () => {
 
       expect(policyHandler).toHaveBeenCalledWith(
         MOCK_PRO_MODEL,
-        DEFAULT_GEMINI_FLASH_MODEL,
+        DEFAULT_A_CODER_FLASH_MODEL,
         terminalError,
       );
     });
@@ -330,7 +330,7 @@ describe('handleFallback', () => {
       );
       policyHandler.mockResolvedValue('retry_once');
       vi.mocked(policyConfig.getModel).mockReturnValue(
-        DEFAULT_GEMINI_MODEL_AUTO,
+        DEFAULT_A_CODER_MODEL_AUTO,
       );
 
       await handleFallback(
@@ -342,7 +342,7 @@ describe('handleFallback', () => {
 
       expect(policyHandler).toHaveBeenCalledWith(
         MOCK_PRO_MODEL,
-        DEFAULT_GEMINI_FLASH_MODEL,
+        DEFAULT_A_CODER_FLASH_MODEL,
         retryableError,
       );
     });
@@ -353,14 +353,14 @@ describe('handleFallback', () => {
         .fn()
         .mockReturnValue({ selectedModel: null, skipped: [] });
       vi.mocked(policyConfig.getModel).mockReturnValue(
-        DEFAULT_GEMINI_MODEL_AUTO,
+        DEFAULT_A_CODER_MODEL_AUTO,
       );
       // Mock activeModel to be unavailable so the utility bypass heuristic is skipped
       vi.mocked(availability.snapshot).mockReturnValue({ available: false });
 
       const result = await handleFallback(
         policyConfig,
-        DEFAULT_GEMINI_FLASH_MODEL,
+        DEFAULT_A_CODER_FLASH_MODEL,
         AUTH_OAUTH,
       );
 
@@ -368,8 +368,8 @@ describe('handleFallback', () => {
 
       expect(result).not.toBeNull();
       expect(policyHandler).toHaveBeenCalledWith(
-        DEFAULT_GEMINI_FLASH_MODEL,
-        DEFAULT_GEMINI_FLASH_MODEL,
+        DEFAULT_A_CODER_FLASH_MODEL,
+        DEFAULT_A_CODER_FLASH_MODEL,
         undefined,
       );
     });
@@ -377,7 +377,7 @@ describe('handleFallback', () => {
     it('calls activateFallbackMode when handler returns "retry_always"', async () => {
       policyHandler.mockResolvedValue('retry_always');
       vi.mocked(policyConfig.getModel).mockReturnValue(
-        DEFAULT_GEMINI_MODEL_AUTO,
+        DEFAULT_A_CODER_MODEL_AUTO,
       );
 
       const result = await handleFallback(

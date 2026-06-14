@@ -9,7 +9,7 @@ import {
   CompressionMessage,
   type CompressionDisplayProps,
 } from './CompressionMessage.js';
-import { CompressionStatus } from '@google/gemini-cli-core';
+import { CompressionStatus } from '@the-a-tech-corporation/core';
 import { type CompressionProps } from '../../types.js';
 import { describe, it, expect } from 'vitest';
 
@@ -52,7 +52,7 @@ describe('<CompressionMessage />', () => {
       );
       const output = lastFrame();
 
-      expect(output).toContain('✦');
+      expect(output).toContain('▝▜▄');
       expect(output).toContain(
         'Chat history compressed from 100 to 50 tokens.',
       );
@@ -76,7 +76,7 @@ describe('<CompressionMessage />', () => {
         );
         const output = lastFrame();
 
-        expect(output).toContain('✦');
+        expect(output).toContain('▝▜▄');
         expect(output).toContain(
           `compressed from ${original} to ${newTokens} tokens`,
         );
@@ -101,7 +101,7 @@ describe('<CompressionMessage />', () => {
       );
       const output = lastFrame();
 
-      expect(output).toContain('✦');
+      expect(output).toContain('▝▜▄');
       expect(output).toContain(
         'Compression was not beneficial for this history size.',
       );
@@ -229,7 +229,7 @@ describe('<CompressionMessage />', () => {
       );
       const output = lastFrame();
 
-      expect(output).toContain('✦');
+      expect(output).toContain('▝▜▄');
       expect(output).toContain(
         'Chat history compression failed: the model returned an empty summary.',
       );

@@ -1,16 +1,16 @@
 {
-  "name": "@google/gemini-cli-a2a-server",
-  "version": "0.48.0-nightly.20260609.g3a13b8eeb",
-  "description": "Gemini CLI A2A Server",
+  "name": "@the-a-tech-corporation/a-coder-cli-a2a-server",
+  "version": "0.1.0",
+  "description": "A-Coder CLI A2A Server",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/google-gemini/gemini-cli.git",
+    "url": "git+https://github.com/hamishfromatech/a-coder-cli.git",
     "directory": "packages/a2a-server"
   },
   "type": "module",
   "main": "dist/index.js",
   "bin": {
-    "gemini-cli-a2a-server": "dist/a2a-server.mjs"
+    "a-coder-cli-a2a-server": "dist/a2a-server.mjs"
   },
   "scripts": {
     "build": "node ../../scripts/build_package.js",
@@ -26,8 +26,7 @@
   ],
   "dependencies": {
     "@a2a-js/sdk": "0.3.11",
-    "@google-cloud/storage": "^7.19.0",
-    "@google/gemini-cli-core": "file:../core",
+    "@the-a-tech-corporation/core": "file:../core",
     "express": "^5.1.0",
     "fs-extra": "^11.3.0",
     "strip-json-comments": "^3.1.1",
@@ -36,7 +35,6 @@
     "winston": "^3.17.0"
   },
   "devDependencies": {
-    "@google/genai": "1.30.0",
     "@types/express": "^5.0.3",
     "@types/fs-extra": "^11.0.4",
     "@types/supertest": "^6.0.3",

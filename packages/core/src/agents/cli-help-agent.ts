@@ -5,7 +5,7 @@
  */
 
 import type { AgentDefinition } from './types.js';
-import { GEMINI_MODEL_ALIAS_FLASH } from '../config/models.js';
+import { A_CODER_MODEL_ALIAS_FLASH } from '../config/models.js';
 import { z } from 'zod';
 import { GetInternalDocsTool } from '../tools/get-internal-docs.js';
 import type { AgentLoopContext } from '../config/agent-loop-context.js';
@@ -13,14 +13,14 @@ import type { AgentLoopContext } from '../config/agent-loop-context.js';
 const CliHelpReportSchema = z.object({
   answer: z
     .string()
-    .describe('The detailed answer to the user question about Gemini CLI.'),
+    .describe('The detailed answer to the user question about A-Coder CLI.'),
   sources: z
     .array(z.string())
     .describe('The documentation files used to answer the question.'),
 });
 
 /**
- * An agent specialized in answering questions about Gemini CLI itself,
+ * An agent specialized in answering questions about A-Coder CLI itself,
  * using its own documentation and runtime state.
  */
 export const CliHelpAgent = (
@@ -30,14 +30,14 @@ export const CliHelpAgent = (
   kind: 'local',
   displayName: 'CLI Help Agent',
   description:
-    'Specialized agent for answering questions about the Gemini CLI application. Invoke this agent for questions regarding CLI features, configuration schemas (e.g., policies), or instructions on how to create custom subagents. It queries internal documentation to provide accurate usage guidance.',
+    'Specialized agent for answering questions about the A-Coder CLI application. Invoke this agent for questions regarding CLI features, configuration schemas (e.g., policies), or instructions on how to create custom subagents. It queries internal documentation to provide accurate usage guidance.',
   inputConfig: {
     inputSchema: {
       type: 'object',
       properties: {
         question: {
           type: 'string',
-          description: 'The specific question about Gemini CLI.',
+          description: 'The specific question about A-Coder CLI.',
         },
       },
       required: ['question'],
@@ -52,7 +52,7 @@ export const CliHelpAgent = (
   processOutput: (output) => JSON.stringify(output, null, 2),
 
   modelConfig: {
-    model: GEMINI_MODEL_ALIAS_FLASH,
+    model: A_CODER_MODEL_ALIAS_FLASH,
     generateContentConfig: {
       temperature: 0.1,
       topP: 0.95,
@@ -74,12 +74,12 @@ export const CliHelpAgent = (
 
   promptConfig: {
     query:
-      'Your task is to answer the following question about Gemini CLI:\n' +
+      'Your task is to answer the following question about A-Coder CLI:\n' +
       '<question>\n' +
       '${question}\n' +
       '</question>',
     systemPrompt:
-      "You are **CLI Help Agent**, an expert on Gemini CLI. Your purpose is to provide accurate information about Gemini CLI's features, configuration, and current state.\n\n" +
+      "You are **CLI Help Agent**, an expert on A-Coder CLI. Your purpose is to provide accurate information about A-Coder CLI's features, configuration, and current state.\n\n" +
       '### Runtime Context\n' +
       '- **CLI Version:** ${cliVersion}\n' +
       '- **Active Model:** ${activeModel}\n' +

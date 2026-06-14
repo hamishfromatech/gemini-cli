@@ -26,14 +26,14 @@ jobs:
         with:
           node-version: '20'
 
-      - name: 'Run Docs Audit with Gemini'
+      - name: 'Run Docs Audit with A-Coder'
         id: 'run_gemini'
         uses: 'google-github-actions/run-gemini-cli@a3bf79042542528e91937b3a3a6fbc4967ee3c31'
         env:
-          GEMINI_CLI_TRUST_WORKSPACE: true
+          A_CODER_CLI_TRUST_WORKSPACE: true
         with:
           upload_artifacts: 'true'
-          gemini_api_key: '${{ secrets.GEMINI_API_KEY }}'
+          gemini_api_key: '${{ secrets.A_CODER_API_KEY }}'
           prompt: |
             Activate the 'docs-writer' skill.
 
@@ -48,7 +48,7 @@ jobs:
       - name: 'Create Pull Request with Audit Results'
         uses: 'peter-evans/create-pull-request@c5a7806660adbe173f04e3e038b0ccdcd758773c'
         with:
-          token: '${{ secrets.GEMINI_CLI_ROBOT_GITHUB_PAT }}'
+          token: '${{ secrets.A_CODER_CLI_ROBOT_GITHUB_PAT }}'
           commit-message: 'docs: weekly audit results for ${{ github.run_id }}'
           title: 'Docs audit: ${{ steps.date.outputs.date }}'
           body: |

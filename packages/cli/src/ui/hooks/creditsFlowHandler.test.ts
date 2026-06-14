@@ -19,12 +19,12 @@ import {
   logBillingEvent,
   G1_CREDIT_TYPE,
   UserTierId,
-} from '@google/gemini-cli-core';
+} from '@the-a-tech-corporation/core';
 import { MessageType } from '../types.js';
 
-vi.mock('@google/gemini-cli-core', async (importOriginal) => {
+vi.mock('@the-a-tech-corporation/core', async (importOriginal) => {
   const actual =
-    await importOriginal<typeof import('@google/gemini-cli-core')>();
+    await importOriginal<typeof import('@the-a-tech-corporation/core')>();
   return {
     ...actual,
     getG1CreditBalance: vi.fn(),

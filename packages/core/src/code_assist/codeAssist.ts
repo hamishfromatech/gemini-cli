@@ -1,42 +1,42 @@
 /**
  * @license
- * Copyright 2025 Google LLC
+ * Copyright 2026 Google LLC
  * SPDX-License-Identifier: Apache-2.0
+ *
+ * @license
  */
 
-import { AuthType, type ContentGenerator } from '../core/contentGenerator.js';
-import { getOauthClient } from './oauth2.js';
-import { setupUser } from './setup.js';
+type AuthClient = unknown;
+import type { AuthType, ContentGenerator } from '../core/contentGenerator.js';
 import { CodeAssistServer, type HttpOptions } from './server.js';
 import type { Config } from '../config/config.js';
 import { LoggingContentGenerator } from '../core/loggingContentGenerator.js';
 import { ModelMappingContentGenerator } from '../core/modelMappingContentGenerator.js';
 
+function createStubAuthClient(): AuthClient {
+  return {
+    request: async () => ({ data: undefined as unknown }),
+  } as unknown;
+}
+
 export async function createCodeAssistContentGenerator(
   httpOptions: HttpOptions,
-  authType: AuthType,
+   
+  _authType: AuthType,
   config: Config,
   sessionId?: string,
 ): Promise<ContentGenerator> {
-  if (
-    authType === AuthType.LOGIN_WITH_GOOGLE ||
-    authType === AuthType.COMPUTE_ADC
-  ) {
-    const authClient = await getOauthClient(authType, config);
-    const userData = await setupUser(authClient, config, httpOptions);
-    return new CodeAssistServer(
-      authClient,
-      userData.projectId,
-      httpOptions,
-      sessionId,
-      userData.userTier,
-      userData.userTierName,
-      userData.paidTier,
-      config,
-    );
-  }
-
-  throw new Error(`Unsupported authType: ${authType}`);
+  const authClient = createStubAuthClient();
+  return new CodeAssistServer(
+    authClient,
+    undefined,
+    httpOptions,
+    sessionId,
+    undefined,
+    undefined,
+    undefined,
+    config,
+  );
 }
 
 export function getCodeAssistServer(

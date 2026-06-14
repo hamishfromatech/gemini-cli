@@ -17,7 +17,7 @@ import {
   coreEvents,
   debugLogger,
   getErrorMessage,
-} from '@google/gemini-cli-core';
+} from '@the-a-tech-corporation/core';
 import { ExtensionManager } from '../../config/extension-manager.js';
 import { requestConsentNonInteractive } from '../../config/extensions/consent.js';
 import { loadSettings } from '../../config/settings.js';
@@ -62,7 +62,7 @@ export async function handleUpdate(args: UpdateArgs) {
           .join('\n');
         coreEvents.emitFeedback(
           'error',
-          `Extension "${args.name}" not found.\n\nInstalled extensions:\n${installedExtensions}\n\nRun "gemini extensions list" for details.`,
+          `Extension "${args.name}" not found.\n\nInstalled extensions:\n${installedExtensions}\n\nRun "a-coder-cli extensions list" for details.`,
         );
         return;
       }

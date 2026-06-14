@@ -27,7 +27,7 @@ export class HelpCommand implements Command {
 
     const lines: string[] = [];
 
-    lines.push('Gemini CLI Help:');
+    lines.push('A-Coder CLI Help:');
     lines.push('');
     lines.push('### Basics');
     lines.push(

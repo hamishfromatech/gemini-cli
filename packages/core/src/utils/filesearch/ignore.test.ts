@@ -6,8 +6,8 @@
 
 import { describe, it, expect, afterEach } from 'vitest';
 import { Ignore, loadIgnoreRules } from './ignore.js';
-import { createTmpDir, cleanupTmpDir } from '@google/gemini-cli-test-utils';
-import { GEMINI_IGNORE_FILE_NAME } from '../../config/constants.js';
+import { createTmpDir, cleanupTmpDir } from '@the-a-tech-corporation/test-utils';
+import { A_CODER_IGNORE_FILE_NAME } from '../../config/constants.js';
 import { FileDiscoveryService } from '../../services/fileDiscoveryService.js';
 
 describe('Ignore', () => {
@@ -83,7 +83,7 @@ describe('loadIgnoreRules', () => {
     });
     const service = new FileDiscoveryService(tmpDir, {
       respectGitIgnore: true,
-      respectGeminiIgnore: false,
+      respectACoderIgnore: false,
     });
     const ignore = loadIgnoreRules(service, []);
     const fileFilter = ignore.getFileFilter();
@@ -91,13 +91,13 @@ describe('loadIgnoreRules', () => {
     expect(fileFilter('test.txt')).toBe(false);
   });
 
-  it('should load rules from .geminiignore', async () => {
+  it('should load rules from .a-coder-ignore', async () => {
     tmpDir = await createTmpDir({
-      [GEMINI_IGNORE_FILE_NAME]: '*.log',
+      [A_CODER_IGNORE_FILE_NAME]: '*.log',
     });
     const service = new FileDiscoveryService(tmpDir, {
       respectGitIgnore: false,
-      respectGeminiIgnore: true,
+      respectACoderIgnore: true,
     });
     const ignore = loadIgnoreRules(service, []);
     const fileFilter = ignore.getFileFilter();
@@ -105,15 +105,15 @@ describe('loadIgnoreRules', () => {
     expect(fileFilter('test.txt')).toBe(false);
   });
 
-  it('should combine rules from .gitignore and .geminiignore', async () => {
+  it('should combine rules from .gitignore and .a-coder-ignore', async () => {
     tmpDir = await createTmpDir({
       '.git': {},
       '.gitignore': '*.log',
-      [GEMINI_IGNORE_FILE_NAME]: '*.txt',
+      [A_CODER_IGNORE_FILE_NAME]: '*.txt',
     });
     const service = new FileDiscoveryService(tmpDir, {
       respectGitIgnore: true,
-      respectGeminiIgnore: true,
+      respectACoderIgnore: true,
     });
     const ignore = loadIgnoreRules(service, []);
     const fileFilter = ignore.getFileFilter();
@@ -126,7 +126,7 @@ describe('loadIgnoreRules', () => {
     tmpDir = await createTmpDir({});
     const service = new FileDiscoveryService(tmpDir, {
       respectGitIgnore: false,
-      respectGeminiIgnore: false,
+      respectACoderIgnore: false,
     });
     const ignore = loadIgnoreRules(service, ['logs/']);
     const dirFilter = ignore.getDirectoryFilter();
@@ -138,7 +138,7 @@ describe('loadIgnoreRules', () => {
     tmpDir = await createTmpDir({});
     const service = new FileDiscoveryService(tmpDir, {
       respectGitIgnore: true,
-      respectGeminiIgnore: true,
+      respectACoderIgnore: true,
     });
     const ignore = loadIgnoreRules(service, []);
     const fileFilter = ignore.getFileFilter();
@@ -149,7 +149,7 @@ describe('loadIgnoreRules', () => {
     tmpDir = await createTmpDir({});
     const service = new FileDiscoveryService(tmpDir, {
       respectGitIgnore: false,
-      respectGeminiIgnore: false,
+      respectACoderIgnore: false,
     });
     const ignore = loadIgnoreRules(service, []);
     const dirFilter = ignore.getDirectoryFilter();
