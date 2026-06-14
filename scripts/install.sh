@@ -7,18 +7,22 @@
 #   ./scripts/install.sh --prefix ~/.local
 #   ./scripts/install.sh --prefix /usr/local --system
 #
+# One-liner install:
+#   curl -fsSL https://raw.githubusercontent.com/hamishfromatech/gemini-cli/rebrand/a-coder-cli/scripts/install.sh | bash
+#
 # This script builds the bundled CLI binary, copies it to
 # $PREFIX/share/a-coder-cli/, and adds a wrapper to $PREFIX/bin
 # so `a-coder-cli` is available on PATH.
 
 set -euo pipefail
 
-REPO_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
-BUNDLE_SRC="$REPO_ROOT/bundle"
+REPO_URL="https://github.com/hamishfromatech/gemini-cli.git"
+REPO_BRANCH="rebrand/a-coder-cli"
 
 PREFIX="${A_CODER_INSTALL_PREFIX:-$HOME/.local}"
 SYSTEM=false
 SKIP_BUILD=false
+CLEANUP=false
 
 usage() {
   cat <<EOF
@@ -63,6 +67,28 @@ BIN_DIR="$PREFIX/bin"
 SHARE_DIR="$PREFIX/share/a-coder-cli"
 BUNDLE_DIR="$SHARE_DIR/bundle"
 BUNDLE_JS="$BUNDLE_DIR/a-coder.js"
+
+# --- Detect whether we're running from a cloned repo or via curl | bash ---
+SCRIPT_PATH="${BASH_SOURCE[0]:-$0}"
+if [[ -f "$SCRIPT_PATH" ]] && [[ -d "$(dirname "$SCRIPT_PATH")/../.git" ]]; then
+  REPO_ROOT="$(cd "$(dirname "$SCRIPT_PATH")/.." && pwd)"
+else
+  # Running via curl | bash — clone the repo to a temp directory.
+  CLEANUP=true
+  REPO_ROOT="$(mktemp -d -t a-coder-cli-build-XXXXXX)"
+  echo "Cloning A-Coder CLI repository..."
+  git clone --depth 1 --branch "$REPO_BRANCH" "$REPO_URL" "$REPO_ROOT"
+fi
+
+BUNDLE_SRC="$REPO_ROOT/bundle"
+
+# --- Cleanup helper ---
+cleanup() {
+  if [[ "$CLEANUP" == true ]] && [[ -d "$REPO_ROOT" ]]; then
+    rm -rf "$REPO_ROOT"
+  fi
+}
+trap cleanup EXIT
 
 # --- Check Node.js version ---
 if ! command -v node >/dev/null 2>&1; then
