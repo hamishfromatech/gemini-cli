@@ -7,13 +7,14 @@
 #   ./scripts/install.sh --prefix ~/.local
 #   ./scripts/install.sh --prefix /usr/local --system
 #
-# This script builds the bundled CLI binary and adds a wrapper to
-# $PREFIX/bin so `a-coder-cli` is available on PATH.
+# This script builds the bundled CLI binary, copies it to
+# $PREFIX/share/a-coder-cli/, and adds a wrapper to $PREFIX/bin
+# so `a-coder-cli` is available on PATH.
 
 set -euo pipefail
 
 REPO_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
-BUNDLE_JS="$REPO_ROOT/bundle/a-coder.js"
+BUNDLE_SRC="$REPO_ROOT/bundle"
 
 PREFIX="${A_CODER_INSTALL_PREFIX:-$HOME/.local}"
 SYSTEM=false
@@ -59,6 +60,9 @@ while [[ $# -gt 0 ]]; do
 done
 
 BIN_DIR="$PREFIX/bin"
+SHARE_DIR="$PREFIX/share/a-coder-cli"
+BUNDLE_DIR="$SHARE_DIR/bundle"
+BUNDLE_JS="$BUNDLE_DIR/a-coder.js"
 
 # --- Check Node.js version ---
 if ! command -v node >/dev/null 2>&1; then
@@ -86,10 +90,16 @@ if [[ "$SKIP_BUILD" != true ]]; then
   (cd "$REPO_ROOT" && npm run bundle)
 fi
 
-if [[ ! -f "$BUNDLE_JS" ]]; then
-  echo "Error: bundle not found at $BUNDLE_JS" >&2
+if [[ ! -f "$BUNDLE_SRC/a-coder.js" ]]; then
+  echo "Error: bundle not found at $BUNDLE_SRC/a-coder.js" >&2
   exit 1
 fi
+
+# --- Copy bundle into the install location ---
+echo "Installing A-Coder CLI bundle to $SHARE_DIR..."
+rm -rf "$BUNDLE_DIR"
+mkdir -p "$BUNDLE_DIR"
+cp -R "$BUNDLE_SRC/"* "$BUNDLE_DIR/"
 
 # --- Create wrapper scripts ---
 echo "Installing A-Coder CLI wrapper to $BIN_DIR..."
@@ -122,7 +132,7 @@ EOF
 echo ""
 echo "A-Coder CLI installed successfully."
 echo "  Wrapper: $BIN_DIR/a-coder-cli"
-echo "  Bundle:  $BUNDLE_JS"
+echo "  Bundle:  $BUNDLE_DIR"
 echo ""
 
 if [[ "$SYSTEM" == true ]]; then
