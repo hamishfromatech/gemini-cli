@@ -47,7 +47,7 @@ describe('<ContextSummaryDisplay />', () => {
     const props = {
       ...baseProps,
       geminiMdFileCount: 1,
-      contextFileNames: ['A_CODER.md'],
+      contextFileNames: ['A-Coder.md'],
       mcpServers: { 'test-server': { command: 'test' } },
       ideContext: {
         workspaceState: {
@@ -64,7 +64,7 @@ describe('<ContextSummaryDisplay />', () => {
     const props = {
       ...baseProps,
       geminiMdFileCount: 1,
-      contextFileNames: ['A_CODER.md'],
+      contextFileNames: ['A-Coder.md'],
       mcpServers: { 'test-server': { command: 'test' } },
       ideContext: {
         workspaceState: {

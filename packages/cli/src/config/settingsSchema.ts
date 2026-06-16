@@ -659,7 +659,7 @@ const SETTINGS_SCHEMA = {
         requiresRestart: false,
         default: false,
         description:
-          'Hide the context summary (A_CODER.md, MCP servers) above the input.',
+          'Hide the context summary (A-Coder.md, MCP servers) above the input.',
         showInDialog: true,
       },
       footer: {
@@ -1023,7 +1023,8 @@ const SETTINGS_SCHEMA = {
         category: 'Advanced',
         requiresRestart: true,
         default: undefined as VertexAiRoutingConfig | undefined,
-        description: 'Custom provider request routing settings (legacy Vertex AI shape).',
+        description:
+          'Custom provider request routing settings (legacy Vertex AI shape).',
         showInDialog: false,
         properties: {
           requestType: {
@@ -1460,7 +1461,7 @@ const SETTINGS_SCHEMA = {
         requiresRestart: true,
         default: ['.git'] as string[],
         description:
-          'File or directory names that mark the boundary for A_CODER.md discovery. ' +
+          'File or directory names that mark the boundary for A-Coder.md discovery. ' +
           'The upward traversal stops at the first directory containing any of these markers. ' +
           'An empty array disables parent traversal.',
         showInDialog: false,
@@ -1487,7 +1488,7 @@ const SETTINGS_SCHEMA = {
         requiresRestart: false,
         default: false,
         description: oneLine`
-          Controls how /memory reload loads A_CODER.md files.
+          Controls how /memory reload loads A-Coder.md files.
           When true, include directories are scanned; when false, only the current directory is used.
         `,
         showInDialog: true,

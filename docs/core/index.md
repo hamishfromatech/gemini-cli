@@ -2,8 +2,8 @@
 
 A-Coder CLI's core package (`packages/core`) is the backend portion of A-Coder
 CLI, handling communication with the A-Coder API, managing tools, and processing
-requests sent from `packages/cli`. For a general overview of A-Coder CLI, see the
-[main documentation page](../index.md).
+requests sent from `packages/cli`. For a general overview of A-Coder CLI, see
+the [main documentation page](../index.md).
 
 ## Navigating this section
 
@@ -12,7 +12,7 @@ requests sent from `packages/cli`. For a general overview of A-Coder CLI, see th
 - **[Core tools reference](../reference/tools.md):** Information on how tools
   are defined, registered, and used by the core.
 - **[Memory Import Processor](../reference/memport.md):** Documentation for the
-  modular A_CODER.md import feature using @file.md syntax.
+  modular A-Coder.md import feature using @file.md syntax.
 - **[Policy Engine](../reference/policy-engine.md):** Use the Policy Engine for
   fine-grained control over tool execution.
 - **[Local Model Routing (experimental)](./gemma-setup.md):** Learn how to
@@ -24,17 +24,18 @@ requests sent from `packages/cli`. For a general overview of A-Coder CLI, see th
 While the `packages/cli` portion of A-Coder CLI provides the user interface,
 `packages/core` is responsible for:
 
-- **A-Coder API interaction:** Securely communicating with the Google A-Coder API,
-  sending user prompts, and receiving model responses.
+- **A-Coder API interaction:** Securely communicating with the Google A-Coder
+  API, sending user prompts, and receiving model responses.
 - **Prompt engineering:** Constructing effective prompts for the A-Coder model,
   potentially incorporating conversation history, tool definitions, and
-  instructional context from `A_CODER.md` files.
+  instructional context from `A-Coder.md` files.
 - **Tool management & orchestration:**
   - Registering available tools (for example, file system tools, shell command
     execution).
   - Interpreting tool use requests from the A-Coder model.
   - Executing the requested tools with the provided arguments.
-  - Returning tool execution results to the A-Coder model for further processing.
+  - Returning tool execution results to the A-Coder model for further
+    processing.
 - **Session and state management:** Keeping track of the conversation state,
   including history and any relevant context required for coherent interactions.
 - **Configuration:** Managing core-specific configurations, such as API key
@@ -73,9 +74,10 @@ If you are using the default "pro" model and the CLI detects that you are being
 rate-limited, it automatically switches to the "flash" model for the current
 session. This lets you continue working without interruption.
 
-Internal utility calls that use `a-coder-cli-2.5-flash-lite` (for example, prompt
-completion and classification) silently fall back to `a-coder-cli-2.5-flash` and
-`a-coder-cli-2.5-pro` when quota is exhausted, without changing the configured model.
+Internal utility calls that use `a-coder-cli-2.5-flash-lite` (for example,
+prompt completion and classification) silently fall back to
+`a-coder-cli-2.5-flash` and `a-coder-cli-2.5-pro` when quota is exhausted,
+without changing the configured model.
 
 ## File discovery service
 
@@ -86,16 +88,16 @@ tools that need to access files.
 ## Memory discovery service
 
 The memory discovery service is responsible for finding and loading the
-`A_CODER.md` files that provide context to the model. It searches for these files
-in a hierarchical manner, starting from the current working directory and moving
-up to the project root and the user's home directory. It also searches in
+`A-Coder.md` files that provide context to the model. It searches for these
+files in a hierarchical manner, starting from the current working directory and
+moving up to the project root and the user's home directory. It also searches in
 subdirectories.
 
 This lets you have global, project-level, and component-level context files,
 which are all combined to provide the model with the most relevant information.
 
 You can use the [`/memory` command](../reference/commands.md) to `show`, `add`,
-and `refresh` the content of loaded `A_CODER.md` files.
+and `refresh` the content of loaded `A-Coder.md` files.
 
 ## Citations
 

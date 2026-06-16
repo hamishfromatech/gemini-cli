@@ -86,8 +86,8 @@ You can run the review tool in two ways:
     locally before a maintainer performs a full review.
 
     **Note on Models:** By default, the script uses the latest Pro model
-    (`a-coder-3.1-pro-preview`). If you do not have enough Pro quota, you can run
-    it with the latest Flash model instead:
+    (`a-coder-3.1-pro-preview`). If you do not have enough Pro quota, you can
+    run it with the latest Flash model instead:
     `./scripts/review.sh <PR_NUMBER> a-coder-3-flash-preview`.
 
 2.  **Manually from within A-Coder CLI:** If you already have the PR checked out
@@ -254,8 +254,8 @@ To skip building the sandbox container, you can use `npm run build` instead.
 
 ### Running the CLI
 
-To start the A-Coder CLI from the source code (after building), run the following
-command from the root directory:
+To start the A-Coder CLI from the source code (after building), run the
+following command from the root directory:
 
 ```bash
 npm start
@@ -264,7 +264,8 @@ npm start
 If you'd like to run the source build outside of the a-coder-cli folder, you can
 utilize `npm link path/to/a-coder-cli/packages/cli` (see:
 [docs](https://docs.npmjs.com/cli/v9/commands/npm-link)) or
-`alias a-coder-cli="node path/to/a-coder-cli/packages/cli"` to run with `a-coder-cli`
+`alias a-coder-cli="node path/to/a-coder-cli/packages/cli"` to run with
+`a-coder-cli`
 
 ### Running tests
 
@@ -349,7 +350,7 @@ npm run lint
 - Please adhere to the coding style, patterns, and conventions used throughout
   the existing codebase.
 - Consult
-  [A_CODER.md](https://github.com/hamishfromatech/a-coder-cli/blob/main/A_CODER.md)
+  [A-Coder.md](https://github.com/hamishfromatech/a-coder-cli/blob/main/A-Coder.md)
   (typically found in the project root) for specific instructions related to
   AI-assisted development, including conventions for React, comments, and Git
   usage.
@@ -383,8 +384,8 @@ DEBUG=1 a-coder-cli
 ```
 
 **Note:** If you have `DEBUG=true` in a project's `.env` file, it won't affect
-a-coder-cli due to automatic exclusion. Use `.a-coder/.env` files for a-coder-cli
-specific debug settings.
+a-coder-cli due to automatic exclusion. Use `.a-coder/.env` files for
+a-coder-cli specific debug settings.
 
 ### React DevTools
 
@@ -564,8 +565,8 @@ If you have questions about contributing documentation:
 
 - Check our [FAQ](https://a-coder-cli.com/docs/resources/faq).
 - Review existing documentation for examples.
-- Open [an issue](https://github.com/hamishfromatech/a-coder-cli/issues) to discuss
-  your proposed changes.
+- Open [an issue](https://github.com/hamishfromatech/a-coder-cli/issues) to
+  discuss your proposed changes.
 - Reach out to the maintainers.
 
 We appreciate your contributions to making A-Coder CLI documentation better!

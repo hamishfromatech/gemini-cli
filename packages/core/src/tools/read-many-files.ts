@@ -112,7 +112,7 @@ type FileProcessingResult =
 
 /**
  * Creates the default exclusion patterns including dynamic patterns.
- * This combines the shared patterns with dynamic patterns like A_CODER.md.
+ * This combines the shared patterns with dynamic patterns like A-Coder.md.
  * TODO(adh): Consider making this configurable or extendable through a command line argument.
  */
 function getDefaultExcludes(config?: Config): string[] {
@@ -423,7 +423,7 @@ ${finalExclusionPatternsForDescription
 
     // Discover JIT subdirectory context for all unique directories of processed files.
     // Run sequentially so each call sees paths marked as loaded by the previous
-    // one, preventing shared parent A_CODER.md files from being injected twice.
+    // one, preventing shared parent A-Coder.md files from being injected twice.
     const uniqueDirs = new Set(
       Array.from(filesToConsider).map((f) => path.dirname(f)),
     );

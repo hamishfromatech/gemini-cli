@@ -14,7 +14,7 @@ import type { Config } from '../config/config.js';
 
 // Mock the memoryTool module
 vi.mock('../tools/memoryTool.js', () => ({
-  getCurrentACoderMdFilename: vi.fn(() => 'A_CODER.md'),
+  getCurrentACoderMdFilename: vi.fn(() => 'A-Coder.md'),
 }));
 
 describe('FileExclusions', () => {
@@ -55,7 +55,7 @@ describe('FileExclusions', () => {
       expect(patterns).toContain('**/.env');
 
       // Should include dynamic patterns
-      expect(patterns).toContain('**/A_CODER.md');
+      expect(patterns).toContain('**/A-Coder.md');
     });
 
     it('should respect includeDefaults option', () => {
@@ -67,7 +67,7 @@ describe('FileExclusions', () => {
 
       expect(patterns).not.toContain('**/node_modules/**');
       expect(patterns).not.toContain('**/.git/**');
-      expect(patterns).not.toContain('**/A_CODER.md');
+      expect(patterns).not.toContain('**/A-Coder.md');
       expect(patterns).toHaveLength(0);
     });
 
@@ -100,8 +100,8 @@ describe('FileExclusions', () => {
         includeDynamicPatterns: false,
       });
 
-      expect(patternsWithDynamic).toContain('**/A_CODER.md');
-      expect(patternsWithoutDynamic).not.toContain('**/A_CODER.md');
+      expect(patternsWithDynamic).toContain('**/A-Coder.md');
+      expect(patternsWithoutDynamic).not.toContain('**/A-Coder.md');
     });
   });
 
@@ -113,7 +113,7 @@ describe('FileExclusions', () => {
       // Should include all default patterns
       expect(patterns).toContain('**/node_modules/**');
       expect(patterns).toContain('**/.git/**');
-      expect(patterns).toContain('**/A_CODER.md');
+      expect(patterns).toContain('**/A-Coder.md');
 
       // Should include additional excludes
       expect(patterns).toContain('**/*.log');

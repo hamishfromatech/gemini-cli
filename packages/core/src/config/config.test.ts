@@ -148,7 +148,7 @@ vi.mock('../tools/memoryTool', async (importOriginal) => {
   return {
     ...actual,
     setGeminiMdFilename: vi.fn(),
-    getCurrentACoderMdFilename: vi.fn(() => 'A_CODER.md'),
+    getCurrentACoderMdFilename: vi.fn(() => 'A-Coder.md'),
   };
 });
 
@@ -3562,7 +3562,7 @@ describe('Config JIT Initialization', () => {
         .fn()
         .mockReturnValue('Environment Memory\n\nMCP Instructions'),
       getUserProjectMemory: vi.fn().mockReturnValue(''),
-      getLoadedPaths: vi.fn().mockReturnValue(new Set(['/path/to/A_CODER.md'])),
+      getLoadedPaths: vi.fn().mockReturnValue(new Set(['/path/to/A-Coder.md'])),
     } as unknown as MemoryContextManager;
     (MemoryContextManager as unknown as Mock).mockImplementation(
       () => mockMemoryContextManager,
@@ -3618,14 +3618,14 @@ describe('Config JIT Initialization', () => {
 
     // Verify state update (delegated to MemoryContextManager)
     expect(config.getGeminiMdFileCount()).toBe(1);
-    expect(config.getGeminiMdFilePaths()).toEqual(['/path/to/A_CODER.md']);
+    expect(config.getGeminiMdFilePaths()).toEqual(['/path/to/A-Coder.md']);
   });
 
   describe('memory path access', () => {
     it('should NOT add the global ~/.a-coder directory to the workspace', async () => {
       // Memory does not broaden the workspace to include the global ~/.a-coder/
       // directory. Cross-project personal preferences are routed to
-      // ~/.a-coder/A_CODER.md via the surgical isPathAllowed allowlist instead.
+      // ~/.a-coder/A-Coder.md via the surgical isPathAllowed allowlist instead.
       const params: ConfigParameters = {
         sessionId: 'test-session',
         targetDir: '/tmp/test',
@@ -3641,9 +3641,9 @@ describe('Config JIT Initialization', () => {
       expect(directories).not.toContain(Storage.getGlobalACoderDir());
     });
 
-    it('should allow isPathAllowed to write the global ~/.a-coder/A_CODER.md file', async () => {
+    it('should allow isPathAllowed to write the global ~/.a-coder/A-Coder.md file', async () => {
       // Surgical allowlist: the prompt routes cross-project personal
-      // preferences to ~/.a-coder/A_CODER.md, so the agent must be able to edit
+      // preferences to ~/.a-coder/A-Coder.md, so the agent must be able to edit
       // that exact file via edit/write_file.
       const params: ConfigParameters = {
         sessionId: 'test-session',
@@ -3658,13 +3658,13 @@ describe('Config JIT Initialization', () => {
 
       const globalGeminiMdPath = path.join(
         Storage.getGlobalACoderDir(),
-        'A_CODER.md',
+        'A-Coder.md',
       );
       expect(config.isPathAllowed(globalGeminiMdPath)).toBe(true);
     });
 
     it('should NOT allow isPathAllowed to write other files under ~/.a-coder/ (least privilege)', async () => {
-      // The allowlist is surgical: only ~/.a-coder/A_CODER.md is reachable.
+      // The allowlist is surgical: only ~/.a-coder/A-Coder.md is reachable.
       // settings.json, keybindings.json, credentials, etc. remain disallowed.
       const params: ConfigParameters = {
         sessionId: 'test-session',
@@ -3866,7 +3866,7 @@ describe('Config JIT Initialization', () => {
       );
       const activeMemoryPath = path.join(fakeMemoryTempDir, 'MEMORY.md');
       const projectTempPath = path.join(fakeProjectTempDir, 'logs', 'run.log');
-      const workspaceMemoryPath = path.join('/tmp/test', 'A_CODER.md');
+      const workspaceMemoryPath = path.join('/tmp/test', 'A-Coder.md');
 
       expect(config.validatePathAccess(activeMemoryPath)).toBeNull();
 

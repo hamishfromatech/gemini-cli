@@ -102,26 +102,28 @@ safety and workflow rules.
 
 This creates the file and writes the current built‑in system prompt to it.
 
-## Best practices: system.md vs A_CODER.md
+## Best practices: system.md vs A-Coder.md
 
 - system.md (firmware):
   - Non‑negotiable operational rules: safety, tool‑use protocols, approvals, and
     mechanics that keep the CLI reliable.
   - Stable across tasks and projects (or per project when needed).
-- A_CODER.md (strategy):
+- A-Coder.md (strategy):
   - Persona, goals, methodologies, and project/domain context.
   - Evolves per task; relies on system.md for safe execution.
 
 Keep system.md minimal but complete for safety and tool operation. Keep
-A_CODER.md focused on high‑level guidance and project specifics.
+A-Coder.md focused on high‑level guidance and project specifics.
 
 ## Troubleshooting
 
 - Error: `missing system prompt file '…'`
   - Ensure the referenced path exists and is readable.
-  - For `A_CODER_SYSTEM_MD=1|true`, create `./.a-coder-cli/system.md` in your project.
+  - For `A_CODER_SYSTEM_MD=1|true`, create `./.a-coder-cli/system.md` in your
+    project.
 - Override not taking effect
-  - Confirm the variable is loaded (use `.a-coder-cli/.env` or export in your shell).
+  - Confirm the variable is loaded (use `.a-coder-cli/.env` or export in your
+    shell).
   - Paths are resolved from the current working directory; try an absolute path.
 - Restore defaults
   - Unset `A_CODER_SYSTEM_MD` or set it to `0`/`false`.

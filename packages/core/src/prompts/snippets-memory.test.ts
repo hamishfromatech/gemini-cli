@@ -14,11 +14,11 @@ describe('renderOperationalGuidelines - memory', () => {
     topicUpdateNarration: false,
   };
 
-  it('should distinguish shared A_CODER.md instructions from private MEMORY.md', () => {
+  it('should distinguish shared A-Coder.md instructions from private MEMORY.md', () => {
     const result = renderOperationalGuidelines(baseOptions);
     expect(result).toContain('Instruction and Memory Files');
-    expect(result).toContain('A_CODER.md');
-    expect(result).toContain('./A_CODER.md');
+    expect(result).toContain('A-Coder.md');
+    expect(result).toContain('./A-Coder.md');
     expect(result).toContain('MEMORY.md');
     expect(result).toContain('sibling `*.md` file');
     expect(result).toContain('There is no `save_memory` tool');
@@ -41,7 +41,7 @@ describe('renderOperationalGuidelines - memory', () => {
     expect(result).toContain('Never duplicate or mirror the same fact');
 
     // MEMORY.md must be scoped to its sibling notes only and must never
-    // point at A_CODER.md topics.
+    // point at A-Coder.md topics.
     expect(result).toContain('index for its sibling `*.md` notes');
     expect(result).toContain('never use it to point at');
   });
@@ -71,7 +71,7 @@ describe('renderOperationalGuidelines - memory', () => {
   });
 
   it('should include the Global Personal Memory bullet, cross-project routing rule, and four-tier mutual-exclusion when globalMemoryPath is provided', () => {
-    const globalMemoryPath = '/Users/test/.a-coder/A_CODER.md';
+    const globalMemoryPath = '/Users/test/.a-coder/A-Coder.md';
     const result = renderOperationalGuidelines({
       ...baseOptions,
       globalMemoryPath,

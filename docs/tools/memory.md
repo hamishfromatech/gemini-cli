@@ -6,9 +6,9 @@ editing Markdown memory files directly.
 ## Technical reference
 
 The agent routes memories to the appropriate Markdown file: shared project
-instructions go in repository `A_CODER.md` files, private project notes go in the
-per-project private memory folder, and cross-project personal preferences go in
-the global `~/.a-coder-cli/A_CODER.md` file.
+instructions go in repository `A-Coder.md` files, private project notes go in
+the per-project private memory folder, and cross-project personal preferences go
+in the global `~/.a-coder-cli/A-Coder.md` file.
 
 ## Technical behavior
 
@@ -28,5 +28,5 @@ the global `~/.a-coder-cli/A_CODER.md` file.
 
 - Follow the [Memory management guide](../cli/tutorials/memory-management.md)
   for practical examples.
-- Learn how the [Project context (A_CODER.md)](../cli/a-coder-cli-md.md) system loads
-  this information.
+- Learn how the [Project context (A-Coder.md)](../cli/a-coder-cli-md.md) system
+  loads this information.

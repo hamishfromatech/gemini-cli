@@ -5,7 +5,7 @@
 # These patterns override the rule above.
 /package.json @hamishfromatech/a-coder-cli-askmode-approvers
 /package-lock.json @hamishfromatech/a-coder-cli-askmode-approvers
-/A_CODER.md @hamishfromatech/a-coder-cli-askmode-approvers
+/A-Coder.md @hamishfromatech/a-coder-cli-askmode-approvers
 /SECURITY.md @hamishfromatech/a-coder-cli-askmode-approvers
 /LICENSE @hamishfromatech/a-coder-cli-askmode-approvers
 /.github/workflows/ @hamishfromatech/a-coder-cli-askmode-approvers

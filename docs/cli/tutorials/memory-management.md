@@ -1,7 +1,7 @@
 # Manage context and memory
 
-Control what A-Coder CLI knows about you and your projects. In this guide, you'll
-learn how to define project-wide rules with `A_CODER.md`, teach the agent
+Control what A-Coder CLI knows about you and your projects. In this guide,
+you'll learn how to define project-wide rules with `A-Coder.md`, teach the agent
 persistent facts, and inspect the active context.
 
 ## Prerequisites
@@ -25,15 +25,15 @@ You'll use these features when you want to:
 - **Remember facts:** Save details like "My database port is 5432" so you don't
   have to repeat them.
 
-## How to define project-wide rules (A_CODER.md)
+## How to define project-wide rules (A-Coder.md)
 
-The most powerful way to control the agent's behavior is through `A_CODER.md`
+The most powerful way to control the agent's behavior is through `A-Coder.md`
 files. These are Markdown files containing instructions that are automatically
 loaded into every conversation.
 
 ### Scenario: Create a project context file
 
-1.  In the root of your project, create a file named `A_CODER.md`.
+1.  In the root of your project, create a file named `A-Coder.md`.
 
 2.  Add your instructions:
 
@@ -53,9 +53,10 @@ loaded into every conversation.
 Context is loaded hierarchically. This lets you have general rules for
 everything and specific rules for sub-projects.
 
-1.  **Global:** `~/.a-coder-cli/A_CODER.md` (Rules for _every_ project you work on).
-2.  **Project Root:** `./A_CODER.md` (Rules for the current repository).
-3.  **Subdirectory:** `./src/A_CODER.md` (Rules specific to the `src` folder).
+1.  **Global:** `~/.a-coder-cli/A-Coder.md` (Rules for _every_ project you work
+    on).
+2.  **Project Root:** `./A-Coder.md` (Rules for the current repository).
+3.  **Subdirectory:** `./src/A-Coder.md` (Rules specific to the `src` folder).
 
 **Example:** You might set "Always use strict typing" in your global config, but
 "Use Python 3.11" only in your backend repository.
@@ -93,7 +94,7 @@ is following.
 ### Scenario: View active context
 
 To see the full, concatenated set of instructions currently loaded (from all
-`A_CODER.md` files and saved memories), use the `/memory show` command.
+`A-Coder.md` files and saved memories), use the `/memory show` command.
 
 **Command:** `/memory show`
 
@@ -102,20 +103,20 @@ excellent for debugging why the agent might be ignoring a rule.
 
 ### Scenario: Refresh context
 
-If you edit a `A_CODER.md` file while a session is running, the agent won't know
+If you edit a `A-Coder.md` file while a session is running, the agent won't know
 immediately. Force a reload with:
 
 **Command:** `/memory reload`
 
 ## Best practices
 
-- **Keep it focused:** Avoid adding excessive content to `A_CODER.md`. Keep
+- **Keep it focused:** Avoid adding excessive content to `A-Coder.md`. Keep
   instructions actionable and relevant to code generation.
 - **Use negative constraints:** Explicitly telling the agent what _not_ to do
   (for example, "Do not use class components") is often more effective than
   vague positive instructions.
-- **Review often:** Periodically check your `A_CODER.md` files to remove outdated
-  rules.
+- **Review often:** Periodically check your `A-Coder.md` files to remove
+  outdated rules.
 
 ## Next steps
 

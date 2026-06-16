@@ -188,7 +188,7 @@ beforeEach(() => {
           ].join('\n'),
         );
 
-        const globalTarget = path.join(globalGeminiDir, 'A_CODER.md');
+        const globalTarget = path.join(globalGeminiDir, 'A-Coder.md');
         await fs.writeFile(
           path.join(inboxDir, 'global', 'reply-style.patch'),
           [
@@ -418,7 +418,7 @@ describe('Auto Memory inbox routing', () => {
       const activeGlobalMemoryPath = path.join(
         fixture.homeDir,
         '.a-coder',
-        'A_CODER.md',
+        'A-Coder.md',
       );
       const run = await readRun(fixture);
 

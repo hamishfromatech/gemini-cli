@@ -1,9 +1,10 @@
-# Provide context with A_CODER.md files
+# Provide context with A-Coder.md files
 
-Context files, which use the default name `A_CODER.md`, are a powerful feature
-for providing instructional context to the A-Coder model. You can use these files
-to give project-specific instructions, define a persona, or provide coding style
-guides to make the AI's responses more accurate and tailored to your needs.
+Context files, which use the default name `A-Coder.md`, are a powerful feature
+for providing instructional context to the A-Coder model. You can use these
+files to give project-specific instructions, define a persona, or provide coding
+style guides to make the AI's responses more accurate and tailored to your
+needs.
 
 Instead of repeating instructions in every prompt, you can define them once in a
 context file.
@@ -16,18 +17,18 @@ sends them to the model with every prompt. The CLI loads files in the following
 order:
 
 1.  **Global context file:**
-    - **Location:** `~/.a-coder-cli/A_CODER.md` (in your user home directory).
+    - **Location:** `~/.a-coder-cli/A-Coder.md` (in your user home directory).
     - **Scope:** Provides default instructions for all your projects.
 
 2.  **Environment and workspace context files:**
-    - **Location:** The CLI searches for `A_CODER.md` files in your configured
+    - **Location:** The CLI searches for `A-Coder.md` files in your configured
       workspace directories and their parent directories.
     - **Scope:** Provides context relevant to the projects you are currently
       working on.
 
 3.  **Just-in-time (JIT) context files:**
     - **Location:** When a tool accesses a file or directory, the CLI
-      automatically scans for `A_CODER.md` files in that directory and its
+      automatically scans for `A-Coder.md` files in that directory and its
       ancestors up to a trusted root.
     - **Scope:** Lets the model discover highly specific instructions for
       particular components only when they are needed.
@@ -35,9 +36,9 @@ order:
 The CLI footer displays the number of loaded context files, which gives you a
 quick visual cue of the active instructional context.
 
-### Example `A_CODER.md` file
+### Example `A-Coder.md` file
 
-Here is an example of what you can include in a `A_CODER.md` file at the root of
+Here is an example of what you can include in a `A-Coder.md` file at the root of
 a TypeScript project:
 
 ```markdown
@@ -63,19 +64,19 @@ You can interact with the loaded context files by using the `/memory` command.
 - **`/memory show`**: Displays the full, concatenated content of the current
   hierarchical memory. This lets you inspect the exact instructional context
   being provided to the model.
-- **`/memory reload`**: Forces a re-scan and reload of all `A_CODER.md` files
+- **`/memory reload`**: Forces a re-scan and reload of all `A-Coder.md` files
   from all configured locations.
 
 ## Modularize context with imports
 
-You can break down large `A_CODER.md` files into smaller, more manageable
+You can break down large `A-Coder.md` files into smaller, more manageable
 components by importing content from other files using the `@file.md` syntax.
 This feature supports both relative and absolute paths.
 
-**Example `A_CODER.md` with imports:**
+**Example `A-Coder.md` with imports:**
 
 ```markdown
-# Main A_CODER.md file
+# Main A-Coder.md file
 
 This is the main content.
 
@@ -91,7 +92,7 @@ documentation.
 
 ## Customize the context file name
 
-While `A_CODER.md` is the default filename, you can configure this in your
+While `A-Coder.md` is the default filename, you can configure this in your
 `settings.json` file. To specify a different name or a list of names, use the
 `context.fileName` property.
 
@@ -100,15 +101,15 @@ While `A_CODER.md` is the default filename, you can configure this in your
 ```json
 {
   "context": {
-    "fileName": ["AGENTS.md", "CONTEXT.md", "A_CODER.md"]
+    "fileName": ["AGENTS.md", "CONTEXT.md", "A-Coder.md"]
   }
 }
 ```
 
 ## Next steps
 
-- Learn about [Ignoring files](./a-coder-cli-ignore.md) to exclude content from the
-  context system.
+- Learn about [Ignoring files](./a-coder-cli-ignore.md) to exclude content from
+  the context system.
 - Explore the [Memory tool](../tools/memory.md) to save persistent memories.
 - See how to use [Custom commands](./custom-commands.md) to automate common
   prompts.

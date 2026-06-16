@@ -2,8 +2,10 @@
 
 /**
  * @license
- * Copyright 2026 The A-Tech Corporation
+ * Copyright 2026 Google LLC
  * SPDX-License-Identifier: Apache-2.0
+ *
+ * @license
  */
 
 /**
@@ -21,11 +23,11 @@
  *   3. Seed `MEMORY.md` and TWO canonical inbox patches:
  *        - .inbox/private/extraction.patch  (multi-hunk: update MEMORY.md
  *          + create verify-workflow.md + add MEMORY.md pointer to it)
- *        - .inbox/global/extraction.patch   (creates ~/.a-coder/A_CODER.md)
+ *        - .inbox/global/extraction.patch   (creates ~/.a-coder/A-Coder.md)
  *   4. Print a verification checklist + the launch command.
  *
  * To clean up later, delete `<projectMemoryDir>/.inbox/` and the seeded
- * MEMORY.md / A_CODER.md files.
+ * MEMORY.md / A-Coder.md files.
  */
 
 import * as fs from 'node:fs/promises';
@@ -56,7 +58,7 @@ const memoryDir = storage.getProjectMemoryTempDir();
 const inboxPrivate = path.join(memoryDir, '.inbox', 'private');
 const inboxGlobal = path.join(memoryDir, '.inbox', 'global');
 const homeDir = os.homedir();
-const globalGeminiMd = path.join(homeDir, '.a-coder', 'A_CODER.md');
+const globalGeminiMd = path.join(homeDir, '.a-coder', 'A-Coder.md');
 
 console.log(`\n🔧 Seeding inbox for cwd: ${cwd}`);
 console.log(`   memoryDir = ${memoryDir}\n`);
@@ -112,7 +114,7 @@ await seed(
 );
 
 // --- 3. Canonical GLOBAL extraction.patch ---
-//     Creates ~/.a-coder/A_CODER.md. Backs up any existing one first.
+//     Creates ~/.a-coder/A-Coder.md. Backs up any existing one first.
 let existingGlobalGemini = null;
 try {
   existingGlobalGemini = await fs.readFile(globalGeminiMd, 'utf-8');
@@ -139,7 +141,7 @@ await seed(
     `+- Prefer concise architecture summaries.`,
     ``,
   ].join('\n'),
-  'canonical GLOBAL extraction.patch (creates ~/.a-coder/A_CODER.md)',
+  'canonical GLOBAL extraction.patch (creates ~/.a-coder/A-Coder.md)',
 );
 
 // --- Summary ---
@@ -206,7 +208,7 @@ console.log(`
    │                  │          │ MEMORY.md updated; verify-workflow.md │
    │                  │          │ created.                              │
    │ Global memory    │ Apply    │ "Applied all 1 global memory patch."  │
-   │                  │          │ ~/.a-coder/A_CODER.md created.          │
+   │                  │          │ ~/.a-coder/A-Coder.md created.          │
    └──────────────────┴──────────┴───────────────────────────────────────┘
 
 7. Verify final state on disk:

@@ -15,7 +15,7 @@ import type {
 
 export class InitCommand implements Command {
   name = 'init';
-  description = 'Analyzes the project and creates a tailored A_CODER.md file';
+  description = 'Analyzes the project and creates a tailored A-Coder.md file';
   requiresWorkspace = true;
 
   async execute(
@@ -27,7 +27,7 @@ export class InitCommand implements Command {
       throw new Error('Command requires a workspace.');
     }
 
-    const geminiMdPath = path.join(targetDir, 'A_CODER.md');
+    const geminiMdPath = path.join(targetDir, 'A-Coder.md');
     const result = performInit(fs.existsSync(geminiMdPath));
 
     switch (result.type) {
@@ -45,13 +45,13 @@ export class InitCommand implements Command {
 
         // Inform the user since we can't trigger the UI-based interactive agent loop here directly.
         // We output the prompt text they can use to re-trigger the generation manually,
-        // or just seed the A_CODER.md file as we've done above.
+        // or just seed the A-Coder.md file as we've done above.
         return {
           name: this.name,
           data: {
             type: 'message',
             messageType: 'info',
-            content: `A template A_CODER.md has been created at ${geminiMdPath}.\n\nTo populate it with project context, you can run the following prompt in a new chat:\n\n${result.content}`,
+            content: `A template A-Coder.md has been created at ${geminiMdPath}.\n\nTo populate it with project context, you can run the following prompt in a new chat:\n\n${result.content}`,
           },
         };
 

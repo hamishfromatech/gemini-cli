@@ -308,7 +308,7 @@ their corresponding top-level category object in your `settings.json` file.
   - **Default:** `false`
 
 - **`ui.hideContextSummary`** (boolean):
-  - **Description:** Hide the context summary (A_CODER.md, MCP servers) above
+  - **Description:** Hide the context summary (A-Coder.md, MCP servers) above
     the input.
   - **Default:** `false`
 
@@ -1569,7 +1569,7 @@ their corresponding top-level category object in your `settings.json` file.
 
 - **`context.memoryBoundaryMarkers`** (array):
   - **Description:** File or directory names that mark the boundary for
-    A_CODER.md discovery. The upward traversal stops at the first directory
+    A-Coder.md discovery. The upward traversal stops at the first directory
     containing any of these markers. An empty array disables parent traversal.
   - **Default:**
 
@@ -1585,7 +1585,7 @@ their corresponding top-level category object in your `settings.json` file.
   - **Default:** `[]`
 
 - **`context.loadMemoryFromIncludeDirectories`** (boolean):
-  - **Description:** Controls how /memory reload loads A_CODER.md files. When
+  - **Description:** Controls how /memory reload loads A-Coder.md files. When
     true, include directories are scanned; when false, only the current
     directory is used.
   - **Default:** `false`
@@ -2367,7 +2367,7 @@ of v0.3.0:
     }
   },
   "context": {
-    "fileName": ["CONTEXT.md", "A_CODER.md"],
+    "fileName": ["CONTEXT.md", "A-Coder.md"],
     "includeDirectories": ["path/to/dir1", "~/path/to/dir2", "../path/to/dir3"],
     "loadFromIncludeDirectories": true,
     "fileFiltering": {
@@ -2680,7 +2680,7 @@ for that specific session.
 ## Context files (hierarchical instructional context)
 
 While not strictly configuration for the CLI's _behavior_, context files
-(defaulting to `A_CODER.md` but configurable via the `context.fileName` setting)
+(defaulting to `A-Coder.md` but configurable via the `context.fileName` setting)
 are crucial for configuring the _instructional context_ (also referred to as
 "memory") provided to the A-Coder model. This powerful feature lets you give
 project-specific instructions, coding style guides, or any relevant background
@@ -2693,7 +2693,7 @@ context.
   that you want the A-Coder model to be aware of during your interactions. The
   system is designed to manage this instructional context hierarchically.
 
-### Example context file content (for example, `A_CODER.md`)
+### Example context file content (for example, `A-Coder.md`)
 
 Here's a conceptual example of what a context file at the root of a TypeScript
 project might contain:
@@ -2736,13 +2736,13 @@ conventions and context.
 
 - **Hierarchical loading and precedence:** The CLI implements a sophisticated
   hierarchical memory system by loading context files (for example,
-  `A_CODER.md`) from several locations. Content from files lower in this list
+  `A-Coder.md`) from several locations. Content from files lower in this list
   (more specific) typically overrides or supplements content from files higher
   up (more general). The exact concatenation order and final context can be
   inspected using the `/memory show` command. The typical loading order is:
   1.  **Global context file:**
       - Location: `~/.a-coder-cli/<configured-context-filename>` (for example,
-        `~/.a-coder-cli/A_CODER.md` in your user home directory).
+        `~/.a-coder-cli/A-Coder.md` in your user home directory).
       - Scope: Provides default instructions for all your projects.
   2.  **Project root and ancestors context files:**
       - Location: The CLI searches for the configured context file in the

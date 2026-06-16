@@ -6,11 +6,11 @@ workflows, and task-specific resources. Based on the
 self-contained directory that packages instructions and assets into a
 discoverable capability.
 
-Unlike general context files ([A_CODER.md](./a-coder-cli-md.md)), which provide
+Unlike general context files ([A-Coder.md](./a-coder-cli-md.md)), which provide
 persistent workspace-wide background, Skills represent **on-demand expertise**.
-This lets A-Coder CLI maintain a vast library of specialized capabilities—such as
-security auditing, cloud deployments, or codebase migrations—without cluttering
-the model's immediate context window.
+This lets A-Coder CLI maintain a vast library of specialized capabilities—such
+as security auditing, cloud deployments, or codebase migrations—without
+cluttering the model's immediate context window.
 
 ## How it works
 
@@ -41,16 +41,18 @@ of precedence (lowest to highest):
     foundational capabilities.
 2.  **Extension skills**: Skills bundled within installed
     [extensions](../extensions/index.md).
-3.  **User skills**: Located in `~/.a-coder-cli/skills/` or the `~/.agents/skills/`
-    alias.
-4.  **Workspace skills**: Located in `.a-coder-cli/skills/` or the `.agents/skills/`
-    alias. Workspace skills are shared with your team via version control.
+3.  **User skills**: Located in `~/.a-coder-cli/skills/` or the
+    `~/.agents/skills/` alias.
+4.  **Workspace skills**: Located in `.a-coder-cli/skills/` or the
+    `.agents/skills/` alias. Workspace skills are shared with your team via
+    version control.
 
 ### Precedence and aliases
 
 If multiple skills share the same name, the version from the higher-precedence
 location is used. Within the same tier (user or workspace), the
-`.agents/skills/` alias takes precedence over the `.a-coder-cli/skills/` directory.
+`.agents/skills/` alias takes precedence over the `.a-coder-cli/skills/`
+directory.
 
 The `.agents/skills/` alias provides an interoperable path for managing
 agent-specific expertise that remains compatible across different AI tools.

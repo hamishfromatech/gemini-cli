@@ -1087,7 +1087,7 @@ Logging in with Google... Restarting A-Coder CLI to continue.
     historyManager.addItem(
       {
         type: MessageType.INFO,
-        text: 'Refreshing hierarchical memory (A_CODER.md or other context files)...',
+        text: 'Refreshing hierarchical memory (A-Coder.md or other context files)...',
       },
       Date.now(),
     );

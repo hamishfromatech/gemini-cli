@@ -16,7 +16,7 @@ import { performInit } from '@the-a-tech-corporation/core';
 
 export const initCommand: SlashCommand = {
   name: 'init',
-  description: 'Analyzes the project and creates a tailored A_CODER.md file',
+  description: 'Analyzes the project and creates a tailored A-Coder.md file',
   kind: CommandKind.BUILT_IN,
   autoExecute: true,
   action: async (
@@ -31,18 +31,18 @@ export const initCommand: SlashCommand = {
       };
     }
     const targetDir = context.services.agentContext.config.getTargetDir();
-    const geminiMdPath = path.join(targetDir, 'A_CODER.md');
+    const geminiMdPath = path.join(targetDir, 'A-Coder.md');
 
     const result = performInit(fs.existsSync(geminiMdPath));
 
     if (result.type === 'submit_prompt') {
-      // Create an empty A_CODER.md file
+      // Create an empty A-Coder.md file
       fs.writeFileSync(geminiMdPath, '', 'utf8');
 
       context.ui.addItem(
         {
           type: 'info',
-          text: 'Empty A_CODER.md created. Now analyzing the project to populate it.',
+          text: 'Empty A-Coder.md created. Now analyzing the project to populate it.',
         },
         Date.now(),
       );

@@ -33,8 +33,8 @@ my-extension/
 
 ### Iterate with `link`
 
-Use the `a-coder-cli extensions link` command to develop locally without reinstalling
-your extension after every change.
+Use the `a-coder-cli extensions link` command to develop locally without
+reinstalling your extension after every change.
 
 ```bash
 cd my-extension
@@ -44,9 +44,9 @@ a-coder-cli extensions link .
 Changes to your code are immediately available in the CLI after you rebuild the
 project and restart the session.
 
-### Use `A_CODER.md` effectively
+### Use `A-Coder.md` effectively
 
-Your `A_CODER.md` file provides essential context to the model.
+Your `A-Coder.md` file provides essential context to the model.
 
 - **Focus on goals:** Explain the high-level purpose of the extension and how to
   interact with its tools.
@@ -145,9 +145,9 @@ When using GitHub Releases, ensure your archives only contain necessary files
 
 Test your extension thoroughly before releasing it to users.
 
-- **Manual verification:** Use `a-coder-cli extensions link` to test your extension
-  in a live CLI session. Verify that tools appear in the debug console (F12) and
-  that custom commands resolve correctly.
+- **Manual verification:** Use `a-coder-cli extensions link` to test your
+  extension in a live CLI session. Verify that tools appear in the debug console
+  (F12) and that custom commands resolve correctly.
 - **Automated testing:** If your extension includes an MCP server, write unit
   tests for your tool logic using a framework like Vitest or Jest. You can test
   MCP tools in isolation by mocking the transport layer.

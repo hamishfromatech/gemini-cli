@@ -1273,7 +1273,7 @@ export async function copyExtension(
 
 function getContextFileNames(config: ExtensionConfig): string[] {
   if (!config.contextFileName) {
-    return ['A_CODER.md'];
+    return ['A-Coder.md'];
   } else if (!Array.isArray(config.contextFileName)) {
     return [config.contextFileName];
   }

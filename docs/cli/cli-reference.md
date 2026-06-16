@@ -5,19 +5,19 @@ and parameters.
 
 ## CLI commands
 
-| Command                            | Description                        | Example                                                      |
-| ---------------------------------- | ---------------------------------- | ------------------------------------------------------------ |
-| `a-coder-cli`                           | Start interactive REPL             | `a-coder-cli`                                                     |
-| `a-coder-cli -p "query"`                | Query non-interactively            | `a-coder-cli -p "summarize README.md"`                            |
-| a-coder-cli "query"                     | Query and continue interactively   | a-coder-cli "explain this project"                                |
+| Command                                 | Description                        | Example                                                                |
+| --------------------------------------- | ---------------------------------- | ---------------------------------------------------------------------- |
+| `a-coder-cli`                           | Start interactive REPL             | `a-coder-cli`                                                          |
+| `a-coder-cli -p "query"`                | Query non-interactively            | `a-coder-cli -p "summarize README.md"`                                 |
+| a-coder-cli "query"                     | Query and continue interactively   | a-coder-cli "explain this project"                                     |
 | `cat file \| a-coder-cli`               | Process piped content              | `cat logs.txt \| a-coder-cli`<br>`Get-Content logs.txt \| a-coder-cli` |
-| `a-coder-cli -i "query"`                | Execute and continue interactively | `a-coder-cli -i "What is the purpose of this project?"`           |
-| `a-coder-cli -r "latest"`               | Continue most recent session       | `a-coder-cli -r "latest"`                                         |
-| `a-coder-cli -r "latest" "query"`       | Continue session with a new prompt | `a-coder-cli -r "latest" "Check for type errors"`                 |
-| `a-coder-cli -r "<session-id>" "query"` | Resume session by ID               | `a-coder-cli -r "abc123" "Finish this PR"`                        |
-| `a-coder-cli update`                    | Update to latest version           | `a-coder-cli update`                                              |
-| `a-coder-cli extensions`                | Manage extensions                  | See [Extensions Management](#extensions-management)          |
-| `a-coder-cli mcp`                       | Configure MCP servers              | See [MCP Server Management](#mcp-server-management)          |
+| `a-coder-cli -i "query"`                | Execute and continue interactively | `a-coder-cli -i "What is the purpose of this project?"`                |
+| `a-coder-cli -r "latest"`               | Continue most recent session       | `a-coder-cli -r "latest"`                                              |
+| `a-coder-cli -r "latest" "query"`       | Continue session with a new prompt | `a-coder-cli -r "latest" "Check for type errors"`                      |
+| `a-coder-cli -r "<session-id>" "query"` | Resume session by ID               | `a-coder-cli -r "abc123" "Finish this PR"`                             |
+| `a-coder-cli update`                    | Update to latest version           | `a-coder-cli update`                                                   |
+| `a-coder-cli extensions`                | Manage extensions                  | See [Extensions Management](#extensions-management)                    |
+| `a-coder-cli mcp`                       | Configure MCP servers              | See [MCP Server Management](#mcp-server-management)                    |
 
 ### Positional arguments
 
@@ -29,17 +29,17 @@ and parameters.
 
 These commands are available within the interactive REPL.
 
-| Command              | Description                                     |
-| -------------------- | ----------------------------------------------- |
-| `/skills reload`     | Reload discovered skills from disk              |
-| `/agents reload`     | Reload the agent registry                       |
-| `/commands list`     | List available custom slash commands            |
-| `/commands reload`   | Reload custom slash commands                    |
-| `/memory reload`     | Reload context files (for example, `A_CODER.md`) |
-| `/mcp reload`        | Restart and reload MCP servers                  |
-| `/extensions reload` | Reload all active extensions                    |
-| `/help`              | Show help for all commands                      |
-| `/quit`              | Exit the interactive session                    |
+| Command              | Description                                      |
+| -------------------- | ------------------------------------------------ |
+| `/skills reload`     | Reload discovered skills from disk               |
+| `/agents reload`     | Reload the agent registry                        |
+| `/commands list`     | List available custom slash commands             |
+| `/commands reload`   | Reload custom slash commands                     |
+| `/memory reload`     | Reload context files (for example, `A-Coder.md`) |
+| `/mcp reload`        | Restart and reload MCP servers                   |
+| `/extensions reload` | Reload all active extensions                     |
+| `/help`              | Show help for all commands                       |
+| `/quit`              | Exit the interactive session                     |
 
 ## CLI Options
 
@@ -51,7 +51,7 @@ These commands are available within the interactive REPL.
 | `--model`                        | `-m`  | string  | `auto`    | Model to use. See [Model Selection](#model-selection) for available values.                                                                                            |
 | `--prompt`                       | `-p`  | string  | -         | Prompt text. Appended to stdin input if provided. Forces non-interactive mode.                                                                                         |
 | `--prompt-interactive`           | `-i`  | string  | -         | Execute prompt and continue in interactive mode                                                                                                                        |
-| `--worktree`                     | `-w`  | string  | -         | Start A-Coder in a new git worktree. If no name is provided, one is generated automatically. Requires `experimental.worktrees: true` in settings.                       |
+| `--worktree`                     | `-w`  | string  | -         | Start A-Coder in a new git worktree. If no name is provided, one is generated automatically. Requires `experimental.worktrees: true` in settings.                      |
 | `--sandbox`                      | `-s`  | boolean | `false`   | Run in a sandboxed environment for safer execution                                                                                                                     |
 | `--skip-trust`                   | -     | boolean | `false`   | Trust the current workspace for this session, skipping the folder trust check.                                                                                         |
 | `--approval-mode`                | -     | string  | `default` | Approval mode for tool execution. Choices: `default`, `auto_edit`, `yolo`, `plan`                                                                                      |
@@ -71,24 +71,24 @@ These commands are available within the interactive REPL.
 
 ## Model selection
 
-The `--model` (or `-m`) flag lets you specify which A-Coder model to use. You can
-use either model aliases (user-friendly names) or concrete model names.
+The `--model` (or `-m`) flag lets you specify which A-Coder model to use. You
+can use either model aliases (user-friendly names) or concrete model names.
 
 ### Model aliases
 
 These are convenient shortcuts that map to specific models:
 
-| Alias        | Resolves To                                | Description                                                                                                               |
-| ------------ | ------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------- |
+| Alias        | Resolves To                                          | Description                                                                                                               |
+| ------------ | ---------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
 | `auto`       | `a-coder-cli-2.5-pro` or `a-coder-cli-3-pro-preview` | **Default.** Resolves to the preview model if preview features are enabled, otherwise resolves to the standard pro model. |
 | `pro`        | `a-coder-cli-2.5-pro` or `a-coder-cli-3-pro-preview` | For complex reasoning tasks. Uses preview model if enabled.                                                               |
-| `flash`      | `a-coder-cli-2.5-flash`                         | Fast, balanced model for most tasks.                                                                                      |
-| `flash-lite` | `a-coder-cli-2.5-flash-lite`                    | Fastest model for simple tasks.                                                                                           |
+| `flash`      | `a-coder-cli-2.5-flash`                              | Fast, balanced model for most tasks.                                                                                      |
+| `flash-lite` | `a-coder-cli-2.5-flash-lite`                         | Fastest model for simple tasks.                                                                                           |
 
 ## Extensions management
 
-| Command                                            | Description                                  | Example                                                                        |
-| -------------------------------------------------- | -------------------------------------------- | ------------------------------------------------------------------------------ |
+| Command                                                 | Description                                  | Example                                                                             |
+| ------------------------------------------------------- | -------------------------------------------- | ----------------------------------------------------------------------------------- |
 | `a-coder-cli extensions install <source>`               | Install extension from Git URL or local path | `a-coder-cli extensions install https://github.com/user/my-extension`               |
 | `a-coder-cli extensions install <source> --ref <ref>`   | Install from specific branch/tag/commit      | `a-coder-cli extensions install https://github.com/user/my-extension --ref develop` |
 | `a-coder-cli extensions install <source> --auto-update` | Install with auto-update enabled             | `a-coder-cli extensions install https://github.com/user/my-extension --auto-update` |
@@ -106,8 +106,8 @@ See [Extensions Documentation](../extensions/index.md) for more details.
 
 ## MCP server management
 
-| Command                                                       | Description                     | Example                                                                                              |
-| ------------------------------------------------------------- | ------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| Command                                                            | Description                     | Example                                                                                                   |
+| ------------------------------------------------------------------ | ------------------------------- | --------------------------------------------------------------------------------------------------------- |
 | `a-coder-cli mcp add <name> <command>`                             | Add stdio-based MCP server      | `a-coder-cli mcp add github npx -y @modelcontextprotocol/server-github`                                   |
 | `a-coder-cli mcp add <name> <url> --transport http`                | Add HTTP-based MCP server       | `a-coder-cli mcp add api-server http://localhost:3000 --transport http`                                   |
 | `a-coder-cli mcp add <name> <command> --env KEY=value`             | Add with environment variables  | `a-coder-cli mcp add slack node server.js --env SLACK_TOKEN=xoxb-xxx`                                     |
@@ -120,8 +120,8 @@ See [MCP Server Integration](../tools/mcp-server.md) for more details.
 
 ## Skills management
 
-| Command                          | Description                           | Example                                           |
-| -------------------------------- | ------------------------------------- | ------------------------------------------------- |
+| Command                               | Description                           | Example                                                |
+| ------------------------------------- | ------------------------------------- | ------------------------------------------------------ |
 | `a-coder-cli skills list`             | List all discovered agent skills      | `a-coder-cli skills list`                              |
 | `a-coder-cli skills install <source>` | Install skill from Git, path, or file | `a-coder-cli skills install https://github.com/u/repo` |
 | `a-coder-cli skills link <path>`      | Link local agent skills via symlink   | `a-coder-cli skills link /path/to/my-skills`           |

@@ -141,8 +141,8 @@ describe('memory persistence', () => {
       // Jest for testing in all my projects" — that matches the new
       // cross-project cue phrase ("across all my projects"), so under the
       // 4-tier model the correct destination is the global personal memory
-      // file (~/.a-coder/A_CODER.md). It must NOT land in a committed project
-      // A_CODER.md (that tier is for team conventions) or the per-project
+      // file (~/.a-coder/A-Coder.md). It must NOT land in a committed project
+      // A-Coder.md (that tier is for team conventions) or the per-project
       // private memory folder (that tier is for project-specific personal
       // notes). The chat history mixes this durable preference with
       // transient debugging chatter, so the eval also verifies the agent
@@ -164,7 +164,7 @@ describe('memory persistence', () => {
       });
       expect(
         wroteVitestToGlobal,
-        'Expected the cross-project Vitest preference to be written to the global personal memory file (~/.a-coder/A_CODER.md) via write_file or replace',
+        'Expected the cross-project Vitest preference to be written to the global personal memory file (~/.a-coder/A-Coder.md) via write_file or replace',
       ).toBe(true);
 
       const leakedToCommittedProject = writeCalls.some((log) => {
@@ -177,7 +177,7 @@ describe('memory persistence', () => {
       });
       expect(
         leakedToCommittedProject,
-        'Cross-project Vitest preference must NOT be mirrored into a committed project ./A_CODER.md (that tier is for team-shared conventions only)',
+        'Cross-project Vitest preference must NOT be mirrored into a committed project ./A-Coder.md (that tier is for team-shared conventions only)',
       ).toBe(false);
 
       const leakedToPrivateProject = writeCalls.some((log) => {
@@ -196,7 +196,7 @@ describe('memory persistence', () => {
   });
 
   const memoryRoutesTeamConventionsToProjectGemini =
-    'Agent routes team-shared project conventions to ./A_CODER.md';
+    'Agent routes team-shared project conventions to ./A-Coder.md';
   evalTest('USUALLY_PASSES', {
     suiteName: 'default',
     suiteType: 'behavioral',
@@ -243,10 +243,10 @@ describe('memory persistence', () => {
     assert: async (rig, result) => {
       // The prompt enforces an explicit one-tier-per-fact rule: team-shared
       // project conventions (the team's test command, project-wide
-      // indentation rules) belong in the committed project-root ./A_CODER.md
+      // indentation rules) belong in the committed project-root ./A-Coder.md
       // and must NOT be mirrored or cross-referenced into the private project
       // memory folder
-      // (~/.a-coder/tmp/<hash>/memory/). The global ~/.a-coder/A_CODER.md must
+      // (~/.a-coder/tmp/<hash>/memory/). The global ~/.a-coder/A-Coder.md must
       // never be touched in this mode either.
       await rig.waitForToolCall('write_file').catch(() => {});
       const writeCalls = rig
@@ -267,12 +267,12 @@ describe('memory persistence', () => {
 
       expect(
         wroteToProjectRoot(/npm run test/i),
-        'Expected the team test-command convention to be written to the project-root ./A_CODER.md',
+        'Expected the team test-command convention to be written to the project-root ./A-Coder.md',
       ).toBe(true);
 
       expect(
         wroteToProjectRoot(/2[- ]space/i),
-        'Expected the project-wide "2-space indentation" convention to be written to the project-root ./A_CODER.md',
+        'Expected the project-wide "2-space indentation" convention to be written to the project-root ./A-Coder.md',
       ).toBe(true);
 
       const leakedToPrivateMemory = writeCalls.some((log) => {
@@ -296,7 +296,7 @@ describe('memory persistence', () => {
       });
       expect(
         leakedToGlobal,
-        'Project preferences must NOT be written to the global ~/.a-coder/A_CODER.md',
+        'Project preferences must NOT be written to the global ~/.a-coder/A-Coder.md',
       ).toBe(false);
 
       assertModelHasOutput(result);
@@ -425,7 +425,7 @@ Quirks to remember:
       // ~/.a-coder/tmp/<hash>/memory/. The detailed note should be written to a
       // sibling markdown file, with
       // MEMORY.md updated as the index. It must NOT go to committed
-      // ./A_CODER.md or the global ~/.a-coder/A_CODER.md.
+      // ./A-Coder.md or the global ~/.a-coder/A-Coder.md.
       await rig.waitForToolCall('write_file').catch(() => {});
       const writeCalls = rig
         .readToolLogs()
@@ -436,8 +436,9 @@ Quirks to remember:
       const wroteUserProjectDetail = writeCalls.some((log) => {
         const args = log.toolRequest.args;
         return (
-          /\.a-coder\/tmp\/[^/]+\/memory\/(?!MEMORY\.md)[^"]+\.md/i.test(args) &&
-          /6543/.test(args)
+          /\.a-coder\/tmp\/[^/]+\/memory\/(?!MEMORY\.md)[^"]+\.md/i.test(
+            args,
+          ) && /6543/.test(args)
         );
       });
       expect(
@@ -455,7 +456,7 @@ Quirks to remember:
       ).toBe(true);
 
       // Defensive: should NOT have written this private note to the
-      // committed project A_CODER.md or the global A_CODER.md.
+      // committed project A-Coder.md or the global A-Coder.md.
       const leakedToCommittedProject = writeCalls.some((log) => {
         const args = log.toolRequest.args;
         return (
@@ -466,7 +467,7 @@ Quirks to remember:
       });
       expect(
         leakedToCommittedProject,
-        'Personal-to-user note must NOT be written to the committed project A_CODER.md',
+        'Personal-to-user note must NOT be written to the committed project A-Coder.md',
       ).toBe(false);
 
       const leakedToGlobal = writeCalls.some((log) => {
@@ -479,7 +480,7 @@ Quirks to remember:
       });
       expect(
         leakedToGlobal,
-        'Personal-to-user project note must NOT be written to the global ~/.a-coder/A_CODER.md',
+        'Personal-to-user project note must NOT be written to the global ~/.a-coder/A-Coder.md',
       ).toBe(false);
 
       assertModelHasOutput(result);
@@ -487,7 +488,7 @@ Quirks to remember:
   });
 
   const memoryRoutesCrossProjectToGlobal =
-    'Agent routes cross-project personal preferences to ~/.a-coder/A_CODER.md';
+    'Agent routes cross-project personal preferences to ~/.a-coder/A-Coder.md';
   evalTest('USUALLY_PASSES', {
     suiteName: 'default',
     suiteType: 'behavioral',
@@ -497,9 +498,9 @@ Quirks to remember:
     assert: async (rig, result) => {
       // With the Global Personal Memory tier surfaced in the prompt, a fact
       // that explicitly applies to the user "across all my projects" / "in
-      // every workspace" must land in the global ~/.a-coder/A_CODER.md (the
+      // every workspace" must land in the global ~/.a-coder/A-Coder.md (the
       // cross-project tier). It must
-      // NOT be mirrored into a committed project-root ./A_CODER.md (that
+      // NOT be mirrored into a committed project-root ./A-Coder.md (that
       // tier is for team-shared conventions) or into the per-project
       // private memory folder (that tier is for project-specific personal
       // notes). Each fact lives in exactly one tier across all four tiers.
@@ -522,12 +523,12 @@ Quirks to remember:
 
       expect(
         wroteToGlobal(/Prettier/i),
-        'Expected the cross-project Prettier preference to be written to the global personal memory file (~/.a-coder/A_CODER.md)',
+        'Expected the cross-project Prettier preference to be written to the global personal memory file (~/.a-coder/A-Coder.md)',
       ).toBe(true);
 
       expect(
         wroteToGlobal(/tabs/i),
-        'Expected the cross-project "tabs over spaces" preference to be written to the global personal memory file (~/.a-coder/A_CODER.md)',
+        'Expected the cross-project "tabs over spaces" preference to be written to the global personal memory file (~/.a-coder/A-Coder.md)',
       ).toBe(true);
 
       const leakedToCommittedProject = writeCalls.some((log) => {
@@ -540,7 +541,7 @@ Quirks to remember:
       });
       expect(
         leakedToCommittedProject,
-        'Cross-project personal preferences must NOT be mirrored into a committed project ./A_CODER.md (that tier is for team-shared conventions only)',
+        'Cross-project personal preferences must NOT be mirrored into a committed project ./A-Coder.md (that tier is for team-shared conventions only)',
       ).toBe(false);
 
       const leakedToPrivateProject = writeCalls.some((log) => {

@@ -89,7 +89,7 @@ describe('InitCommand', () => {
       vi.mocked(performInit).mockReturnValue({
         type: 'message',
         messageType: 'info',
-        content: 'A_CODER.md already exists.',
+        content: 'A-Coder.md already exists.',
       } as CommandActionReturn);
 
       await command.execute(context, []);
@@ -101,7 +101,7 @@ describe('InitCommand', () => {
           status: expect.objectContaining({
             state: 'completed',
             message: expect.objectContaining({
-              parts: [{ kind: 'text', text: 'A_CODER.md already exists.' }],
+              parts: [{ kind: 'text', text: 'A-Coder.md already exists.' }],
             }),
           }),
         }),
@@ -113,7 +113,7 @@ describe('InitCommand', () => {
           status: expect.objectContaining({
             state: 'completed',
             message: expect.objectContaining({
-              parts: [{ kind: 'text', text: 'A_CODER.md already exists.' }],
+              parts: [{ kind: 'text', text: 'A-Coder.md already exists.' }],
             }),
           }),
         }),
@@ -146,7 +146,7 @@ describe('InitCommand', () => {
       beforeEach(() => {
         vi.mocked(performInit).mockReturnValue({
           type: 'submit_prompt',
-          content: 'Create a new A_CODER.md file.',
+          content: 'Create a new A-Coder.md file.',
         } as CommandActionReturn);
       });
 
@@ -154,7 +154,7 @@ describe('InitCommand', () => {
         await command.execute(context, []);
 
         expect(fs.writeFileSync).toHaveBeenCalledWith(
-          path.join(mockWorkspacePath, 'A_CODER.md'),
+          path.join(mockWorkspacePath, 'A-Coder.md'),
           '',
           'utf8',
         );
@@ -169,7 +169,7 @@ describe('InitCommand', () => {
             userMessage: expect.objectContaining({
               parts: expect.arrayContaining([
                 expect.objectContaining({
-                  text: 'Create a new A_CODER.md file.',
+                  text: 'Create a new A-Coder.md file.',
                 }),
               ]),
               metadata: {

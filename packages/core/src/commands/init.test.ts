@@ -8,7 +8,7 @@ import { expect, describe, it } from 'vitest';
 import { performInit } from './init.js';
 
 describe('performInit', () => {
-  it('returns info if A_CODER.md already exists', () => {
+  it('returns info if A-Coder.md already exists', () => {
     const result = performInit(true);
 
     expect(result.type).toBe('message');
@@ -18,7 +18,7 @@ describe('performInit', () => {
     }
   });
 
-  it('returns submit_prompt if A_CODER.md does not exist', () => {
+  it('returns submit_prompt if A-Coder.md does not exist', () => {
     const result = performInit(false);
     expect(result.type).toBe('submit_prompt');
 

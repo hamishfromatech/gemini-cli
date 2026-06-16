@@ -25,7 +25,7 @@ vi.mock('fs', async (importOriginal) => {
 describe('initCommand', () => {
   let mockContext: CommandContext;
   const targetDir = '/test/dir';
-  const geminiMdPath = path.join(targetDir, 'A_CODER.md');
+  const geminiMdPath = path.join(targetDir, 'A-Coder.md');
 
   beforeEach(() => {
     // Create a fresh mock context for each test
@@ -45,7 +45,7 @@ describe('initCommand', () => {
     vi.clearAllMocks();
   });
 
-  it('should inform the user if A_CODER.md already exists', async () => {
+  it('should inform the user if A-Coder.md already exists', async () => {
     // Arrange: Simulate that the file exists
     vi.mocked(fs.existsSync).mockReturnValue(true);
 
@@ -57,13 +57,13 @@ describe('initCommand', () => {
       type: 'message',
       messageType: 'info',
       content:
-        'A A_CODER.md file already exists in this directory. No changes were made.',
+        'A A-Coder.md file already exists in this directory. No changes were made.',
     });
     // Assert: Ensure no file was written
     expect(fs.writeFileSync).not.toHaveBeenCalled();
   });
 
-  it('should create A_CODER.md and submit a prompt if it does not exist', async () => {
+  it('should create A-Coder.md and submit a prompt if it does not exist', async () => {
     // Arrange: Simulate that the file does not exist
     vi.mocked(fs.existsSync).mockReturnValue(false);
 
@@ -80,7 +80,7 @@ describe('initCommand', () => {
     expect(mockContext.ui.addItem).toHaveBeenCalledWith(
       {
         type: 'info',
-        text: 'Empty A_CODER.md created. Now analyzing the project to populate it.',
+        text: 'Empty A-Coder.md created. Now analyzing the project to populate it.',
       },
       expect.any(Number),
     );

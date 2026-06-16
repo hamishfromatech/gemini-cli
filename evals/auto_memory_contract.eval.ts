@@ -12,7 +12,7 @@
  *   3. Absolute-path pointers — when the agent creates a sibling .md, the
  *      paired MEMORY.md hunk references it by absolute path.
  *   4. Project-root protection — agent never writes to
- *      `<projectRoot>/A_CODER.md` even when content is team-shared.
+ *      `<projectRoot>/A-Coder.md` even when content is team-shared.
  *
  * Each test seeds session transcripts with strong, consistent signal so the
  * extraction agent will reasonably produce SOME output (or, in the human-only
@@ -408,13 +408,13 @@ describe('Auto Memory Contract', () => {
   componentEvalTest('USUALLY_PASSES', {
     suiteName: 'auto-memory-contract',
     suiteType: 'component-level',
-    name: 'never writes to <projectRoot>/A_CODER.md even for team-shared facts',
+    name: 'never writes to <projectRoot>/A-Coder.md even for team-shared facts',
     files: WORKSPACE_FILES,
     timeout: 240000,
     configOverrides: EXTRACTION_CONFIG_OVERRIDES,
     setup: async (config) => {
       // Sessions that talk about TEAM CONVENTIONS — the kind of content that
-      // would be a perfect fit for <projectRoot>/A_CODER.md, but the prompt
+      // would be a perfect fit for <projectRoot>/A-Coder.md, but the prompt
       // forbids the extraction agent from touching it.
       await seedSessions(config, [
         {
@@ -458,31 +458,31 @@ describe('Auto Memory Contract', () => {
       const inbox = await snapshotInbox(config);
       const projectRoot = config.storage.getProjectRoot();
 
-      // No private patch should target <projectRoot>/A_CODER.md or any
-      // subdirectory A_CODER.md.
+      // No private patch should target <projectRoot>/A-Coder.md or any
+      // subdirectory A-Coder.md.
       const projectRootRegex = new RegExp(
         `\\+\\+\\+ ${projectRoot.replace(/[.*+?^${}()|[\\]\\\\]/g, '\\\\$&')}.*GEMINI\\.md`,
       );
       for (const [name, content] of inbox.privateContents) {
         expect(
           projectRootRegex.test(content),
-          `Private patch "${name}" must not target a A_CODER.md under <projectRoot>. Content:\n${content}`,
+          `Private patch "${name}" must not target a A-Coder.md under <projectRoot>. Content:\n${content}`,
         ).toBe(false);
       }
 
-      // Verify on disk: <projectRoot>/A_CODER.md was not created or modified
+      // Verify on disk: <projectRoot>/A-Coder.md was not created or modified
       // by the extraction agent (snapshot rollback should also enforce this,
       // but we double-check from the post-run state).
-      const projectGemini = path.join(projectRoot, 'A_CODER.md');
+      const projectGemini = path.join(projectRoot, 'A-Coder.md');
       const exists = await fsp
         .access(projectGemini)
         .then(() => true)
         .catch(() => false);
-      // The seeded workspace's WORKSPACE_FILES doesn't include A_CODER.md, so
+      // The seeded workspace's WORKSPACE_FILES doesn't include A-Coder.md, so
       // it must NOT exist after the run.
       expect(
         exists,
-        `<projectRoot>/A_CODER.md (${projectGemini}) must not be created by the extraction agent.`,
+        `<projectRoot>/A-Coder.md (${projectGemini}) must not be created by the extraction agent.`,
       ).toBe(false);
     },
   });

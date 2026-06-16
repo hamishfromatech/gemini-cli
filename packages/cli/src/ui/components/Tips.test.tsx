@@ -11,8 +11,8 @@ import type { Config } from '@the-a-tech-corporation/core';
 
 describe('Tips', () => {
   it.each([
-    { fileCount: 0, description: 'renders all tips including A_CODER.md tip' },
-    { fileCount: 5, description: 'renders fewer tips when A_CODER.md exists' },
+    { fileCount: 0, description: 'renders all tips including A-Coder.md tip' },
+    { fileCount: 5, description: 'renders fewer tips when A-Coder.md exists' },
   ])('$description', async ({ fileCount }) => {
     const config = {
       getGeminiMdFileCount: vi.fn().mockReturnValue(fileCount),

@@ -83,7 +83,7 @@ const reloadSubCommand: SlashCommand = {
 
 const listSubCommand: SlashCommand = {
   name: 'list',
-  description: 'Lists the paths of the A_CODER.md files in use',
+  description: 'Lists the paths of the A-Coder.md files in use',
   kind: CommandKind.BUILT_IN,
   autoExecute: true,
   action: async (context) => {

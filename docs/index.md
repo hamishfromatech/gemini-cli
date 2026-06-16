@@ -1,8 +1,8 @@
 # A-Coder CLI documentation
 
-A-Coder CLI brings the power of A-Coder models directly into your terminal. Use it
-to understand code, automate tasks, and build workflows with your local project
-context.
+A-Coder CLI brings the power of A-Coder models directly into your terminal. Use
+it to understand code, automate tasks, and build workflows with your local
+project context.
 
 ## Install
 
@@ -21,8 +21,8 @@ Jump in to A-Coder CLI.
   personal and enterprise accounts.
 - **[CLI cheatsheet](./cli/cli-reference.md):** A quick reference for common
   commands and options.
-- **[A-Coder 3 on A-Coder CLI](./get-started/a-coder-cli-3.md):** Learn about A-Coder 3
-  support in A-Coder CLI.
+- **[A-Coder 3 on A-Coder CLI](./get-started/a-coder-cli-3.md):** Learn about
+  A-Coder 3 support in A-Coder CLI.
 
 ## Use A-Coder CLI
 
@@ -81,12 +81,12 @@ Settings and customization options for A-Coder CLI.
 - **[Custom commands](./cli/custom-commands.md):** Personalized shortcuts.
 - **[Enterprise configuration](./cli/enterprise.md):** Professional environment
   controls.
-- **[Ignore files (.a-coder-ignore)](./cli/a-coder-cli-ignore.md):** Exclusion pattern
-  reference.
+- **[Ignore files (.a-coder-ignore)](./cli/a-coder-cli-ignore.md):** Exclusion
+  pattern reference.
 - **[Model configuration](./cli/generation-settings.md):** Fine-tune generation
   parameters like temperature and thinking budget.
-- **[Project context (A_CODER.md)](./cli/a-coder-cli-md.md):** Technical hierarchy of
-  context files.
+- **[Project context (A-Coder.md)](./cli/a-coder-cli-md.md):** Technical
+  hierarchy of context files.
 - **[System prompt override](./cli/system-prompt.md):** Instruction replacement
   logic.
 - **[Themes](./cli/themes.md):** UI personalization technical guide.
@@ -124,7 +124,8 @@ Support, release history, and legal information.
 
 ## Development
 
-- **[Contribution guide](/docs/contributing):** How to contribute to A-Coder CLI.
+- **[Contribution guide](/docs/contributing):** How to contribute to A-Coder
+  CLI.
 - **[Integration testing](./integration-tests.md):** Running integration tests.
 - **[Issue and PR automation](./issue-and-pr-automation.md):** Automation for
   issues and pull requests.

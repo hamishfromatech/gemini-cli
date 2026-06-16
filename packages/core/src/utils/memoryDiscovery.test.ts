@@ -98,7 +98,7 @@ describe('memoryDiscovery', () => {
     });
   });
 
-  describe('EISDIR handling for A_CODER.md as a directory', () => {
+  describe('EISDIR handling for A-Coder.md as a directory', () => {
     it('readGeminiMdFiles returns null content (without throwing) when path is a directory', async () => {
       const dirAsFilePath = await createEmptyDir(
         path.join(projectRoot, DEFAULT_CONTEXT_FILENAME),
@@ -166,7 +166,7 @@ describe('memoryDiscovery', () => {
       );
     });
 
-    it('should fall back to legacy A_CODER.md when MEMORY.md is absent', async () => {
+    it('should fall back to legacy A-Coder.md when MEMORY.md is absent', async () => {
       const memoryDir = await createEmptyDir(path.join(testRootDir, 'memdir3'));
       const legacyFile = await createTestFile(
         path.join(memoryDir, DEFAULT_CONTEXT_FILENAME),
@@ -178,7 +178,7 @@ describe('memoryDiscovery', () => {
       expect(result).toContain(legacyFile);
     });
 
-    it('should return empty array when neither MEMORY.md nor A_CODER.md exists', async () => {
+    it('should return empty array when neither MEMORY.md nor A-Coder.md exists', async () => {
       const memoryDir = await createEmptyDir(path.join(testRootDir, 'memdir4'));
 
       const result = await getUserProjectMemoryPaths(memoryDir);
@@ -190,7 +190,7 @@ describe('memoryDiscovery', () => {
   describe('getExtensionMemoryPaths', () => {
     it('should return active extension context files', async () => {
       const extFile = await createTestFile(
-        path.join(testRootDir, 'ext', 'A_CODER.md'),
+        path.join(testRootDir, 'ext', 'A-Coder.md'),
         'Extension content',
       );
       const loader = new SimpleExtensionLoader([
@@ -208,7 +208,7 @@ describe('memoryDiscovery', () => {
 
     it('should ignore inactive extensions', async () => {
       const extFile = await createTestFile(
-        path.join(testRootDir, 'ext', 'A_CODER.md'),
+        path.join(testRootDir, 'ext', 'A-Coder.md'),
         'Extension content',
       );
       const loader = new SimpleExtensionLoader([
@@ -269,11 +269,11 @@ describe('memoryDiscovery', () => {
       );
 
       // No .git, so ceiling falls back to the trusted root itself.
-      // notesDir has no A_CODER.md and won't traverse up to docsDir.
+      // notesDir has no A-Coder.md and won't traverse up to docsDir.
       const resultNotes = await getEnvironmentMemoryPaths([notesDir]);
       expect(resultNotes).toHaveLength(0);
 
-      // docsDir has a A_CODER.md at the trusted root itself, so it's found.
+      // docsDir has a A-Coder.md at the trusted root itself, so it's found.
       const resultDocs = await getEnvironmentMemoryPaths([docsDir]);
       expect(resultDocs).toHaveLength(1);
       expect(resultDocs[0]).toBe(docsFile);
@@ -310,7 +310,7 @@ describe('memoryDiscovery', () => {
             const normalizedPath = String(filePath).replace(/\\/g, '/');
             return {
               dev: 1,
-              ino: normalizedPath.endsWith('/A_CODER.md') ? 101 : 202,
+              ino: normalizedPath.endsWith('/A-Coder.md') ? 101 : 202,
             };
           }),
         };
@@ -321,7 +321,7 @@ describe('memoryDiscovery', () => {
         const memoryTool = await import('../tools/memoryTool.js');
         const memoryDiscovery = await import('./memoryDiscovery.js');
         vi.mocked(paths.homedir).mockReturnValue('/home/tester');
-        memoryTool.setGeminiMdFilename(['A_CODER.md', 'gemini.md']);
+        memoryTool.setGeminiMdFilename(['A-Coder.md', 'gemini.md']);
 
         const result = await memoryDiscovery.getEnvironmentMemoryPaths(
           ['/case-root'],
@@ -329,7 +329,7 @@ describe('memoryDiscovery', () => {
         );
 
         expect(result).toEqual([
-          paths.toAbsolutePath('/case-root/A_CODER.md'),
+          paths.toAbsolutePath('/case-root/A-Coder.md'),
           paths.toAbsolutePath('/case-root/gemini.md'),
         ]);
       } finally {
@@ -404,7 +404,7 @@ describe('memoryDiscovery', () => {
       );
 
       // create hard link to simulate case-insensitive filesystem behavior
-      const geminiFileLink = path.join(projectRoot, 'A_CODER.md');
+      const geminiFileLink = path.join(projectRoot, 'A-Coder.md');
       try {
         await fsPromises.link(geminiFile, geminiFileLink);
       } catch (error) {
@@ -448,7 +448,7 @@ describe('memoryDiscovery', () => {
         'Lowercase file content',
       );
       const geminiFileUpper = await createTestFile(
-        path.join(projectRoot, 'A_CODER.md'),
+        path.join(projectRoot, 'A-Coder.md'),
         'Uppercase file content',
       );
 
@@ -489,7 +489,7 @@ describe('memoryDiscovery', () => {
         'Project root memory',
       );
 
-      const link1 = path.join(projectRoot, 'A_CODER.md');
+      const link1 = path.join(projectRoot, 'A-Coder.md');
       const link2 = path.join(projectRoot, 'Gemini.md');
 
       try {
@@ -623,7 +623,7 @@ describe('memoryDiscovery', () => {
         'JIT memory content',
       );
 
-      const geminiFileLink = path.join(subDir, 'A_CODER.md');
+      const geminiFileLink = path.join(subDir, 'A-Coder.md');
       try {
         await fsPromises.link(geminiFile, geminiFileLink);
       } catch (error) {
@@ -643,7 +643,7 @@ describe('memoryDiscovery', () => {
       const stats2 = await fsPromises.lstat(geminiFileLink);
       expect(stats1.ino).toBe(stats2.ino);
 
-      setGeminiMdFilename(['gemini.md', 'A_CODER.md']);
+      setGeminiMdFilename(['gemini.md', 'A-Coder.md']);
 
       const result = await loadJitSubdirectoryMemory(
         targetFile,
@@ -716,7 +716,7 @@ describe('memoryDiscovery', () => {
         new Set(),
       );
 
-      // Should find the A_CODER.md in the same directory as the file
+      // Should find the A-Coder.md in the same directory as the file
       expect(result.files).toHaveLength(1);
       expect(result.files[0].path).toBe(subDirMemory);
       expect(result.files[0].content).toBe('Src context rules');
@@ -767,7 +767,7 @@ describe('memoryDiscovery', () => {
         new Set(),
       );
 
-      // subDir is within the trusted root, so its A_CODER.md is found
+      // subDir is within the trusted root, so its A-Coder.md is found
       expect(result.files).toHaveLength(1);
       expect(result.files[0].path).toBe(subDirMemory);
       expect(result.files[0].content).toBe('Content without git');

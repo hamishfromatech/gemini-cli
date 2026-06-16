@@ -119,8 +119,8 @@ Slash commands provide meta-level control over the CLI itself.
   - **`reload`**:
     - **Description:** Reload custom command definitions from all sources
       (user-level `~/.a-coder-cli/commands/`, project-level
-      `<project>/.a-coder-cli/commands/`, MCP prompts, and extensions). Use this to
-      pick up new or modified `.toml` files without restarting the CLI.
+      `<project>/.a-coder-cli/commands/`, MCP prompts, and extensions). Use this
+      to pick up new or modified `.toml` files without restarting the CLI.
     - **Usage:** `/commands reload`
 
 ### `/compress`
@@ -229,7 +229,7 @@ Slash commands provide meta-level control over the CLI itself.
 
 ### `/init`
 
-- **Description:** To help users easily create a `A_CODER.md` file, this command
+- **Description:** To help users easily create a `A-Coder.md` file, this command
   analyzes the current directory and generates a tailored context file, making
   it simpler for them to provide project-specific instructions to the A-Coder
   agent.
@@ -263,22 +263,22 @@ Slash commands provide meta-level control over the CLI itself.
 ### `/memory`
 
 - **Description:** Manage the AI's instructional context (hierarchical memory
-  loaded from `A_CODER.md` files).
+  loaded from `A-Coder.md` files).
 - **Sub-commands:**
   - **`list`**:
-    - **Description:** Lists the paths of the A_CODER.md files in use for
+    - **Description:** Lists the paths of the A-Coder.md files in use for
       hierarchical memory.
   - **`refresh`**:
     - **Description:** Reload the hierarchical instructional memory from all
-      `A_CODER.md` files found in the configured locations (global,
+      `A-Coder.md` files found in the configured locations (global,
       project/ancestors, and sub-directories). This command updates the model
-      with the latest `A_CODER.md` content.
+      with the latest `A-Coder.md` content.
   - **`show`**:
     - **Description:** Display the full, concatenated content of the current
-      hierarchical memory that has been loaded from all `A_CODER.md` files. This
+      hierarchical memory that has been loaded from all `A-Coder.md` files. This
       lets you inspect the instructional context being provided to the A-Coder
       model.
-  - **Note:** For more details on how `A_CODER.md` files contribute to
+  - **Note:** For more details on how `A-Coder.md` files contribute to
     hierarchical memory, see the
     [CLI Configuration documentation](./configuration.md).
 
@@ -454,8 +454,8 @@ Slash commands provide meta-level control over the CLI itself.
 
 ### `/theme`
 
-- **Description:** Open a dialog that lets you change the visual theme of A-Coder
-  CLI.
+- **Description:** Open a dialog that lets you change the visual theme of
+  A-Coder CLI.
 
 ### `/tools`
 
@@ -581,8 +581,8 @@ A-Coder CLI.
       - While in shell mode, text you type is interpreted directly as a shell
         command.
     - **Exiting shell mode:**
-      - When exited, the UI reverts to its standard appearance and normal A-Coder
-        CLI behavior resumes.
+      - When exited, the UI reverts to its standard appearance and normal
+        A-Coder CLI behavior resumes.
 
 - **Caution for all `!` usage:** Commands you execute in shell mode have the
   same permissions and impact as if you ran them directly in your terminal.

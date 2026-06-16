@@ -5,13 +5,13 @@ This guide covers the `a-coder-cli extensions` commands and the structure of the
 
 ## Manage extensions
 
-Use the `a-coder-cli extensions` command group to manage your extensions from the
-terminal.
+Use the `a-coder-cli extensions` command group to manage your extensions from
+the terminal.
 
-Note that commands like `a-coder-cli extensions install` are not supported within the
-CLI's interactive mode. However, you can use the `/extensions list` command to
-view installed extensions. All management operations, including updates to slash
-commands, take effect only after you restart the CLI session.
+Note that commands like `a-coder-cli extensions install` are not supported
+within the CLI's interactive mode. However, you can use the `/extensions list`
+command to view installed extensions. All management operations, including
+updates to slash commands, take effect only after you restart the CLI session.
 
 ### Install an extension
 
@@ -103,8 +103,8 @@ a-coder-cli extensions link <path>
 
 ## Extension format
 
-A-Coder CLI loads extensions from `<home>/.a-coder-cli/extensions`. Each extension
-must have a `a-coder-cli-extension.json` file in its root directory.
+A-Coder CLI loads extensions from `<home>/.a-coder-cli/extensions`. Each
+extension must have a `a-coder-cli-extension.json` file in its root directory.
 
 ### `a-coder-cli-extension.json`
 
@@ -122,7 +122,7 @@ The manifest file defines the extension's behavior and configuration.
       "cwd": "${extensionPath}"
     }
   },
-  "contextFileName": "A_CODER.md",
+  "contextFileName": "A-Coder.md",
   "excludeTools": ["run_shell_command"],
   "migratedTo": "https://github.com/new-owner/new-extension-repo",
   "plan": {
@@ -157,7 +157,7 @@ The manifest file defines the extension's behavior and configuration.
     instead of putting them both in `command`.
 - `contextFileName`: The name of the file that contains the context for the
   extension. This will be used to load the context from the extension directory.
-  If this property is not used but a `A_CODER.md` file is present in your
+  If this property is not used but a `A-Coder.md` file is present in your
   extension directory, then that file will be loaded.
 - `excludeTools`: An array of tool names to exclude from the model. You can also
   specify command-specific restrictions for tools that support it, like the
@@ -219,8 +219,9 @@ Extensions **will not** inherit the user's full shell environment variables.
 They will only have access to:
 
 1. Standard safe variables (e.g., `HOME`, `PATH`, `TMPDIR`).
-2. Variables explicitly declared and requested in the `a-coder-cli-extension.json`
-   manifest via the `settings` array (using the `envVar` property).
+2. Variables explicitly declared and requested in the
+   `a-coder-cli-extension.json` manifest via the `settings` array (using the
+   `envVar` property).
 
 If your extension requires specific environment variables (like an API key,
 custom host, or config path), you **must** declare them in the `settings` array

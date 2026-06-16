@@ -140,7 +140,11 @@ describe('bfsFileSearch', () => {
     });
 
     it('should ignore geminiignored files', async () => {
-      await createTestFile('node_modules/', 'project', A_CODER_IGNORE_FILE_NAME);
+      await createTestFile(
+        'node_modules/',
+        'project',
+        A_CODER_IGNORE_FILE_NAME,
+      );
       await createTestFile('content', 'project', 'node_modules', 'target.txt');
       const targetFilePath = await createTestFile(
         'content',
@@ -214,16 +218,16 @@ describe('bfsFileSearch', () => {
     for (let i = 0; i < numTargetDirs; i++) {
       // Add target files in some directories
       fileCreationPromises.push(
-        createTestFile('content', `dir${i}`, 'A_CODER.md'),
+        createTestFile('content', `dir${i}`, 'A-Coder.md'),
       );
       fileCreationPromises.push(
-        createTestFile('content', `dir${i}`, 'subdir1', 'A_CODER.md'),
+        createTestFile('content', `dir${i}`, 'subdir1', 'A-Coder.md'),
       );
     }
     const expectedFiles = await Promise.all(fileCreationPromises);
 
     const result = await bfsFileSearch(testRootDir, {
-      fileName: 'A_CODER.md',
+      fileName: 'A-Coder.md',
       // Provide a generous maxDirs limit to ensure it doesn't prematurely stop
       // in this large test case. Total dirs created is 200.
       maxDirs: 250,

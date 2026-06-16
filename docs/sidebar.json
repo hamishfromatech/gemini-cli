@@ -202,7 +202,7 @@
             "slug": "docs/cli/generation-settings"
           },
           {
-            "label": "Project context (A_CODER.md)",
+            "label": "Project context (A-Coder.md)",
             "slug": "docs/cli/a-coder-md"
           },
           { "label": "Settings", "slug": "docs/cli/settings" },

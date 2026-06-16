@@ -43,7 +43,7 @@ export function createExtension({
   );
 
   if (addContextFile) {
-    fs.writeFileSync(path.join(extDir, 'A_CODER.md'), 'context');
+    fs.writeFileSync(path.join(extDir, 'A-Coder.md'), 'context');
   }
 
   if (contextFileName) {

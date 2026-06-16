@@ -55,7 +55,7 @@ const agent = new GeminiCliAgent({
 
 Validation:
 
-- Static string instructions show up where A_CODER.md content normally would in
+- Static string instructions show up where A-Coder.md content normally would in
   model call
 - Dynamic instructions show up and contain dynamic content.
 
