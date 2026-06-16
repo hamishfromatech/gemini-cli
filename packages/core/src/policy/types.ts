@@ -50,18 +50,30 @@ export enum ApprovalMode {
   AUTO_EDIT = 'autoEdit',
   YOLO = 'yolo',
   PLAN = 'plan',
+  /**
+   * Auto mode delegates permission decisions to a model-based classifier
+   * for actions that would otherwise prompt the user. See
+   * {@link ../safety/autoModeClassifier.ts} for the evaluation pipeline.
+   */
+  AUTO = 'auto',
 }
 
 /**
  * The order of permissiveness for approval modes.
  * Tools allowed in a less permissive mode should also be allowed
  * in more permissive modes.
+ *
+ * Note: this ordering is used to scope "Always Allow" rules at the
+ * current mode's permissiveness or higher. AUTO is intentionally
+ * listed last because its permissions are decided dynamically by the
+ * classifier, not by static policy rules.
  */
 export const MODES_BY_PERMISSIVENESS = [
   ApprovalMode.PLAN,
   ApprovalMode.DEFAULT,
   ApprovalMode.AUTO_EDIT,
   ApprovalMode.YOLO,
+  ApprovalMode.AUTO,
 ];
 
 /**

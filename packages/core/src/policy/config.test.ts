@@ -475,6 +475,20 @@ describe('createPolicyEngineConfig', () => {
     expect(rule?.priority).toBeCloseTo(1.015, 5);
   });
 
+  it('should include AUTO mode in the default non-plan rule set when settings are present', async () => {
+    // The "nonPlanModes" default array includes AUTO mode alongside
+    // DEFAULT/AUTO_EDIT/YOLO, so settings-driven rules should include
+    // AUTO mode in their modes list.
+    const config = await createPolicyEngineConfig(
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      { tools: { core: ['read_file'] } } as any,
+      ApprovalMode.AUTO,
+    );
+    const autoModeRules =
+      config.rules?.filter((r) => r.modes?.includes(ApprovalMode.AUTO)) ?? [];
+    expect(autoModeRules.length).toBeGreaterThan(0);
+  });
+
   it('should prioritize exclude over allow', async () => {
     const config = await createPolicyEngineConfig(
       {

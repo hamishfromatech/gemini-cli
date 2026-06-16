@@ -131,7 +131,7 @@ import {
 import { DEFAULT_MODEL_CONFIGS } from './defaultModelConfigs.js';
 import { MemoryContextManager } from '../context/memoryContextManager.js';
 import { TrackerService } from '../services/trackerService.js';
-import type { GenerateContentParameters } from '@google/genai';
+import type { Content, GenerateContentParameters } from '@google/genai';
 
 // Re-export OAuth config type
 export type { MCPOAuthConfig, AnyToolInvocation, AnyDeclarativeTool };
@@ -700,6 +700,13 @@ export interface ConfigParameters {
   rawOutput?: boolean;
   acceptRawOutputRisk?: boolean;
   dynamicModelConfiguration?: boolean;
+  /**
+   * Trusted host/domain boundary for auto mode. Entries typically
+   * include the local git repo (default), configured cloud buckets,
+   * and internal services that the agent is allowed to touch without
+   * triggering an exfiltration block.
+   */
+  autoModeTrustedDomains?: string[];
   modelConfigServiceConfig?: ModelConfigServiceConfig;
   enableHooks?: boolean;
   enableHooksUI?: boolean;
@@ -930,6 +937,7 @@ export class Config implements McpContext, AgentLoopContext {
   private readonly disableYoloMode: boolean;
   private readonly disableAlwaysAllow: boolean;
   private readonly rawOutput: boolean;
+  private readonly autoModeTrustedDomains: string[];
   private readonly acceptRawOutputRisk: boolean;
   private readonly dynamicModelConfiguration: boolean;
   private pendingIncludeDirectories: string[];
@@ -1345,7 +1353,7 @@ export class Config implements McpContext, AgentLoopContext {
       ConsecaSafetyChecker.getInstance().setContext(this);
     }
 
-    this._messageBus = new MessageBus(this.policyEngine, this.debugMode);
+    this._messageBus = new MessageBus(this.policyEngine, this.debugMode, true, this);
     this.acknowledgedAgentsService = new AcknowledgedAgentsService();
     this.skillManager = new SkillManager();
     this.outputSettings = {
@@ -1377,6 +1385,7 @@ export class Config implements McpContext, AgentLoopContext {
     this.disableYoloMode = params.disableYoloMode ?? false;
     this.rawOutput = params.rawOutput ?? false;
     this.acceptRawOutputRisk = params.acceptRawOutputRisk ?? false;
+    this.autoModeTrustedDomains = params.autoModeTrustedDomains ?? [];
 
     if (params.hooks) {
       this.hooks = params.hooks;
@@ -1566,7 +1575,7 @@ export class Config implements McpContext, AgentLoopContext {
     authMethod: AuthType,
     apiKey?: string,
     baseUrl?: string,
-    customHeaders?: Record<string, string>,
+    _customHeaders?: Record<string, string>,
   ) {
     // Reset availability service when switching auth
     this.modelAvailabilityService.reset();
@@ -1694,6 +1703,7 @@ export class Config implements McpContext, AgentLoopContext {
   }
 
   getUserPaidTier(): GeminiUserTier | undefined {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion
     return this.contentGenerator?.paidTier as GeminiUserTier | undefined;
   }
 
@@ -2726,6 +2736,39 @@ export class Config implements McpContext, AgentLoopContext {
     return this.getApprovalMode() === ApprovalMode.PLAN;
   }
 
+  isAutoMode(): boolean {
+    return this.getApprovalMode() === ApprovalMode.AUTO;
+  }
+
+  /**
+   * Returns the user-authored turns of the current chat history.
+   * Assistant text, tool descriptions, and tool results are filtered
+   * out so auto mode's classifier can be "reasoning-blind" and
+   * therefore robust to prompt-injection attempts embedded in tool
+   * outputs.
+   */
+  getUserContentHistory(): Content[] {
+    try {
+      const raw = this.aCoderClient.getHistory();
+      return raw.filter((c) => c?.role === 'user');
+    } catch {
+      return [];
+    }
+  }
+
+  /**
+   * Trusted host/domain boundary for the auto mode classifier. By
+   * default, only the local working directory is trusted. Users can
+   * extend this via the `autoModeTrustedDomains` config option (cloud
+   * buckets, internal services, etc.) so the classifier doesn't treat
+   * them as exfiltration targets.
+   */
+  getTrustedDomains(): string[] {
+    return this.autoModeTrustedDomains.length > 0
+      ? this.autoModeTrustedDomains
+      : [this.getProjectRoot()];
+  }
+
   getPolicyUpdateConfirmationRequest():
     | PolicyUpdateConfirmationRequest
     | undefined {
@@ -2919,7 +2962,7 @@ export class Config implements McpContext, AgentLoopContext {
 
   /**
    * Updates the system instruction with the latest user memory.
-   * Whenever the user memory (A_CODER.md files) is updated.
+   * Whenever the user memory (A-Coder.md files) is updated.
    */
   updateSystemInstructionIfInitialized(): void {
     const aCoderClient = this.aCoderClient;
@@ -3243,7 +3286,7 @@ export class Config implements McpContext, AgentLoopContext {
   /**
    * Checks if a given absolute path is allowed for file system operations.
    * A path is allowed if it's within the workspace context, the project's
-   * temporary directory, or is exactly the global personal `~/.a-coder/A_CODER.md`
+   * temporary directory, or is exactly the global personal `~/.a-coder/A-Coder.md`
    * file (the latter is the only file under `~/.a-coder/` that is reachable —
    * settings, credentials, keybindings, etc. remain disallowed).
    *
@@ -3302,7 +3345,7 @@ export class Config implements McpContext, AgentLoopContext {
       return true;
     }
 
-    // Surgical allowlist: the global personal A_CODER.md file (and ONLY that
+    // Surgical allowlist: the global personal A-Coder.md file (and ONLY that
     // file) is reachable so the prompt-driven memory flow can persist
     // cross-project personal preferences. This deliberately does NOT
     // allowlist the rest of `~/.a-coder/`.

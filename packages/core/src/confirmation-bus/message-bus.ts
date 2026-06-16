@@ -7,10 +7,17 @@
 import { randomUUID } from 'node:crypto';
 import { EventEmitter } from 'node:events';
 import type { PolicyEngine } from '../policy/policy-engine.js';
-import { PolicyDecision } from '../policy/types.js';
+import { ApprovalMode, PolicyDecision } from '../policy/types.js';
 import { MessageBusType, type Message } from './types.js';
 import { safeJsonStringify } from '../utils/safeJsonStringify.js';
 import { debugLogger } from '../utils/debugLogger.js';
+import type { Config } from '../config/config.js';
+import {
+  AutoModeClassifier,
+  isAutoModeFastPath,
+  type AutoModeContext,
+  type AutoModeUserTurn,
+} from '../safety/autoModeClassifier.js';
 
 export class MessageBus extends EventEmitter {
   private listenerToAbortCleanup = new WeakMap<
@@ -18,10 +25,21 @@ export class MessageBus extends EventEmitter {
     Map<string, () => void>
   >();
 
+  /**
+   * Per-session counters for the auto mode backstop. Keyed by subagent
+   * scope so subagent activity can't blow past the parent session's
+   * denial budget.
+   */
+  private readonly autoModeDenialCounters = new Map<
+    string,
+    { consecutive: number; total: number }
+  >();
+
   constructor(
     private readonly policyEngine: PolicyEngine,
     private readonly debug = false,
     private readonly isTrusted = true,
+    private readonly config?: Config,
   ) {
     super();
   }
@@ -50,7 +68,7 @@ export class MessageBus extends EventEmitter {
    * Derived buses are untrusted.
    */
   derive(subagentName: string): MessageBus {
-    const bus = new MessageBus(this.policyEngine, this.debug, false);
+    const bus = new MessageBus(this.policyEngine, this.debug, false, this.config);
 
     bus.publish = async (message: Message) => {
       if (message.type === MessageBusType.TOOL_CONFIRMATION_REQUEST) {
@@ -116,6 +134,7 @@ export class MessageBus extends EventEmitter {
 
         switch (decision) {
           case PolicyDecision.ALLOW:
+            this.recordAutoModeDecision(message.subagent, 'allow');
             // Directly emit the response instead of recursive publish
             this.emitMessage({
               type: MessageBusType.TOOL_CONFIRMATION_RESPONSE,
@@ -124,6 +143,7 @@ export class MessageBus extends EventEmitter {
             });
             break;
           case PolicyDecision.DENY:
+            this.recordAutoModeDecision(message.subagent, 'deny');
             // Emit both rejection and response messages
             this.emitMessage({
               type: MessageBusType.TOOL_POLICY_REJECTION,
@@ -136,6 +156,16 @@ export class MessageBus extends EventEmitter {
             });
             break;
           case PolicyDecision.ASK_USER:
+            // Auto mode: instead of prompting the user, route through the
+            // model-based classifier. Cheap tiers (built-in safe tools,
+            // in-project writes) bypass the classifier entirely.
+            if (
+              this.policyEngine.getApprovalMode() === ApprovalMode.AUTO &&
+              this.isTrusted
+            ) {
+              await this.handleAutoMode(message);
+              break;
+            }
             // Pass through to UI for user confirmation if any listeners exist.
             // If no listeners are registered (e.g., headless/ACP flows),
             // immediately request user confirmation to avoid long timeouts.
@@ -161,6 +191,193 @@ export class MessageBus extends EventEmitter {
       }
     } catch (error) {
       this.emit('error', error);
+    }
+  }
+
+  /**
+   * Run the auto mode pipeline for a single tool call. The pipeline is
+   * deliberately layered:
+   *
+   *   Tier 1: Built-in safe tools and in-project file writes — no
+   *           classifier call, no latency.
+   *   Tier 2: The two-stage LLM classifier — fast filter, then reasoned
+   *           re-evaluation only when the fast filter flags the action.
+   *   Tier 3: Backstop — terminate after too many denials in a row.
+   *
+   * The classifier only sees user messages and tool call payloads; it
+   * does not see assistant text, tool descriptions, or tool outputs.
+   */
+  private async handleAutoMode(
+    message: Extract<Message, { type: MessageBusType.TOOL_CONFIRMATION_REQUEST }>,
+  ): Promise<void> {
+    if (!this.config) {
+      // No config available — degrade to the default ASK_USER flow.
+      this.emitMessage(message);
+      return;
+    }
+
+    const workspaceDir = this.config.getProjectRoot();
+    const toolArgs = message.toolCall.args ?? {};
+
+    // Tier 1: cheap synchronous bypass for safe tools and in-project writes.
+    if (isAutoModeFastPath(message.toolCall.name, toolArgs, workspaceDir)) {
+      debugLogger.debug(
+        `[MessageBus] auto-mode fast-path allow: ${message.toolCall.name}`,
+      );
+      this.recordAutoModeDecision(message.subagent, 'allow');
+      this.emitMessage({
+        type: MessageBusType.TOOL_CONFIRMATION_RESPONSE,
+        correlationId: message.correlationId,
+        confirmed: true,
+      });
+      return;
+    }
+
+    // Tier 3 backstop: too many denials means the agent is stuck in a
+    // loop. Escalate to the user instead of guessing.
+    const counters = this.getAutoModeCounters(message.subagent);
+    if (counters.consecutive >= AutoModeClassifier.MAX_CONSECUTIVE_DENIALS) {
+      debugLogger.warn(
+        `[MessageBus] auto-mode backstop: ${counters.consecutive} consecutive denials, escalating to user.`,
+      );
+      this.fallbackToAskUser(message);
+      return;
+    }
+    if (counters.total >= AutoModeClassifier.MAX_TOTAL_DENIALS) {
+      debugLogger.warn(
+        `[MessageBus] auto-mode backstop: ${counters.total} total denials, escalating to user.`,
+      );
+      this.fallbackToAskUser(message);
+      return;
+    }
+
+    // Tier 2: two-stage classifier.
+    let decision: 'allow' | 'deny' | 'abstain';
+    try {
+      const client = this.config.getBaseLlmClient();
+      const classifier = new AutoModeClassifier({
+        client,
+        config: this.config,
+        modelConfigKey: { model: this.config.getActiveModel() },
+      });
+      decision = await classifier.classify(this.buildAutoModeContext(message));
+    } catch (err) {
+      // Classifier unavailable — fall through to the user. We prefer
+      // a moment of friction over guessing.
+      debugLogger.warn(
+        `[MessageBus] auto-mode classifier unavailable, falling back to ASK_USER: ${err instanceof Error ? err.message : String(err)}`,
+      );
+      this.fallbackToAskUser(message);
+      return;
+    }
+
+    switch (decision) {
+      case 'allow':
+        this.recordAutoModeDecision(message.subagent, 'allow');
+        this.emitMessage({
+          type: MessageBusType.TOOL_CONFIRMATION_RESPONSE,
+          correlationId: message.correlationId,
+          confirmed: true,
+        });
+        break;
+      case 'deny':
+        this.recordAutoModeDecision(message.subagent, 'deny');
+        this.emitMessage({
+          type: MessageBusType.TOOL_POLICY_REJECTION,
+          toolCall: message.toolCall,
+        });
+        this.emitMessage({
+          type: MessageBusType.TOOL_CONFIRMATION_RESPONSE,
+          correlationId: message.correlationId,
+          confirmed: false,
+        });
+        break;
+      case 'abstain':
+      default:
+        this.fallbackToAskUser(message);
+        break;
+    }
+  }
+
+  /**
+   * Build the reasoning-blind classifier context. We extract only user
+   * turns from the chat history (no assistant text, no tool results).
+   */
+  private buildAutoModeContext(
+    message: Extract<Message, { type: MessageBusType.TOOL_CONFIRMATION_REQUEST }>,
+  ): AutoModeContext {
+    const userTurns: AutoModeUserTurn[] = [];
+    try {
+      const history = this.config!.getUserContentHistory();
+      for (const content of history) {
+        if (content?.role !== 'user') continue;
+        const parts = content.parts ?? [];
+        for (const part of parts) {
+          if (typeof part?.text === 'string' && part.text.trim()) {
+            userTurns.push({ text: part.text });
+          }
+        }
+      }
+      // Cap to the most recent 6 user turns — older turns are unlikely
+      // to still represent the user's current intent.
+      if (userTurns.length > 6) {
+        userTurns.splice(0, userTurns.length - 6);
+      }
+    } catch (err) {
+      debugLogger.debug(
+        `[MessageBus] could not read chat history for auto mode: ${err instanceof Error ? err.message : String(err)}`,
+      );
+    }
+    return {
+      userTurns,
+      toolCall: message.toolCall,
+      serverName: message.serverName,
+      workspaceDir: this.config!.getProjectRoot(),
+      trustedDomains: this.config!.getTrustedDomains(),
+    };
+  }
+
+  private getAutoModeCounters(scope: string | undefined): {
+    consecutive: number;
+    total: number;
+  } {
+    const key = scope ?? '__default__';
+    let counters = this.autoModeDenialCounters.get(key);
+    if (!counters) {
+      counters = { consecutive: 0, total: 0 };
+      this.autoModeDenialCounters.set(key, counters);
+    }
+    return counters;
+  }
+
+  private recordAutoModeDecision(
+    scope: string | undefined,
+    outcome: 'allow' | 'deny',
+  ): void {
+    const counters = this.getAutoModeCounters(scope);
+    if (outcome === 'deny') {
+      counters.consecutive += 1;
+      counters.total += 1;
+    } else {
+      counters.consecutive = 0;
+    }
+  }
+
+  private fallbackToAskUser(
+    message: Extract<Message, { type: MessageBusType.TOOL_CONFIRMATION_REQUEST }>,
+  ): void {
+    this.recordAutoModeDecision(message.subagent, 'deny');
+    if (
+      this.listenerCount(MessageBusType.TOOL_CONFIRMATION_REQUEST) > 0
+    ) {
+      this.emitMessage(message);
+    } else {
+      this.emitMessage({
+        type: MessageBusType.TOOL_CONFIRMATION_RESPONSE,
+        correlationId: message.correlationId,
+        confirmed: false,
+        requiresUserConfirmation: true,
+      });
     }
   }
 

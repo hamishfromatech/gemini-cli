@@ -440,6 +440,7 @@ export async function createPolicyEngineConfig(
     ApprovalMode.DEFAULT,
     ApprovalMode.AUTO_EDIT,
     ApprovalMode.YOLO,
+    ApprovalMode.AUTO,
   ];
 
   const mapToolsToRules = (

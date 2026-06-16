@@ -339,9 +339,9 @@ export async function parseArguments(
         .option('approval-mode', {
           type: 'string',
           nargs: 1,
-          choices: ['default', 'auto_edit', 'yolo', 'plan'],
+          choices: ['default', 'auto_edit', 'yolo', 'plan', 'auto'],
           description:
-            'Set the approval mode: default (prompt for approval), auto_edit (auto-approve edit tools), yolo (auto-approve all tools), plan (read-only mode)',
+            'Set the approval mode: default (prompt for approval), auto_edit (auto-approve edit tools), yolo (auto-approve all tools), plan (read-only mode), auto (delegate approvals to a model-based classifier with safeguards)',
         })
         .option('policy', {
           type: 'array',
@@ -720,12 +720,15 @@ export async function loadCliConfig(
           approvalMode = ApprovalMode.PLAN;
         }
         break;
+      case 'auto':
+        approvalMode = ApprovalMode.AUTO;
+        break;
       case 'default':
         approvalMode = ApprovalMode.DEFAULT;
         break;
       default:
         throw new Error(
-          `Invalid approval mode: ${rawApprovalMode}. Valid values are: yolo, auto_edit, plan, default`,
+          `Invalid approval mode: ${rawApprovalMode}. Valid values are: yolo, auto_edit, plan, auto, default`,
         );
     }
   } else {
@@ -751,6 +754,14 @@ export async function loadCliConfig(
   } else if (approvalMode === ApprovalMode.YOLO) {
     debugLogger.warn(
       'YOLO mode is enabled. All tool calls will be automatically approved.',
+    );
+  }
+
+  if (approvalMode === ApprovalMode.AUTO) {
+    debugLogger.warn(
+      'Auto mode is enabled. Tool calls will be approved by a model-based classifier. ' +
+        'This is safer than YOLO but not a substitute for careful review on ' +
+        'high-stakes infrastructure.',
     );
   }
 
