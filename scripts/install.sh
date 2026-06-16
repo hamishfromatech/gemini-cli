@@ -8,7 +8,7 @@
 #   ./scripts/install.sh --prefix /usr/local --system
 #
 # One-liner install:
-#   curl -fsSL https://raw.githubusercontent.com/hamishfromatech/gemini-cli/rebrand/a-coder-cli/scripts/install.sh | bash
+#   curl -fsSL https://raw.githubusercontent.com/hamishfromatech/a-coder-cli/rebrand/a-coder-cli/scripts/install.sh | bash
 #
 # This script builds the bundled CLI binary, copies it to
 # $PREFIX/share/a-coder-cli/, and adds a wrapper to $PREFIX/bin
@@ -16,7 +16,7 @@
 
 set -euo pipefail
 
-REPO_URL="https://github.com/hamishfromatech/gemini-cli.git"
+REPO_URL="https://github.com/hamishfromatech/a-coder-cli.git"
 REPO_BRANCH="rebrand/a-coder-cli"
 
 PREFIX="${A_CODER_INSTALL_PREFIX:-$HOME/.local}"
