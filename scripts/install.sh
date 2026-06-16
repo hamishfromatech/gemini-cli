@@ -107,7 +107,11 @@ fi
 # --- Install dependencies if needed ---
 if [[ ! -d "$REPO_ROOT/node_modules" ]]; then
   echo "Installing dependencies..."
-  (cd "$REPO_ROOT" && npm install)
+  if [[ -f "$REPO_ROOT/package-lock.json" ]]; then
+    (cd "$REPO_ROOT" && npm ci)
+  else
+    (cd "$REPO_ROOT" && npm install)
+  fi
 fi
 
 # --- Build bundle ---
