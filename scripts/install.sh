@@ -108,7 +108,9 @@ fi
 if [[ ! -d "$REPO_ROOT/node_modules" ]]; then
   echo "Installing dependencies..."
   if [[ -f "$REPO_ROOT/package-lock.json" ]]; then
-    (cd "$REPO_ROOT" && npm ci)
+    # npm ci is faster and deterministic, but some environments have an old
+    # npm that can't read the lockfile. Fall back to npm install on failure.
+    (cd "$REPO_ROOT" && npm ci) || (cd "$REPO_ROOT" && npm install)
   else
     (cd "$REPO_ROOT" && npm install)
   fi
